@@ -1,0 +1,1178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EasyPerma | Yale Style</title>
+  <style>
+    :root {
+      /* YALE PALETTE & VARS */
+      --yale-blue: #00356B;
+      --yale-accent: #286f9b;
+      --text-main: #222222;
+      --text-muted: #5f5f5f;
+      --bg-body: #F9F9F9;
+      --bg-card: #FFFFFF;
+      --border-color: #dddddd;
+      
+      /* TYPOGRAPHY */
+      --serif: "YaleNew", "Georgia", "Times New Roman", serif;
+      --sans: "Mallory", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+      /* SHAPE */
+      --radius: 3px; /* Academic/boxy look */
+      --shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg-body);
+      color: var(--text-main);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    a { color: var(--yale-blue); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+
+    /* --- TOP BAR (Yale Branding) --- */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--yale-blue);
+      color: #fff;
+      border-bottom: 4px solid #fff; /* Academic accent */
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    
+    .brand {
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    
+    .brandLeft h1 {
+      font-family: var(--serif);
+      font-weight: 400; /* Yale style is often regular weight serif */
+      font-size: 24px;
+      margin: 0;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+    .brandLeft .sub {
+      font-family: var(--sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+    
+    .pill {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 4px 10px;
+      border-radius: var(--radius);
+      color: #fff;
+    }
+
+    /* Top Progress Bar */
+    .topProgress {
+      height: 4px;
+      background: #002040; /* Darker blue bg */
+      overflow: hidden;
+      width: 100%;
+      position: absolute; bottom: 0; left: 0;
+    }
+    .topProgress.hidden { display: none; }
+    .topProgress .bar {
+      height: 100%;
+      background: #4a90e2; /* Lighter blue for contrast */
+      width: 40%;
+      animation: indeterminate 1.5s infinite linear;
+    }
+    @keyframes indeterminate {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+
+    /* --- HERO --- */
+    main.wrap { padding-top: 40px; padding-bottom: 60px; flex: 1; }
+
+    .hero { margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+    .hero h2 {
+      font-family: var(--serif);
+      font-size: 32px;
+      color: var(--text-main);
+      margin: 0 0 10px 0;
+      font-weight: 400;
+    }
+    .hero p {
+      font-family: var(--serif); /* Serif for intro text is very academic */
+      font-size: 18px;
+      color: var(--text-muted);
+      margin: 0;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
+    /* --- LAYOUT & CARDS --- */
+    .grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
+    @media(min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: relative;
+      /* Subtle entry animation */
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .cardHeader {
+      padding: 15px 20px;
+      background: #fdfdfd;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .cardHeader h3 {
+      margin: 0;
+      font-family: var(--sans);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--yale-blue);
+      font-weight: 700;
+    }
+    .cardHeader .hint { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    
+    .cardBody { padding: 20px; }
+
+    /* --- FORMS & INPUTS --- */
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    
+    .labelRow {
+      display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;
+    }
+    .labelRow label { margin-bottom: 0; }
+    .helpLink {
+      font-size: 11px; color: var(--yale-accent); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      font-family: var(--sans);
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      background: #fff;
+      color: #333;
+      transition: all 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--yale-blue);
+      box-shadow: 0 0 0 3px rgba(0, 53, 107, 0.1);
+    }
+    textarea { min-height: 180px; font-family: var(--mono); font-size: 13px; }
+
+    .row { display: flex; gap: 10px; align-items: center; }
+    .twoCol { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    @media(max-width: 600px) { .twoCol { grid-template-columns: 1fr; } }
+
+    /* --- TABS --- */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 15px;
+    }
+    .tab {
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 10px 15px;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--yale-blue); }
+    .tab.active {
+      color: var(--yale-blue);
+      border-bottom-color: var(--yale-blue);
+    }
+
+    /* --- BUTTONS --- */
+    .btn {
+      display: inline-block;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: background 0.2s, opacity 0.2s;
+      font-family: var(--sans);
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn.primary {
+      background: var(--yale-blue);
+      color: #fff;
+      border: 1px solid var(--yale-blue);
+    }
+    .btn.primary:hover:not(:disabled) {
+      background: #002040;
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--yale-blue);
+      border: 1px solid #ccc;
+    }
+    .btn.secondary:hover:not(:disabled) {
+      background: #f4f4f4;
+      border-color: var(--yale-blue);
+    }
+    .btn.auto { width: auto; }
+
+    /* --- UTILS --- */
+    .small { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+    .mono { font-family: var(--mono); }
+    
+    .note {
+      background: #f2f7fc;
+      border-left: 3px solid var(--yale-blue);
+      padding: 10px 15px;
+      font-size: 13px;
+      color: #333;
+      margin-top: 15px;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 15px;
+      background: #eee;
+      border: 1px solid #ddd;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #333;
+      border-radius: var(--radius);
+    }
+
+    .checkbox {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 0;
+    }
+    .checkbox input { width: auto; margin: 0; }
+    .checkbox span { font-size: 14px; }
+
+    /* --- PROGRESS --- */
+    .workProgress { margin-top: 15px; display: none; }
+    .workProgress .label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; font-weight: 600; }
+    .meter {
+      height: 6px; background: #ddd; border-radius: var(--radius); overflow: hidden;
+    }
+    .meter > div {
+      height: 100%; background: var(--yale-blue); width: 0; transition: width 0.3s;
+    }
+
+    /* --- TABLE --- */
+    .tableWrap {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; }
+    thead th {
+      background: #f8f8f8;
+      color: #333;
+      font-weight: 700;
+      text-align: left;
+      padding: 12px;
+      border-bottom: 2px solid #ddd;
+      font-family: var(--sans);
+    }
+    tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+      color: #444;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .tag {
+      display: inline-block; padding: 2px 6px;
+      border-radius: 2px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+    }
+    .tag.ok { background: #e6fffa; color: #047857; border: 1px solid #a7f3d0; }
+    .tag.bad { background: #fff5f5; color: #b91c1c; border: 1px solid #fecaca; }
+    .tag.mid { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    /* --- LOCK OVERLAYS --- */
+    .lockOverlay {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(2px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 5;
+      transition: opacity 0.2s;
+    }
+    .lockOverlay.hidden { opacity: 0; pointer-events: none; }
+    
+    .lockCard {
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+      max-width: 400px;
+      border-radius: var(--radius);
+    }
+    .lockTitle { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--yale-blue); margin-bottom: 5px; }
+    .lockSub { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+    /* Helper helperRow */
+    .helperRow { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .helper { font-size: 12px; color: var(--text-muted); font-style: italic; }
+
+    /* --- MODALS (Shared Styles) --- */
+    .modal {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(2px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .modal.open { opacity: 1; pointer-events: auto; }
+    .modalBox {
+      background: #fff; width: 500px; max-width: 90%;
+      padding: 25px; border-radius: var(--radius);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      position: relative;
+    }
+    .modalBox h4 { margin: 0 0 15px; font-family: var(--serif); color: var(--yale-blue); font-size: 18px; }
+    .modalBox p { font-size: 14px; color: #333; line-height: 1.5; margin-bottom: 12px; }
+    .modalBox ol { margin: 0 0 15px; padding-left: 20px; font-size: 14px; color: #333; line-height: 1.5; }
+    .modalBox li { margin-bottom: 6px; }
+    .modalBox img { 
+      display: block; max-width: 100%; height: auto; 
+      border: 1px solid #ddd; margin-bottom: 15px; border-radius: 2px; 
+    }
+    .modalClose {
+      position: absolute; top: 15px; right: 15px; 
+      background: none; border: none; font-size: 20px; cursor: pointer; color: #999;
+    }
+    .modalClose:hover { color: #333; }
+
+    /* --- FOOTER --- */
+    .site-footer {
+      background: #f0f0f0;
+      border-top: 1px solid var(--border-color);
+      padding: 20px 0;
+      margin-top: auto;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .site-footer .linkBtn {
+      background: none; border: none; padding: 0;
+      color: var(--text-muted); text-decoration: underline; cursor: pointer;
+      font-size: 12px;
+    }
+    .site-footer .linkBtn:hover { color: var(--yale-blue); }
+
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand">
+        <div class="brandLeft">
+          <h1>EasyPerma</h1>
+          <div class="sub">Citation Management Tool</div>
+        </div>
+        <!-- <div class="pill">Local Host</div> -->
+      </div>
+    </div>
+    <div id="topProgress" class="topProgress hidden" aria-hidden="true"><div class="bar"></div></div>
+  </div>
+
+  <main class="wrap">
+    
+    <div class="hero">
+      <h2>Make your Perma.cc experience easier.</h2>
+      <p>
+        Paste raw URLs or complete footnote blocks. This tool extracts links, labels them by footnote number,
+        and sends them to Perma for batch capture.
+      </p>
+    </div>
+
+    <div class="grid">
+      <section class="card" id="section1">
+        <div class="cardHeader">
+          <h3>Step 1 — Configuration &amp; Input</h3>
+          <div class="hint">Ensure your API key has batch permissions.</div>
+        </div>
+        <div class="cardBody">
+          
+          <div class="twoCol">
+            <div>
+              <div class="labelRow">
+                <label>API Key</label>
+                <button id="apiHelpTrigger" class="helpLink">Where do I find this?</button>
+              </div>
+              <input id="apiKey" type="password" placeholder="Paste your Perma API Key" />
+            </div>
+            <div>
+              <label>Target Folder ID</label>
+              <div class="row">
+                <input id="folderId" inputmode="numeric" placeholder="e.g., 25" />
+                <button id="loadFoldersBtn" class="btn secondary auto" type="button">Load</button>
+              </div>
+              <select id="foldersSelect" style="display:none; margin-top:10px;"></select>
+            </div>
+          </div>
+
+          <div style="margin-top:20px;">
+            <div class="tabs" role="tablist" aria-label="Input mode">
+              <button id="tabUrls" class="tab active" type="button">URL List</button>
+              <button id="tabFootnotes" class="tab" type="button">Footnotes Block</button>
+            </div>
+          </div>
+
+          <div id="panelUrls">
+            <label>URLs (One per line)</label>
+            <textarea id="urlsText" placeholder="https://example.com&#10;https://example.com/page"></textarea>
+
+            <div class="row" style="margin-top:15px; justify-content: space-between;">
+              <div class="checkbox">
+                <input id="dedupeUrls" type="checkbox" checked />
+                <span>Remove duplicates</span>
+              </div>
+              <button id="previewUrlsBtn" class="btn secondary auto" type="button">Preview List</button>
+            </div>
+
+            <div class="note">
+              <strong>PDF Note:</strong> Paste direct PDF URLs here. For local PDF files, please use the standard Perma.cc web interface.
+            </div>
+            
+            <div class="helperRow">
+               <button id="pdfHelpBtn" class="btn secondary auto" style="padding: 6px 12px; font-size:12px;" type="button">How to upload PDFs?</button>
+            </div>
+          </div>
+
+          <div id="panelFootnotes" style="display:none;">
+            <label>Paste Footnotes Text</label>
+            <textarea id="footnotesText" placeholder="1. Author, Title, https://example.com.&#10;2. Id.&#10;3. See https://other.com..."></textarea>
+
+            <div class="twoCol" style="margin-top:15px;">
+              <div>
+                <label>Start Numbering At</label>
+                <input id="startFootnote" inputmode="numeric" value="1" />
+              </div>
+              <div>
+                <label>Split Method</label>
+                <select id="splitMode">
+                  <option value="auto" selected>Auto Detect</option>
+                  <option value="blank">Blank Lines</option>
+                  <option value="line">New Lines</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:15px; justify-content: space-between;">
+              <div class="checkbox">
+                <input id="dedupeFootnoteUrls" type="checkbox" checked />
+                <span>Deduplicate URLs</span>
+              </div>
+              <button id="extractFootnotesBtn" class="btn secondary auto" type="button">Extract Links</button>
+            </div>
+
+            <div class="note">
+              Lines without valid URLs (like "Id.") are automatically skipped.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="card" id="section2">
+        <div class="cardHeader">
+          <h3>Step 2 — Creation</h3>
+          <div class="hint">Generates Perma Links (Batch).</div>
+        </div>
+        <div class="cardBody">
+          <div class="row">
+            <button id="createBtn" class="btn primary" style="width:100%" type="button">Create Batch Links</button>
+          </div>
+          <div class="row" style="margin-top:10px;">
+             <button id="refreshBtn" class="btn secondary" style="width:100%" type="button" disabled>Refresh Statuses</button>
+             <button id="exportBtn" class="btn secondary" style="width:100%" type="button" disabled>Export CSV</button>
+          </div>
+
+          <div id="workProgress" class="workProgress">
+            <div class="label">
+              <span id="workLabel">Processing...</span>
+              <span class="mono" id="workPct">0%</span>
+            </div>
+            <div class="meter"><div id="workBar"></div></div>
+          </div>
+
+          <div id="status" class="status">Waiting for input...</div>
+        </div>
+
+        <div id="lock2" class="lockOverlay">
+          <div class="lockCard">
+            <div class="lockTitle">Locked</div>
+            <p class="lockSub">Please complete Step 1 (API Key, Folder, and Input) to proceed.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" id="section3" style="margin-top:25px;">
+      <div class="cardHeader">
+        <h3>Step 3 — Results</h3>
+        <div class="hint">Review generated links and capture status.</div>
+      </div>
+      <div class="cardBody">
+        <div class="tableWrap">
+          <table id="resultsTable" style="display:none;">
+            <thead>
+              <tr>
+                <th style="width:80px;">Ref</th>
+                <th>Original URL</th>
+                <th style="width:100px;">Status</th>
+                <th style="width:120px;">GUID</th>
+                <th style="width:200px;">Perma Link</th>
+                <th>Notes</th>
+                <th style="width:100px;">Batch</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="lock3" class="lockOverlay">
+        <div class="lockCard">
+          <div class="lockTitle">Awaiting Data</div>
+          <p class="lockSub">Preview or Extract links in Step 1 to view the results table.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      &copy; 2025 EasyPerma &middot; <button id="privacyTrigger" class="linkBtn">Privacy Policy</button>
+    </div>
+  </footer>
+
+  <div id="apiHelpModal" class="modal">
+    <div class="modalBox">
+      <button class="modalClose" id="apiHelpClose">&times;</button>
+      <h4>Finding your API Key</h4>
+      <ol>
+        <li>Log in to <a href="https://perma.cc" target="_blank" rel="noreferrer">perma.cc</a>.</li>
+        <li>Click your <strong>Name</strong> in the top right corner.</li>
+        <li>Select <strong>Tools</strong> from the dropdown menu.</li>
+        <li>Locate the "API Key" section on that page.</li>
+      </ol>
+      <img src="screenshot.png" alt="Screenshot of Perma Tools page showing API Key" />
+      <button id="apiHelpBtnClose" class="btn secondary" style="width:100%">Close</button>
+    </div>
+  </div>
+
+  <div id="privacyModal" class="modal">
+    <div class="modalBox">
+      <button class="modalClose" id="privacyClose">&times;</button>
+      <h4>Privacy Policy</h4>
+      <p><strong>No Data Collection:</strong> This website operates entirely client-side (in your browser). We do not collect, store, or transmit your data to any third-party servers other than the official Perma.cc API when you execute a request.</p>
+      <p>Your API Key is used strictly to authenticate with Perma.cc and is not saved by this tool unless you use your browser's password manager.</p>
+      <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
+      <p>If you have questions, please email the developer:<br>
+      <strong>Frederick Liu</strong><br>
+      <a href="mailto:frederick.liu@yale.edu">frederick.liu@yale.edu</a></p>
+      <button id="privacyBtnClose" class="btn secondary" style="width:100%; margin-top:10px;">Close</button>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const API_BASE = "https://api.perma.cc/v1";
+  const $ = (id) => document.getElementById(id);
+
+  // Top progress (indeterminate)
+  const topProgress = $("topProgress");
+  let busyCount = 0;
+  function setBusy(on){
+    if (on) busyCount++;
+    else busyCount = Math.max(0, busyCount - 1);
+    topProgress.classList.toggle("hidden", busyCount === 0);
+  }
+
+  // Tabs
+  const tabUrls = $("tabUrls");
+  const tabFootnotes = $("tabFootnotes");
+  const panelUrls = $("panelUrls");
+  const panelFootnotes = $("panelFootnotes");
+
+  // Config
+  const apiKeyEl = $("apiKey");
+  const folderIdEl = $("folderId");
+  const loadFoldersBtn = $("loadFoldersBtn");
+  const foldersSelect = $("foldersSelect");
+
+  // URL mode
+  const urlsTextEl = $("urlsText");
+  const dedupeUrlsEl = $("dedupeUrls");
+  const previewUrlsBtn = $("previewUrlsBtn");
+  const pdfHelpBtn = $("pdfHelpBtn");
+
+  // Footnotes mode
+  const footnotesTextEl = $("footnotesText");
+  const startFootnoteEl = $("startFootnote");
+  const splitModeEl = $("splitMode");
+  const dedupeFootnoteUrlsEl = $("dedupeFootnoteUrls");
+  const extractFootnotesBtn = $("extractFootnotesBtn");
+
+  // Actions
+  const createBtn = $("createBtn");
+  const exportBtn = $("exportBtn");
+  const refreshBtn = $("refreshBtn");
+  const statusEl = $("status");
+
+  // Work progress (determinate)
+  const workProgress = $("workProgress");
+  const workLabel = $("workLabel");
+  const workPct = $("workPct");
+  const workBar = $("workBar");
+  function showWorkProgress(label, pct){
+    workProgress.style.display = "";
+    workLabel.textContent = label || "Working…";
+    const safe = Math.max(0, Math.min(100, Math.round(pct || 0)));
+    workPct.textContent = safe + "%";
+    workBar.style.width = safe + "%";
+  }
+  function hideWorkProgress(){
+    workProgress.style.display = "none";
+    workBar.style.width = "0%";
+    workPct.textContent = "0%";
+    workLabel.textContent = "";
+  }
+
+  // Results
+  const resultsTable = $("resultsTable");
+  const resultsBody = $("resultsBody");
+
+  // Locks
+  const lock2 = $("lock2");
+  const lock3 = $("lock3");
+
+  // Help Modal Logic
+  const apiHelpTrigger = $("apiHelpTrigger");
+  const apiHelpModal = $("apiHelpModal");
+  const apiHelpClose = $("apiHelpClose");
+  const apiHelpBtnClose = $("apiHelpBtnClose");
+
+  function openHelp() { apiHelpModal.classList.add("open"); }
+  function closeHelp() { apiHelpModal.classList.remove("open"); }
+
+  apiHelpTrigger.addEventListener("click", openHelp);
+  apiHelpClose.addEventListener("click", closeHelp);
+  apiHelpBtnClose.addEventListener("click", closeHelp);
+  apiHelpModal.addEventListener("click", (e) => { if (e.target === apiHelpModal) closeHelp(); });
+
+  // Privacy Modal Logic
+  const privacyTrigger = $("privacyTrigger");
+  const privacyModal = $("privacyModal");
+  const privacyClose = $("privacyClose");
+  const privacyBtnClose = $("privacyBtnClose");
+
+  function openPrivacy() { privacyModal.classList.add("open"); }
+  function closePrivacy() { privacyModal.classList.remove("open"); }
+
+  privacyTrigger.addEventListener("click", openPrivacy);
+  privacyClose.addEventListener("click", closePrivacy);
+  privacyBtnClose.addEventListener("click", closePrivacy);
+  privacyModal.addEventListener("click", (e) => { if (e.target === privacyModal) closePrivacy(); });
+
+
+  // State
+  let items = [];
+  let activeMode = "urls";
+
+  function setStatus(msg){ statusEl.textContent = msg; }
+
+  function escapeHtml(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function normalizeUrl(raw){
+    return raw.replace(/[)\].,;:]+$/g, "");
+  }
+
+  function extractUrls(text){
+    const re = /https?:\/\/[^\s<>"']+/gi;
+    const out = [];
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const u = normalizeUrl(m[0]);
+      try {
+        const parsed = new URL(u);
+        if (/^https?:$/.test(parsed.protocol)) out.push(parsed.toString());
+      } catch {}
+    }
+    return out;
+  }
+
+  function chunk(arr, n){
+    const out=[];
+    for (let i=0;i<arr.length;i+=n) out.push(arr.slice(i,i+n));
+    return out;
+  }
+
+  function render(statusMsg){
+    if (statusMsg) setStatus(statusMsg);
+    resultsBody.innerHTML = "";
+
+    for (const it of items) {
+      const tr = document.createElement("tr");
+
+      const st = it.status;
+      const tag = st
+        ? (st === "completed" || st === "success") ? `<span class="tag ok">✓ ${escapeHtml(st)}</span>`
+          : (st === "pending" || st === "in_progress") ? `<span class="tag mid">${escapeHtml(st)}</span>`
+          : `<span class="tag bad">! ${escapeHtml(st)}</span>`
+        : `<span class="tag">preview</span>`;
+
+      const guid = it.guid || "";
+      const perma = guid ? `https://perma.cc/${guid}` : "";
+
+      tr.innerHTML = `
+        <td class="mono"><strong>${escapeHtml(it.refLabel || "")}</strong></td>
+        <td><a href="${it.url}" target="_blank" rel="noreferrer" style="font-weight:400; font-size:12px;">${escapeHtml(it.url)}</a></td>
+        <td>${tag}</td>
+        <td class="mono">${escapeHtml(guid)}</td>
+        <td>${perma ? `<a href="${perma}" target="_blank" rel="noreferrer">${perma}</a>` : ""}</td>
+        <td style="font-size:11px; color:#666;">${escapeHtml(it.message || "")}</td>
+        <td class="mono">${escapeHtml(it.batchId || "")}</td>
+      `;
+      resultsBody.appendChild(tr);
+    }
+
+    resultsTable.style.display = items.length ? "" : "none";
+    exportBtn.disabled = items.length === 0 || isLocked();
+    refreshBtn.disabled = !canRefresh() || isLocked();
+  }
+
+  function setMode(mode){
+    activeMode = mode;
+    if (mode === "urls") {
+      tabUrls.classList.add("active");
+      tabFootnotes.classList.remove("active");
+      panelUrls.style.display = "";
+      panelFootnotes.style.display = "none";
+    } else {
+      tabFootnotes.classList.add("active");
+      tabUrls.classList.remove("active");
+      panelFootnotes.style.display = "";
+      panelUrls.style.display = "none";
+    }
+    syncLocks();
+  }
+
+  function section1Complete(){
+    const apiKeyOk = apiKeyEl.value.trim().length > 0;
+    const folderId = Number(folderIdEl.value.trim());
+    const folderOk = Number.isInteger(folderId) && folderId > 0;
+
+    const inputOk = (activeMode === "urls")
+      ? urlsTextEl.value.trim().length > 0
+      : footnotesTextEl.value.trim().length > 0;
+
+    return apiKeyOk && folderOk && inputOk;
+  }
+  function isLocked(){ return !section1Complete(); }
+  function syncLocks(){
+    const locked = isLocked();
+    lock2.classList.toggle("hidden", !locked);
+    lock3.classList.toggle("hidden", !locked);
+    createBtn.disabled = locked;
+    exportBtn.disabled = locked || items.length === 0;
+    refreshBtn.disabled = locked || !canRefresh();
+  }
+
+  // URLs
+  function parseUrlsMode(){
+    const lines = urlsTextEl.value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    const raw = [];
+    for (const line of lines) {
+      try {
+        const u = new URL(line);
+        if (!/^https?:$/.test(u.protocol)) continue;
+        raw.push(u.toString());
+      } catch {}
+    }
+
+    let final = raw;
+    if (dedupeUrlsEl.checked) {
+      const seen = new Set();
+      final = [];
+      for (const u of raw) if (!seen.has(u)) { seen.add(u); final.push(u); }
+    }
+
+    items = final.map((u, i) => ({ refLabel: String(i+1), url: u }));
+    hideWorkProgress();
+    render("Preview ready (URLs mode).");
+  }
+
+  // Footnotes
+  function splitFootnotes(text){
+    const mode = splitModeEl.value;
+    const cleaned = text.replace(/\r\n/g, "\n");
+
+    const splitByBlankLines = () =>
+      cleaned.split(/\n\s*\n+/).map(s => s.trim()).filter(Boolean);
+
+    const splitByLines = () =>
+      cleaned.split("\n").map(s => s.trim()).filter(Boolean);
+
+    if (mode === "blank") return splitByBlankLines();
+    if (mode === "line") return splitByLines();
+
+    const blocks = splitByBlankLines();
+    if (blocks.length >= 2) return blocks;
+    return splitByLines();
+  }
+
+  function parseFootnotesMode(){
+    const text = footnotesTextEl.value || "";
+    const start = Math.max(1, Math.floor(Number(startFootnoteEl.value || "1")));
+    const footnotes = splitFootnotes(text);
+
+    const nextItems = [];
+    const seen = new Set();
+    const letters = "abcdefghijklmnopqrstuvwxyz";
+
+    for (let idx = 0; idx < footnotes.length; idx++) {
+      const footnoteNumber = start + idx;
+      const urls = extractUrls(footnotes[idx]);
+      if (!urls.length) continue;
+
+      for (let j = 0; j < urls.length; j++) {
+        const u = urls[j];
+        if (dedupeFootnoteUrlsEl.checked && seen.has(u)) continue;
+        if (dedupeFootnoteUrlsEl.checked) seen.add(u);
+
+        const suffix = (urls.length > 1)
+          ? (letters[j] ? letters[j] : String(j+1))
+          : "";
+
+        nextItems.push({ refLabel: `${footnoteNumber}${suffix}`, url: u });
+      }
+    }
+
+    items = nextItems;
+    hideWorkProgress();
+    render(`Extracted ${items.length} link(s) from footnotes. Preview ready.`);
+  }
+
+  // API
+  async function permaFetch(path, { method="GET", apiKey, json } = {}){
+    setBusy(true);
+    try{
+      const headers = {
+        "Authorization": `ApiKey ${apiKey}`,
+        "Accept": "application/json"
+      };
+      if (json !== undefined) headers["Content-Type"] = "application/json";
+
+      const res = await fetch(`${API_BASE}${path}`, {
+        method,
+        headers,
+        body: json !== undefined ? JSON.stringify(json) : undefined
+      });
+
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch { data = { raw: text }; }
+
+      if (!res.ok) throw new Error(data?.detail || data?.error || data?.raw || `HTTP ${res.status}`);
+      return data;
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function loadFolders(){
+    const apiKey = apiKeyEl.value.trim();
+    if (!apiKey) return setStatus("Enter your API key first.");
+
+    hideWorkProgress();
+    setStatus("Loading folders… (GET /v1/user/)");
+    try {
+      const data = await permaFetch("/user/", { apiKey });
+      const folders = data?.top_level_folders || [];
+      if (!folders.length) {
+        foldersSelect.style.display = "none";
+        return setStatus("No folders returned. Double-check your API key.");
+      }
+
+      foldersSelect.innerHTML = "";
+      for (const f of folders) {
+        const opt = document.createElement("option");
+        opt.value = f.id;
+        opt.textContent = `${f.name} (id: ${f.id})`;
+        foldersSelect.appendChild(opt);
+      }
+      foldersSelect.style.display = "";
+      folderIdEl.value = String(folders[0].id);
+      setStatus("Folders loaded.");
+    } catch (e) {
+      setStatus(
+        "Folder load failed.\n\n" + e.message +
+        "\n\nIf your console shows a CORS error, the browser blocked the request."
+      );
+    } finally {
+      syncLocks();
+    }
+  }
+
+  async function createBatch(){
+    const apiKey = apiKeyEl.value.trim();
+    const folderId = Number(folderIdEl.value.trim());
+
+    if (!apiKey) return setStatus("Enter your API key.");
+    if (!Number.isInteger(folderId) || folderId <= 0) return setStatus("Enter a valid numeric Target Folder ID.");
+    if (!items.length) return setStatus("Nothing to send. Preview/extract first.");
+
+    // reset items
+    items = items.map(it => ({ ...it, status: undefined, guid: undefined, permaLink: undefined, message: undefined, batchId: undefined }));
+    render("Submitting batches…");
+
+    createBtn.disabled = true;
+    refreshBtn.disabled = true;
+    exportBtn.disabled = true;
+
+    const urls = items.map(it => it.url);
+    const CHUNK_SIZE = 50;
+    const chunks = chunk(urls, CHUNK_SIZE);
+
+    try {
+      for (let i=0;i<chunks.length;i++){
+        const pct = Math.round((i / Math.max(1, chunks.length)) * 100);
+        showWorkProgress(`Submitting batch ${i+1}/${chunks.length}`, pct);
+        setStatus(`Submitting batch ${i+1}/${chunks.length} (${chunks[i].length} URL(s))…`);
+
+        const data = await permaFetch("/archives/batches", {
+          method: "POST",
+          apiKey,
+          json: { urls: chunks[i], target_folder: folderId }
+        });
+
+        const batchId = data?.id;
+        const jobs = data?.capture_jobs || [];
+
+        // bucket jobs
+        const buckets = new Map();
+        for (const j of jobs) {
+          const k = j.submitted_url;
+          if (!buckets.has(k)) buckets.set(k, []);
+          buckets.get(k).push(j);
+        }
+
+        // assign
+        for (const it of items) {
+          if (!chunks[i].includes(it.url)) continue;
+          const arr = buckets.get(it.url);
+          if (arr && arr.length) {
+            const j = arr.shift();
+            it.status = j.status;
+            it.guid = j.guid;
+            it.message = j.message;
+            it.batchId = batchId;
+          } else {
+            it.batchId = batchId;
+          }
+        }
+
+        render(`Batch ${i+1}/${chunks.length} submitted.`);
+      }
+
+      showWorkProgress("Submitted. You can refresh statuses.", 100);
+      setStatus(
+        "Submitted.\n\n" +
+        "Captures can remain pending/in_progress briefly.\n" +
+        "Use “Refresh statuses” to pull updated statuses for the batch.\n" +
+        "Perma link format is https://perma.cc/<GUID> once completed."
+      );
+    } catch (e) {
+      hideWorkProgress();
+      setStatus(
+        "Batch failed.\n\n" + e.message +
+        "\n\nIf your console shows a CORS error, the browser blocked the request."
+      );
+    } finally {
+      createBtn.disabled = isLocked();
+      exportBtn.disabled = (items.length === 0) || isLocked();
+      refreshBtn.disabled = !canRefresh() || isLocked();
+      syncLocks();
+    }
+  }
+
+  function canRefresh(){
+    return items.some(it => it.batchId);
+  }
+
+  async function refreshStatuses(){
+    const apiKey = apiKeyEl.value.trim();
+    if (!apiKey) return setStatus("Enter your API key.");
+    const batchIds = Array.from(new Set(items.map(it => it.batchId).filter(Boolean)));
+    if (!batchIds.length) return setStatus("No batch IDs found to refresh.");
+
+    try{
+      createBtn.disabled = true;
+      refreshBtn.disabled = true;
+
+      for (let i=0;i<batchIds.length;i++){
+        const id = batchIds[i];
+        const pct = Math.round((i / Math.max(1, batchIds.length)) * 100);
+        showWorkProgress(`Refreshing batch ${i+1}/${batchIds.length}`, pct);
+        setStatus(`Refreshing status for batch ${id}…`);
+
+        const data = await permaFetch(`/archives/batches/${encodeURIComponent(id)}`, { apiKey });
+        const jobs = data?.capture_jobs || data?.objects || [];
+
+        const buckets = new Map();
+        for (const j of jobs) {
+          const k = j.submitted_url;
+          if (!k) continue;
+          if (!buckets.has(k)) buckets.set(k, []);
+          buckets.get(k).push(j);
+        }
+
+        for (const it of items) {
+          if (String(it.batchId) !== String(id)) continue;
+          const arr = buckets.get(it.url);
+          if (arr && arr.length) {
+            const j = arr.shift();
+            it.status = j.status ?? it.status;
+            it.guid = j.guid ?? it.guid;
+            it.message = j.message ?? it.message;
+          }
+        }
+
+        render(`Refreshed batch ${id}.`);
+      }
+
+      showWorkProgress("Refresh complete.", 100);
+      setStatus("Refresh complete. Pending jobs may still take a moment.");
+    } catch(e){
+      hideWorkProgress();
+      setStatus(
+        "Refresh failed.\n\n" + e.message +
+        "\n\nIf your console shows a CORS error, the browser blocked the request."
+      );
+    } finally {
+      createBtn.disabled = isLocked();
+      refreshBtn.disabled = !canRefresh() || isLocked();
+      exportBtn.disabled = (items.length === 0) || isLocked();
+      syncLocks();
+    }
+  }
+
+  function exportCsv(){
+    const header = ["footnote","submitted_url","status","guid","perma_link","message","batch_id"].join(",");
+    const lines = items.map(it => {
+      const perma = it.guid ? `https://perma.cc/${it.guid}` : "";
+      const esc = (s) => `"${String(s ?? "").replaceAll('"','""')}"`;
+      return [it.refLabel, it.url, it.status, it.guid, perma, it.message, it.batchId].map(esc).join(",");
+    });
+    const csv = [header, ...lines].join("\n");
+    const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "easyperma-results.csv";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function showPdfHelp(){
+    setStatus(
+      "PDF upload (Perma web UI):\n" +
+      "1) Open Perma in a new tab.\n" +
+      "2) Leave the URL field blank.\n" +
+      "3) Click “Create Perma Link”.\n" +
+      "4) Click “Upload Your Own Archive” and upload the PDF.\n\n" +
+      "In this tool: direct PDF *URLs* work (paste them like any other URL)."
+    );
+    try { window.open("https://perma.cc/", "_blank", "noopener,noreferrer"); } catch {}
+  }
+
+  // Bindings
+  tabUrls.addEventListener("click", () => setMode("urls"));
+  tabFootnotes.addEventListener("click", () => setMode("footnotes"));
+
+  loadFoldersBtn.addEventListener("click", loadFolders);
+  foldersSelect.addEventListener("change", () => { folderIdEl.value = foldersSelect.value; syncLocks(); });
+
+  previewUrlsBtn.addEventListener("click", () => { setMode("urls"); parseUrlsMode(); syncLocks(); });
+  extractFootnotesBtn.addEventListener("click", () => { setMode("footnotes"); parseFootnotesMode(); syncLocks(); });
+
+  createBtn.addEventListener("click", async () => {
+    if (isLocked()) return;
+    if (!items.length) {
+      if (activeMode === "urls") parseUrlsMode();
+      else parseFootnotesMode();
+    }
+    await createBatch();
+  });
+
+  exportBtn.addEventListener("click", () => { if (!isLocked()) exportCsv(); });
+  refreshBtn.addEventListener("click", () => { if (!isLocked()) refreshStatuses(); });
+
+  pdfHelpBtn.addEventListener("click", showPdfHelp);
+
+  const lockInputs = [apiKeyEl, folderIdEl, urlsTextEl, footnotesTextEl, startFootnoteEl, splitModeEl];
+  for (const el of lockInputs) {
+    el.addEventListener("input", syncLocks);
+    el.addEventListener("change", syncLocks);
+  }
+
+  setMode("urls");
+  setStatus("Ready. Fill Step 1, then Preview/Extract to populate results.");
+  syncLocks();
+})();
+</script>
+</body>
+</html>

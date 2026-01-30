@@ -756,17 +756,17 @@
     return raw.replace(/[)\].,;:]+$/g, "");
   }
 
-  /** * PDF ARTIFACT CLEANER
+  /** * PDF ARTIFACT CLEANER (V2)
    * Tries to fix URLs broken by newlines/spaces in PDFs.
-   * e.g. "chatgpt- alternatives" -> "chatgpt-alternatives"
+   * e.g. "chatgpt- alternatives" -> "chatgpt-alternatives" (Keeps the hyphen!)
    * e.g. "index .html" -> "index.html"
    */
   function cleanPdfArtifacts(text) {
     let clean = text;
 
-    // Fix 1: Hyphens followed by whitespace (e.g. "chatgpt- alternatives")
-    // Replaces "char- space char" with "char-char"
-    clean = clean.replace(/(\S)-\s+([a-zA-Z0-9/._])/g, "$1$2");
+    // Fix 1: Hyphens followed by whitespace (e.g. "open- source")
+    // Replaces "char- space char" with "char-char" (preserving the hyphen)
+    clean = clean.replace(/(\S)-\s+([a-zA-Z0-9/._])/g, "$1-$2");
     
     // Fix 2: Slashes followed by whitespace (e.g. "example.com/ foo")
     // Replaces "char/ space char" with "char/char"

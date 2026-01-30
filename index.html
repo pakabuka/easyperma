@@ -21,7 +21,7 @@
       --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
       /* SHAPE */
-      --radius: 3px; /* Academic/boxy look */
+      --radius: 3px;
       --shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
@@ -40,12 +40,12 @@
     a { color: var(--yale-blue); text-decoration: none; font-weight: 600; }
     a:hover { text-decoration: underline; }
 
-    /* --- TOP BAR (Yale Branding) --- */
+    /* --- TOP BAR --- */
     .topbar {
       position: sticky; top: 0; z-index: 100;
       background: var(--yale-blue);
       color: #fff;
-      border-bottom: 4px solid #fff; /* Academic accent */
+      border-bottom: 4px solid #fff;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
@@ -58,7 +58,7 @@
     
     .brandLeft h1 {
       font-family: var(--serif);
-      font-weight: 400; /* Yale style is often regular weight serif */
+      font-weight: 400;
       font-size: 24px;
       margin: 0;
       letter-spacing: 0.5px;
@@ -73,20 +73,10 @@
       margin-top: 2px;
     }
     
-    .pill {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 4px 10px;
-      border-radius: var(--radius);
-      color: #fff;
-    }
-
     /* Top Progress Bar */
     .topProgress {
       height: 4px;
-      background: #002040; /* Darker blue bg */
+      background: #002040;
       overflow: hidden;
       width: 100%;
       position: absolute; bottom: 0; left: 0;
@@ -94,7 +84,7 @@
     .topProgress.hidden { display: none; }
     .topProgress .bar {
       height: 100%;
-      background: #4a90e2; /* Lighter blue for contrast */
+      background: #4a90e2;
       width: 40%;
       animation: indeterminate 1.5s infinite linear;
     }
@@ -115,7 +105,7 @@
       font-weight: 400;
     }
     .hero p {
-      font-family: var(--serif); /* Serif for intro text is very academic */
+      font-family: var(--serif);
       font-size: 18px;
       color: var(--text-muted);
       margin: 0;
@@ -133,7 +123,6 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       position: relative;
-      /* Subtle entry animation */
       animation: fadeIn 0.4s ease-out;
     }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -296,7 +285,7 @@
       height: 100%; background: var(--yale-blue); width: 0; transition: width 0.3s;
     }
 
-    /* --- TABLE --- */
+    /* --- TABLE & EDITABLE INPUTS --- */
     .tableWrap {
       overflow-x: auto;
       border: 1px solid var(--border-color);
@@ -313,9 +302,9 @@
       font-family: var(--sans);
     }
     tbody td {
-      padding: 10px 12px;
+      padding: 8px 12px; /* reduced padding slightly for input alignment */
       border-bottom: 1px solid #eee;
-      vertical-align: top;
+      vertical-align: middle;
       color: #444;
     }
     tbody tr:last-child td { border-bottom: none; }
@@ -328,6 +317,41 @@
     .tag.ok { background: #e6fffa; color: #047857; border: 1px solid #a7f3d0; }
     .tag.bad { background: #fff5f5; color: #b91c1c; border: 1px solid #fecaca; }
     .tag.mid { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    /* Editable Input in Table */
+    .tableInput {
+      width: 100%;
+      border: 1px solid transparent; /* invisible border normally */
+      background: transparent;
+      padding: 4px;
+      font-family: var(--sans);
+      font-size: 13px;
+      color: #333;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .tableInput:hover {
+      background: #fdfdfd;
+      border-color: #eee;
+    }
+    .tableInput:focus {
+      background: #fff;
+      border-color: var(--yale-blue);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 53, 107, 0.1);
+    }
+    .urlCell {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .testLink {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-decoration: none;
+      opacity: 0.5;
+    }
+    .testLink:hover { opacity: 1; color: var(--yale-blue); }
 
     /* --- LOCK OVERLAYS --- */
     .lockOverlay {
@@ -356,7 +380,7 @@
     .helperRow { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
     .helper { font-size: 12px; color: var(--text-muted); font-style: italic; }
 
-    /* --- MODALS (Shared Styles) --- */
+    /* --- MODALS --- */
     .modal {
       position: fixed; inset: 0; z-index: 200;
       background: rgba(0,0,0,0.4);
@@ -375,10 +399,6 @@
     .modalBox p { font-size: 14px; color: #333; line-height: 1.5; margin-bottom: 12px; }
     .modalBox ol { margin: 0 0 15px; padding-left: 20px; font-size: 14px; color: #333; line-height: 1.5; }
     .modalBox li { margin-bottom: 6px; }
-    .modalBox img { 
-      display: block; max-width: 100%; height: auto; 
-      border: 1px solid #ddd; margin-bottom: 15px; border-radius: 2px; 
-    }
     .modalClose {
       position: absolute; top: 15px; right: 15px; 
       background: none; border: none; font-size: 20px; cursor: pointer; color: #999;
@@ -413,7 +433,6 @@
           <h1>EasyPerma</h1>
           <div class="sub">Citation Management Tool</div>
         </div>
-        <!-- <div class="pill">Local Host</div> -->
       </div>
     </div>
     <div id="topProgress" class="topProgress hidden" aria-hidden="true"><div class="bar"></div></div>
@@ -554,8 +573,8 @@
 
     <section class="card" id="section3" style="margin-top:25px;">
       <div class="cardHeader">
-        <h3>Step 3 — Results</h3>
-        <div class="hint">Review generated links and capture status.</div>
+        <h3>Step 3 — Results &amp; Editing</h3>
+        <div class="hint">You can edit the URLs below before creating the batch.</div>
       </div>
       <div class="cardBody">
         <div class="tableWrap">
@@ -563,7 +582,7 @@
             <thead>
               <tr>
                 <th style="width:80px;">Ref</th>
-                <th>Original URL</th>
+                <th>Target URL (Editable)</th>
                 <th style="width:100px;">Status</th>
                 <th style="width:120px;">GUID</th>
                 <th style="width:200px;">Perma Link</th>
@@ -602,7 +621,6 @@
         <li>Select <strong>Tools</strong> from the dropdown menu.</li>
         <li>Locate the "API Key" section on that page.</li>
       </ol>
-      <img src="screenshot.png" alt="Screenshot of Perma Tools page showing API Key" />
       <button id="apiHelpBtnClose" class="btn secondary" style="width:100%">Close</button>
     </div>
   </div>
@@ -613,10 +631,6 @@
       <h4>Privacy Policy</h4>
       <p><strong>No Data Collection:</strong> This website operates entirely client-side (in your browser). We do not collect, store, or transmit your data to any third-party servers other than the official Perma.cc API when you execute a request.</p>
       <p>Your API Key is used strictly to authenticate with Perma.cc and is not saved by this tool unless you use your browser's password manager.</p>
-      <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
-      <p>If you have questions, please email the developer:<br>
-      <strong>Frederick Liu</strong><br>
-      <a href="mailto:frederick.liu@yale.edu">frederick.liu@yale.edu</a></p>
       <button id="privacyBtnClose" class="btn secondary" style="width:100%; margin-top:10px;">Close</button>
     </div>
   </div>
@@ -626,7 +640,7 @@
   const API_BASE = "https://api.perma.cc/v1";
   const $ = (id) => document.getElementById(id);
 
-  // Top progress (indeterminate)
+  // Top progress
   const topProgress = $("topProgress");
   let busyCount = 0;
   function setBusy(on){
@@ -666,7 +680,7 @@
   const refreshBtn = $("refreshBtn");
   const statusEl = $("status");
 
-  // Work progress (determinate)
+  // Work progress
   const workProgress = $("workProgress");
   const workLabel = $("workLabel");
   const workPct = $("workPct");
@@ -693,7 +707,7 @@
   const lock2 = $("lock2");
   const lock3 = $("lock3");
 
-  // Help Modal Logic
+  // Modal Logic
   const apiHelpTrigger = $("apiHelpTrigger");
   const apiHelpModal = $("apiHelpModal");
   const apiHelpClose = $("apiHelpClose");
@@ -707,7 +721,6 @@
   apiHelpBtnClose.addEventListener("click", closeHelp);
   apiHelpModal.addEventListener("click", (e) => { if (e.target === apiHelpModal) closeHelp(); });
 
-  // Privacy Modal Logic
   const privacyTrigger = $("privacyTrigger");
   const privacyModal = $("privacyModal");
   const privacyClose = $("privacyClose");
@@ -738,6 +751,7 @@
   }
 
   function normalizeUrl(raw){
+    // Basic cleanup of trailing punctuation often caught by regex
     return raw.replace(/[)\].,;:]+$/g, "");
   }
 
@@ -761,11 +775,12 @@
     return out;
   }
 
+  // MODIFIED RENDER FUNCTION: Includes Editable Inputs
   function render(statusMsg){
     if (statusMsg) setStatus(statusMsg);
     resultsBody.innerHTML = "";
 
-    for (const it of items) {
+    items.forEach((it, index) => {
       const tr = document.createElement("tr");
 
       const st = it.status;
@@ -778,9 +793,15 @@
       const guid = it.guid || "";
       const perma = guid ? `https://perma.cc/${guid}` : "";
 
+      // We use data-index so we can map changes back to the array
       tr.innerHTML = `
         <td class="mono"><strong>${escapeHtml(it.refLabel || "")}</strong></td>
-        <td><a href="${it.url}" target="_blank" rel="noreferrer" style="font-weight:400; font-size:12px;">${escapeHtml(it.url)}</a></td>
+        <td>
+          <div class="urlCell">
+            <input class="tableInput" data-idx="${index}" value="${escapeHtml(it.url)}" spellcheck="false" />
+            <a href="${it.url}" target="_blank" class="testLink" title="Test Link in new tab">↗</a>
+          </div>
+        </td>
         <td>${tag}</td>
         <td class="mono">${escapeHtml(guid)}</td>
         <td>${perma ? `<a href="${perma}" target="_blank" rel="noreferrer">${perma}</a>` : ""}</td>
@@ -788,7 +809,21 @@
         <td class="mono">${escapeHtml(it.batchId || "")}</td>
       `;
       resultsBody.appendChild(tr);
-    }
+    });
+
+    // Attach listeners to the new inputs
+    document.querySelectorAll('.tableInput').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const idx = parseInt(e.target.dataset.idx);
+        const val = e.target.value.trim();
+        if (items[idx]) {
+           items[idx].url = val;
+           // Also update the test arrow href
+           const arrow = e.target.nextElementSibling;
+           if(arrow) arrow.href = val;
+        }
+      });
+    });
 
     resultsTable.style.display = items.length ? "" : "none";
     exportBtn.disabled = items.length === 0 || isLocked();
@@ -853,7 +888,7 @@
 
     items = final.map((u, i) => ({ refLabel: String(i+1), url: u }));
     hideWorkProgress();
-    render("Preview ready (URLs mode).");
+    render("Preview ready (URLs mode). You can edit URLs in the table below.");
   }
 
   // Footnotes
@@ -904,7 +939,7 @@
 
     items = nextItems;
     hideWorkProgress();
-    render(`Extracted ${items.length} link(s) from footnotes. Preview ready.`);
+    render(`Extracted ${items.length} link(s). You can edit the URLs below before submitting.`);
   }
 
   // API

@@ -112,6 +112,15 @@
       max-width: 800px;
       line-height: 1.6;
     }
+    .hero-links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .hero-links a {
+      display: inline-flex; align-items: center; gap: 5px;
+      color: var(--yale-accent);
+    }
+    .hero-links svg { width: 16px; height: 16px; fill: currentColor; }
 
     /* --- LAYOUT & CARDS --- */
     .grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
@@ -446,6 +455,12 @@
         Paste raw URLs or complete footnote blocks. This tool extracts links, labels them by footnote number,
         and sends them to Perma for batch capture.
       </p>
+      <div class="hero-links">
+         <a href="https://youtu.be/sdDqPIcYfd8" target="_blank" rel="noreferrer">
+           <svg viewBox="0 0 24 24"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+           Watch Tutorial: How to use EasyPerma
+         </a>
+      </div>
     </div>
 
     <div class="grid">
@@ -632,6 +647,7 @@
       <h4>Privacy Policy</h4>
       <p><strong>No Data Collection:</strong> This website operates entirely client-side (in your browser). We do not collect, store, or transmit your data to any third-party servers other than the official Perma.cc API when you execute a request.</p>
       <p>Your API Key is used strictly to authenticate with Perma.cc and is not saved by this tool unless you use your browser's password manager.</p>
+      <p>If you have any questions, contact the developer Frederick Liu at <a href="mailto:frederick.liu@yale.edu">frederick.liu@yale.edu</a>.</p>
       <button id="privacyBtnClose" class="btn secondary" style="width:100%; margin-top:10px;">Close</button>
     </div>
   </div>

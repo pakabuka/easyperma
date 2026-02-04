@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>EasyPerma | Yale Style</title>
+  <title>EasyPerma</title>
   <style>
     :root {
-      /* YALE PALETTE & VARS */
+     
       --yale-blue: #00356B;
       --yale-accent: #286f9b;
       --text-main: #222222;
@@ -15,12 +15,12 @@
       --bg-card: #FFFFFF;
       --border-color: #dddddd;
       
-      /* TYPOGRAPHY */
+ 
       --serif: "YaleNew", "Georgia", "Times New Roman", serif;
       --sans: "Mallory", "Helvetica Neue", Helvetica, Arial, sans-serif;
       --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
-      /* SHAPE */
+
       --radius: 3px;
       --shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
@@ -768,28 +768,18 @@
   }
 
   function normalizeUrl(raw){
-    // Basic cleanup of trailing punctuation often caught by regex
     return raw.replace(/[)\].,;:]+$/g, "");
   }
 
-  /** * PDF ARTIFACT CLEANER (V2)
-   * Tries to fix URLs broken by newlines/spaces in PDFs.
-   * e.g. "chatgpt- alternatives" -> "chatgpt-alternatives" (Keeps the hyphen!)
-   * e.g. "index .html" -> "index.html"
-   */
+  
   function cleanPdfArtifacts(text) {
     let clean = text;
 
-    // Fix 1: Hyphens followed by whitespace (e.g. "open- source")
-    // Replaces "char- space char" with "char-char" (preserving the hyphen)
+  
     clean = clean.replace(/(\S)-\s+([a-zA-Z0-9/._])/g, "$1-$2");
     
-    // Fix 2: Slashes followed by whitespace (e.g. "example.com/ foo")
-    // Replaces "char/ space char" with "char/char"
     clean = clean.replace(/(\/)\s+([a-zA-Z0-9])/g, "$1$2");
 
-    // Fix 3: Orphaned extensions (e.g. "file .html")
-    // Replaces "char space .html" with "char.html"
     clean = clean.replace(/([a-zA-Z0-9])\s+(\.(html|php|aspx|jsp|pdf))/gi, "$1$2");
 
     return clean;
@@ -950,7 +940,7 @@
   }
 
   function parseFootnotesMode(){
-    // CLEAN PDF ARTIFACTS HERE
+    
     const rawText = cleanPdfArtifacts(footnotesTextEl.value || "");
     
     const start = Math.max(1, Math.floor(Number(startFootnoteEl.value || "1")));

@@ -6,7 +6,6 @@
   <title>EasyPerma</title>
   <style>
     :root {
-     
       --yale-blue: #00356B;
       --yale-accent: #286f9b;
       --text-main: #222222;
@@ -14,12 +13,10 @@
       --bg-body: #F9F9F9;
       --bg-card: #FFFFFF;
       --border-color: #dddddd;
-      
- 
+
       --serif: "YaleNew", "Georgia", "Times New Roman", serif;
       --sans: "Mallory", "Helvetica Neue", Helvetica, Arial, sans-serif;
       --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-
 
       --radius: 3px;
       --shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -50,12 +47,12 @@
     }
 
     .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-    
+
     .brand {
       height: 70px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    
+
     .brandLeft h1 {
       font-family: var(--serif);
       font-weight: 400;
@@ -72,7 +69,7 @@
       opacity: 0.8;
       margin-top: 2px;
     }
-    
+
     /* Top Progress Bar */
     .topProgress {
       height: 4px;
@@ -151,7 +148,7 @@
       font-weight: 700;
     }
     .cardHeader .hint { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-    
+
     .cardBody { padding: 20px; }
 
     /* --- FORMS & INPUTS --- */
@@ -164,7 +161,7 @@
       color: var(--text-muted);
       margin-bottom: 6px;
     }
-    
+
     .labelRow {
       display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;
     }
@@ -200,6 +197,8 @@
       display: flex;
       border-bottom: 1px solid var(--border-color);
       margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 6px;
     }
     .tab {
       background: transparent;
@@ -238,9 +237,7 @@
       color: #fff;
       border: 1px solid var(--yale-blue);
     }
-    .btn.primary:hover:not(:disabled) {
-      background: #002040;
-    }
+    .btn.primary:hover:not(:disabled) { background: #002040; }
 
     .btn.secondary {
       background: #fff;
@@ -256,7 +253,7 @@
     /* --- UTILS --- */
     .small { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
     .mono { font-family: var(--mono); }
-    
+
     .note {
       background: #f2f7fc;
       border-left: 3px solid var(--yale-blue);
@@ -275,6 +272,7 @@
       font-size: 12px;
       color: #333;
       border-radius: var(--radius);
+      white-space: pre-wrap;
     }
 
     .checkbox {
@@ -309,9 +307,10 @@
       padding: 12px;
       border-bottom: 2px solid #ddd;
       font-family: var(--sans);
+      white-space: nowrap;
     }
     tbody td {
-      padding: 8px 12px; /* reduced padding slightly for input alignment */
+      padding: 8px 12px;
       border-bottom: 1px solid #eee;
       vertical-align: middle;
       color: #444;
@@ -327,10 +326,9 @@
     .tag.bad { background: #fff5f5; color: #b91c1c; border: 1px solid #fecaca; }
     .tag.mid { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
 
-    /* Editable Input in Table */
     .tableInput {
       width: 100%;
-      border: 1px solid transparent; /* invisible border normally */
+      border: 1px solid transparent;
       background: transparent;
       padding: 4px;
       font-family: var(--sans);
@@ -339,21 +337,14 @@
       border-radius: 2px;
       transition: all 0.2s;
     }
-    .tableInput:hover {
-      background: #fdfdfd;
-      border-color: #eee;
-    }
+    .tableInput:hover { background: #fdfdfd; border-color: #eee; }
     .tableInput:focus {
       background: #fff;
       border-color: var(--yale-blue);
       outline: none;
       box-shadow: 0 0 0 2px rgba(0, 53, 107, 0.1);
     }
-    .urlCell {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+    .urlCell { display: flex; align-items: center; gap: 5px; }
     .testLink {
       font-size: 14px;
       color: var(--text-muted);
@@ -372,7 +363,7 @@
       transition: opacity 0.2s;
     }
     .lockOverlay.hidden { opacity: 0; pointer-events: none; }
-    
+
     .lockCard {
       background: #fff;
       border: 1px solid #ccc;
@@ -409,7 +400,7 @@
     .modalBox ol { margin: 0 0 15px; padding-left: 20px; font-size: 14px; color: #333; line-height: 1.5; }
     .modalBox li { margin-bottom: 6px; }
     .modalClose {
-      position: absolute; top: 15px; right: 15px; 
+      position: absolute; top: 15px; right: 15px;
       background: none; border: none; font-size: 20px; cursor: pointer; color: #999;
     }
     .modalClose:hover { color: #333; }
@@ -430,7 +421,6 @@
       font-size: 12px;
     }
     .site-footer .linkBtn:hover { color: var(--yale-blue); }
-
   </style>
 </head>
 <body>
@@ -448,18 +438,18 @@
   </div>
 
   <main class="wrap">
-    
+
     <div class="hero">
       <h2>Make your Perma.cc experience ever better.</h2>
       <p>
-        Paste raw URLs or complete footnote blocks. This tool extracts links, labels them by footnote number,
+        Paste raw URLs or complete footnote blocks — or upload a Word <span class="mono">.docx</span>. This tool extracts links, labels them by footnote number,
         and sends them to Perma for batch capture.
       </p>
       <div class="hero-links">
-         <a href="https://youtu.be/sdDqPIcYfd8" target="_blank" rel="noreferrer">
-           <svg viewBox="0 0 24 24"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
-           Watch Tutorial: How to use EasyPerma
-         </a>
+        <a href="https://youtu.be/sdDqPIcYfd8" target="_blank" rel="noreferrer noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+          Watch Tutorial: How to use EasyPerma
+        </a>
       </div>
     </div>
 
@@ -470,12 +460,12 @@
           <div class="hint">Ensure your API key has batch permissions.</div>
         </div>
         <div class="cardBody">
-          
+
           <div class="twoCol">
             <div>
               <div class="labelRow">
                 <label>API Key</label>
-                <button id="apiHelpTrigger" class="helpLink">Where do I find this?</button>
+                <button id="apiHelpTrigger" class="helpLink" type="button">Where do I find this?</button>
               </div>
               <input id="apiKey" type="password" placeholder="Paste your Perma API Key" />
             </div>
@@ -493,6 +483,7 @@
             <div class="tabs" role="tablist" aria-label="Input mode">
               <button id="tabUrls" class="tab active" type="button">URL List</button>
               <button id="tabFootnotes" class="tab" type="button">Footnotes Block</button>
+              <button id="tabDocx" class="tab" type="button">Upload Word (.docx)</button>
             </div>
           </div>
 
@@ -511,9 +502,9 @@
             <div class="note">
               <strong>PDF Note:</strong> Paste direct PDF URLs here. For local PDF files, please use the standard Perma.cc web interface.
             </div>
-            
+
             <div class="helperRow">
-               <button id="pdfHelpBtn" class="btn secondary auto" style="padding: 6px 12px; font-size:12px;" type="button">How to upload PDFs?</button>
+              <button id="pdfHelpBtn" class="btn secondary auto" style="padding: 6px 12px; font-size:12px;" type="button">How to upload PDFs?</button>
             </div>
           </div>
 
@@ -549,6 +540,35 @@
             </div>
           </div>
 
+          <div id="panelDocx" style="display:none;">
+            <label>Upload Word file (.docx)</label>
+            <input id="docxFile" type="file" accept=".docx" />
+
+            <div class="twoCol" style="margin-top:15px;">
+              <div>
+                <label>Start Numbering At</label>
+                <input id="startDocxFootnote" inputmode="numeric" value="1" />
+                <div class="small">First extracted footnote will be labeled with this number.</div>
+              </div>
+              <div class="checkbox" style="align-items:flex-end;">
+                <input id="dedupeDocxUrls" type="checkbox" checked />
+                <span>Deduplicate URLs</span>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:15px; justify-content: space-between;">
+              <button id="extractDocxLinksBtn" class="btn secondary auto" type="button">Extract Links</button>
+              <div class="small">Processes locally in your browser.</div>
+            </div>
+
+            <div id="docxStatus" class="status">Waiting for a .docx file…</div>
+
+            <div class="note">
+              <strong>Note:</strong> This extracts URLs from <em>footnotes</em>. If your footnotes contain clickable hyperlinks whose display text isn’t the URL,
+              we also try to capture the underlying hyperlink targets when Word stores them as relationships.
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -562,8 +582,8 @@
             <button id="createBtn" class="btn primary" style="width:100%" type="button">Create Batch Links</button>
           </div>
           <div class="row" style="margin-top:10px;">
-             <button id="refreshBtn" class="btn secondary" style="width:100%" type="button" disabled>Refresh Statuses</button>
-             <button id="exportBtn" class="btn secondary" style="width:100%" type="button" disabled>Export CSV</button>
+            <button id="refreshBtn" class="btn secondary" style="width:100%" type="button" disabled>Refresh Statuses</button>
+            <button id="exportBtn" class="btn secondary" style="width:100%" type="button" disabled>Export CSV</button>
           </div>
 
           <div id="workProgress" class="workProgress">
@@ -622,33 +642,34 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      &copy; 2025 EasyPerma &middot; <button id="privacyTrigger" class="linkBtn">Privacy Policy</button>
+      &copy; 2026 EasyPerma &middot; <button id="privacyTrigger" class="linkBtn" type="button">Privacy Policy</button>
     </div>
   </footer>
 
-  <div id="apiHelpModal" class="modal">
-    <div class="modalBox">
-      <button class="modalClose" id="apiHelpClose">&times;</button>
+  <div id="apiHelpModal" class="modal" aria-hidden="true">
+    <div class="modalBox" role="dialog" aria-modal="true">
+      <button class="modalClose" id="apiHelpClose" aria-label="Close">&times;</button>
       <h4>Finding your API Key</h4>
       <ol>
-        <li>Log in to <a href="https://perma.cc" target="_blank" rel="noreferrer">perma.cc</a>.</li>
+        <li>Log in to <a href="https://perma.cc" target="_blank" rel="noreferrer noopener">perma.cc</a>.</li>
         <li>Click your <strong>Name</strong> in the top right corner.</li>
         <li>Select <strong>Tools</strong> from the dropdown menu.</li>
         <li>Locate the "API Key" section on that page.</li>
       </ol>
       <img src="screenshot.png" alt="Screenshot showing Perma.cc Tools and API Key location" style="width: 100%; height: auto; border: 1px solid #ddd; margin-bottom: 15px; border-radius: var(--radius);">
-      <button id="apiHelpBtnClose" class="btn secondary" style="width:100%">Close</button>
+      <button id="apiHelpBtnClose" class="btn secondary" style="width:100%" type="button">Close</button>
     </div>
   </div>
 
-  <div id="privacyModal" class="modal">
-    <div class="modalBox">
-      <button class="modalClose" id="privacyClose">&times;</button>
+  <div id="privacyModal" class="modal" aria-hidden="true">
+    <div class="modalBox" role="dialog" aria-modal="true">
+      <button class="modalClose" id="privacyClose" aria-label="Close">&times;</button>
       <h4>Privacy Policy</h4>
       <p><strong>No Data Collection:</strong> This website operates entirely client-side (in your browser). We do not collect, store, or transmit your data to any third-party servers other than the official Perma.cc API when you execute a request.</p>
+      <p><strong>Local Processing:</strong> Pasted text and uploaded <span class="mono">.docx</span> files are processed locally in your browser memory. Only the URLs you submit are sent to Perma.cc for capture.</p>
       <p>Your API Key is used strictly to authenticate with Perma.cc and is not saved by this tool unless you use your browser's password manager.</p>
       <p>If you have any questions, contact the developer Frederick Liu at <a href="mailto:frederick.liu@yale.edu">frederick.liu@yale.edu</a>.</p>
-      <button id="privacyBtnClose" class="btn secondary" style="width:100%; margin-top:10px;">Close</button>
+      <button id="privacyBtnClose" class="btn secondary" style="width:100%; margin-top:10px;" type="button">Close</button>
     </div>
   </div>
 
@@ -669,8 +690,20 @@
   // Tabs
   const tabUrls = $("tabUrls");
   const tabFootnotes = $("tabFootnotes");
+  const tabDocx = $("tabDocx");
+
   const panelUrls = $("panelUrls");
   const panelFootnotes = $("panelFootnotes");
+  const panelDocx = $("panelDocx");
+
+  // Docx controls
+  const docxFileEl = $("docxFile");
+  const extractDocxLinksBtn = $("extractDocxLinksBtn");
+  const docxStatusEl = $("docxStatus");
+  const startDocxFootnoteEl = $("startDocxFootnote");
+  const dedupeDocxUrlsEl = $("dedupeDocxUrls");
+
+  function setDocxStatus(msg){ if (docxStatusEl) docxStatusEl.textContent = msg; }
 
   // Config
   const apiKeyEl = $("apiKey");
@@ -730,8 +763,8 @@
   const apiHelpClose = $("apiHelpClose");
   const apiHelpBtnClose = $("apiHelpBtnClose");
 
-  function openHelp() { apiHelpModal.classList.add("open"); }
-  function closeHelp() { apiHelpModal.classList.remove("open"); }
+  function openHelp() { apiHelpModal.classList.add("open"); apiHelpModal.setAttribute("aria-hidden","false"); }
+  function closeHelp() { apiHelpModal.classList.remove("open"); apiHelpModal.setAttribute("aria-hidden","true"); }
 
   apiHelpTrigger.addEventListener("click", openHelp);
   apiHelpClose.addEventListener("click", closeHelp);
@@ -743,14 +776,13 @@
   const privacyClose = $("privacyClose");
   const privacyBtnClose = $("privacyBtnClose");
 
-  function openPrivacy() { privacyModal.classList.add("open"); }
-  function closePrivacy() { privacyModal.classList.remove("open"); }
+  function openPrivacy() { privacyModal.classList.add("open"); privacyModal.setAttribute("aria-hidden","false"); }
+  function closePrivacy() { privacyModal.classList.remove("open"); privacyModal.setAttribute("aria-hidden","true"); }
 
   privacyTrigger.addEventListener("click", openPrivacy);
   privacyClose.addEventListener("click", closePrivacy);
   privacyBtnClose.addEventListener("click", closePrivacy);
   privacyModal.addEventListener("click", (e) => { if (e.target === privacyModal) closePrivacy(); });
-
 
   // State
   let items = [];
@@ -767,29 +799,33 @@
       .replaceAll("'","&#039;");
   }
 
+function beginsStarBlock(block) {
+  return /^\*+/.test((block ?? "").trim());
+}
+function stripLeadingStarMarker(block) {
+  return (block ?? "").trim().replace(/^\*+\s*/, "").trim();
+}
+
   function normalizeUrl(raw){
     return raw.replace(/[)\].,;:]+$/g, "");
   }
 
-  
   function cleanPdfArtifacts(text) {
-    let clean = text;
-
-  
+    let clean = String(text ?? "");
     clean = clean.replace(/(\S)-\s+([a-zA-Z0-9/._])/g, "$1-$2");
-    
     clean = clean.replace(/(\/)\s+([a-zA-Z0-9])/g, "$1$2");
-
     clean = clean.replace(/([a-zA-Z0-9])\s+(\.(html|php|aspx|jsp|pdf))/gi, "$1$2");
-
     return clean;
   }
+
+
 
   function extractUrls(text){
     const re = /https?:\/\/[^\s<>"']+/gi;
     const out = [];
+    const cleaned = cleanPdfArtifacts(text);
     let m;
-    while ((m = re.exec(text)) !== null) {
+    while ((m = re.exec(cleaned)) !== null) {
       const u = normalizeUrl(m[0]);
       try {
         const parsed = new URL(u);
@@ -827,12 +863,12 @@
         <td>
           <div class="urlCell">
             <input class="tableInput" data-idx="${index}" value="${escapeHtml(it.url)}" spellcheck="false" />
-            <a href="${it.url}" target="_blank" class="testLink" title="Test Link in new tab">↗</a>
+            <a href="${escapeHtml(it.url)}" target="_blank" class="testLink" title="Test Link in new tab" rel="noreferrer noopener">↗</a>
           </div>
         </td>
         <td>${tag}</td>
         <td class="mono">${escapeHtml(guid)}</td>
-        <td>${perma ? `<a href="${perma}" target="_blank" rel="noreferrer">${perma}</a>` : ""}</td>
+        <td>${perma ? `<a href="${perma}" target="_blank" rel="noreferrer noopener">${perma}</a>` : ""}</td>
         <td style="font-size:11px; color:#666;">${escapeHtml(it.message || "")}</td>
         <td class="mono">${escapeHtml(it.batchId || "")}</td>
       `;
@@ -841,12 +877,12 @@
 
     document.querySelectorAll('.tableInput').forEach(input => {
       input.addEventListener('input', (e) => {
-        const idx = parseInt(e.target.dataset.idx);
+        const idx = parseInt(e.target.dataset.idx, 10);
         const val = e.target.value.trim();
         if (items[idx]) {
-           items[idx].url = val;
-           const arrow = e.target.nextElementSibling;
-           if(arrow) arrow.href = val;
+          items[idx].url = val;
+          const arrow = e.target.nextElementSibling;
+          if (arrow) arrow.href = val;
         }
       });
     });
@@ -854,21 +890,20 @@
     resultsTable.style.display = items.length ? "" : "none";
     exportBtn.disabled = items.length === 0 || isLocked();
     refreshBtn.disabled = !canRefresh() || isLocked();
+    syncLocks();
   }
 
   function setMode(mode){
     activeMode = mode;
-    if (mode === "urls") {
-      tabUrls.classList.add("active");
-      tabFootnotes.classList.remove("active");
-      panelUrls.style.display = "";
-      panelFootnotes.style.display = "none";
-    } else {
-      tabFootnotes.classList.add("active");
-      tabUrls.classList.remove("active");
-      panelFootnotes.style.display = "";
-      panelUrls.style.display = "none";
-    }
+
+    tabUrls.classList.toggle("active", mode === "urls");
+    tabFootnotes.classList.toggle("active", mode === "footnotes");
+    tabDocx.classList.toggle("active", mode === "docx");
+
+    panelUrls.style.display = (mode === "urls") ? "" : "none";
+    panelFootnotes.style.display = (mode === "footnotes") ? "" : "none";
+    panelDocx.style.display = (mode === "docx") ? "" : "none";
+
     syncLocks();
   }
 
@@ -877,27 +912,36 @@
     const folderId = Number(folderIdEl.value.trim());
     const folderOk = Number.isInteger(folderId) && folderId > 0;
 
-    const inputOk = (activeMode === "urls")
-      ? urlsTextEl.value.trim().length > 0
-      : footnotesTextEl.value.trim().length > 0;
+    const inputOk =
+      (activeMode === "urls")
+        ? urlsTextEl.value.trim().length > 0
+        : (activeMode === "footnotes")
+          ? footnotesTextEl.value.trim().length > 0
+          : !!(docxFileEl && docxFileEl.files && docxFileEl.files[0]); // docx
 
     return apiKeyOk && folderOk && inputOk;
   }
   function isLocked(){ return !section1Complete(); }
-  function syncLocks(){
-    const locked = isLocked();
-    lock2.classList.toggle("hidden", !locked);
-    lock3.classList.toggle("hidden", !locked);
-    createBtn.disabled = locked;
-    exportBtn.disabled = locked || items.length === 0;
-    refreshBtn.disabled = locked || !canRefresh();
-  }
+function syncLocks() {
+  // Step 2 should stay locked until Step 1 is complete (API key + folder + some input)
+  const step1Ready = section1Complete();
+
+  // Step 3 should unlock as soon as you have extracted/previewed data
+  const hasData = items.length > 0;
+
+  // Lock overlays
+  lock2.classList.toggle("hidden", step1Ready); // hide lock2 when ready
+  lock3.classList.toggle("hidden", hasData);    // hide lock3 when we have rows
+
+  // Buttons
+  createBtn.disabled = !step1Ready;
+  exportBtn.disabled = !step1Ready || items.length === 0;
+  refreshBtn.disabled = !step1Ready || !canRefresh();
+}
 
   // URLs
   function parseUrlsMode(){
-    // CLEAN PDF ARTIFACTS HERE
     const rawText = cleanPdfArtifacts(urlsTextEl.value);
-    
     const lines = rawText.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
     const raw = [];
     for (const line of lines) {
@@ -923,7 +967,7 @@
   // Footnotes
   function splitFootnotes(text){
     const mode = splitModeEl.value;
-    const cleaned = text.replace(/\r\n/g, "\n");
+    const cleaned = String(text ?? "").replace(/\r\n/g, "\n");
 
     const splitByBlankLines = () =>
       cleaned.split(/\n\s*\n+/).map(s => s.trim()).filter(Boolean);
@@ -939,38 +983,322 @@
     return splitByLines();
   }
 
-  function parseFootnotesMode(){
-    
-    const rawText = cleanPdfArtifacts(footnotesTextEl.value || "");
-    
-    const start = Math.max(1, Math.floor(Number(startFootnoteEl.value || "1")));
-    const footnotes = splitFootnotes(rawText);
+ function parseFootnotesMode(){
+  const rawText = cleanPdfArtifacts(footnotesTextEl.value || "");
+  const start = Math.max(1, Math.floor(Number(startFootnoteEl.value || "1")));
+  const blocksAll = splitFootnotes(rawText);
 
-    const nextItems = [];
-    const seen = new Set();
-    const letters = "abcdefghijklmnopqrstuvwxyz";
+  const nextItems = [];
+  const seen = new Set();
+  const letters = "abcdefghijklmnopqrstuvwxyz";
 
-    for (let idx = 0; idx < footnotes.length; idx++) {
-      const footnoteNumber = start + idx;
-      const urls = extractUrls(footnotes[idx]);
-      if (!urls.length) continue;
+  // 1) Peel off leading star blocks (author info) WITHOUT counting them toward numbering
+  const starBlocks = [];
+  let k = 0;
+  while (k < blocksAll.length && beginsStarBlock(blocksAll[k])) {
+    starBlocks.push(stripLeadingStarMarker(blocksAll[k]));
+    k++;
+  }
+  const numberedBlocks = blocksAll.slice(k);
 
-      for (let j = 0; j < urls.length; j++) {
-        const u = urls[j];
-        if (dedupeFootnoteUrlsEl.checked && seen.has(u)) continue;
-        if (dedupeFootnoteUrlsEl.checked) seen.add(u);
+  // Optional: still extract URLs from author-info blocks (but label separately)
+  for (let i = 0; i < starBlocks.length; i++) {
+    const urls = extractUrls(starBlocks[i]);
+    if (!urls.length) continue;
 
-        const suffix = (urls.length > 1)
-          ? (letters[j] ? letters[j] : String(j+1))
-          : "";
+    for (let j = 0; j < urls.length; j++) {
+      const u = urls[j];
+      if (dedupeFootnoteUrlsEl.checked && seen.has(u)) continue;
+      if (dedupeFootnoteUrlsEl.checked) seen.add(u);
 
-        nextItems.push({ refLabel: `${footnoteNumber}${suffix}`, url: u });
+      const suffix = (urls.length > 1)
+        ? (letters[j] ? letters[j] : String(j + 1))
+        : "";
+
+      const baseLabel = (starBlocks.length > 1) ? `author${i + 1}` : "author";
+      nextItems.push({ refLabel: `${baseLabel}${suffix}`, url: u });
+    }
+  }
+
+  // 2) Now number ONLY the non-star blocks starting at `start`
+  for (let idx = 0; idx < numberedBlocks.length; idx++) {
+    const footnoteNumber = start + idx;
+    const urls = extractUrls(numberedBlocks[idx]);
+    if (!urls.length) continue;
+
+    for (let j = 0; j < urls.length; j++) {
+      const u = urls[j];
+      if (dedupeFootnoteUrlsEl.checked && seen.has(u)) continue;
+      if (dedupeFootnoteUrlsEl.checked) seen.add(u);
+
+      const suffix = (urls.length > 1)
+        ? (letters[j] ? letters[j] : String(j + 1))
+        : "";
+
+      nextItems.push({ refLabel: `${footnoteNumber}${suffix}`, url: u });
+    }
+  }
+
+  items = nextItems;
+  hideWorkProgress();
+  render(`Extracted ${items.length} link(s). You can edit the URLs below before submitting.`);
+}
+
+  // -------- Docx unzip + footnote extraction (client-side) --------
+  function u16(view, off) { return view.getUint16(off, true); }
+  function u32(view, off) { return view.getUint32(off, true); }
+
+  async function inflateRawBytes(u8) {
+    if (!("DecompressionStream" in window)) {
+      throw new Error("This browser doesn't support DecompressionStream. Try Chrome/Edge, or use paste mode.");
+    }
+    const tryAlgo = async (algo) => {
+      const ds = new DecompressionStream(algo);
+      const stream = new Blob([u8]).stream().pipeThrough(ds);
+      const ab = await new Response(stream).arrayBuffer();
+      return new Uint8Array(ab);
+    };
+    try { return await tryAlgo("deflate-raw"); } catch { return await tryAlgo("deflate"); }
+  }
+
+  async function unzipDocx(arrayBuffer) {
+    const bytes = new Uint8Array(arrayBuffer);
+    const view = new DataView(arrayBuffer);
+
+    const EOCD_SIG = 0x06054b50;
+    const maxComment = 0xFFFF;
+    const minEOCD = 22;
+    const start = Math.max(0, bytes.length - (minEOCD + maxComment));
+    let eocd = -1;
+
+    for (let i = bytes.length - minEOCD; i >= start; i--) {
+      if (u32(view, i) === EOCD_SIG) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error("Not a valid .docx (ZIP) file (EOCD not found).");
+
+    const cdSize = u32(view, eocd + 12);
+    const cdOffset = u32(view, eocd + 16);
+
+    const CDFH_SIG = 0x02014b50;
+    const LFH_SIG  = 0x04034b50;
+
+    const entries = new Map();
+    let ptr = cdOffset;
+    const cdEnd = cdOffset + cdSize;
+
+    while (ptr < cdEnd) {
+      if (u32(view, ptr) !== CDFH_SIG) break;
+
+      const compMethod = u16(view, ptr + 10);
+      const compSize = u32(view, ptr + 20);
+      const nameLen = u16(view, ptr + 28);
+      const extraLen = u16(view, ptr + 30);
+      const commentLen = u16(view, ptr + 32);
+      const lfhOff = u32(view, ptr + 42);
+
+      const nameBytes = bytes.slice(ptr + 46, ptr + 46 + nameLen);
+      const name = new TextDecoder("utf-8").decode(nameBytes);
+
+      entries.set(name, { compMethod, compSize, lfhOff });
+      ptr = ptr + 46 + nameLen + extraLen + commentLen;
+    }
+
+    async function getFile(path) {
+      const e = entries.get(path);
+      if (!e) return null;
+
+      const { compMethod, compSize, lfhOff } = e;
+      if (u32(view, lfhOff) !== LFH_SIG) throw new Error(`ZIP local header not found for ${path}.`);
+
+      const nameLen = u16(view, lfhOff + 26);
+      const extraLen = u16(view, lfhOff + 28);
+      const dataOff = lfhOff + 30 + nameLen + extraLen;
+
+      const comp = bytes.slice(dataOff, dataOff + compSize);
+      if (compMethod === 0) return comp;
+      if (compMethod === 8) return await inflateRawBytes(comp);
+      throw new Error(`Unsupported ZIP compression method (${compMethod}) for ${path}.`);
+    }
+
+    return { getFile };
+  }
+
+  function xmlTextFromBytes(u8) { return new TextDecoder("utf-8").decode(u8); }
+
+  function parseXml(xmlText) {
+    const p = new DOMParser();
+    const doc = p.parseFromString(xmlText, "application/xml");
+    const pe = doc.getElementsByTagName("parsererror");
+    if (pe && pe.length) throw new Error("Failed to parse Word XML.");
+    return doc;
+  }
+
+  function localName(el) { return (el && el.localName) ? el.localName : (el.tagName || ""); }
+
+  function getAttrAny(el, names) {
+    for (const n of names) {
+      const v = el.getAttribute(n);
+      if (v !== null && v !== undefined) return v;
+    }
+    return null;
+  }
+
+  function parseRelsMap(relsXmlText){
+    const doc = parseXml(relsXmlText);
+    const rels = Array.from(doc.getElementsByTagName("Relationship"));
+    const map = new Map();
+    for (const r of rels) {
+      const id = r.getAttribute("Id");
+      const target = r.getAttribute("Target");
+      const mode = (r.getAttribute("TargetMode") || "").toLowerCase();
+      if (!id || !target) continue;
+      if (mode === "external") map.set(id, target);
+    }
+    return map;
+  }
+
+  function extractFootnoteText(footnoteEl, relsMap) {
+    let out = "";
+    const seenHyper = new Set();
+
+    const walker = footnoteEl.ownerDocument.createTreeWalker(
+      footnoteEl,
+      NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT,
+      null
+    );
+
+    let node;
+    let lastWasText = false;
+
+    while ((node = walker.nextNode())) {
+      if (node.nodeType === Node.TEXT_NODE) continue;
+
+      const ln = localName(node);
+
+      if (ln === "hyperlink") {
+        const rid = getAttrAny(node, ["r:id", "id"]);
+        const target = rid && relsMap ? relsMap.get(rid) : null;
+        if (target && !seenHyper.has(target)) {
+          out += (out && !out.endsWith(" ")) ? " " : "";
+          out += target;
+          seenHyper.add(target);
+          lastWasText = true;
+        }
+        continue;
+      }
+
+      if (ln === "t") {
+        const t = node.textContent ?? "";
+        if (t) { out += t; lastWasText = true; }
+      } else if (ln === "tab") {
+        out += "\t"; lastWasText = false;
+      } else if (ln === "br" || ln === "cr") {
+        out += "\n"; lastWasText = false;
+      } else if (ln === "p") {
+        if (lastWasText) out += "\n";
+        lastWasText = false;
       }
     }
 
-    items = nextItems;
+    return cleanPdfArtifacts(out.replace(/\n+/g, " ").trim());
+  }
+
+  async function extractFootnotesFromDocxFile(file) {
+    if (!file) throw new Error("No file selected.");
+    if (!file.name.toLowerCase().endsWith(".docx")) throw new Error("Please upload a .docx file.");
+
+    const buf = await file.arrayBuffer();
+    const zip = await unzipDocx(buf);
+
+    const docBytes  = await zip.getFile("word/document.xml");
+    const footBytes = await zip.getFile("word/footnotes.xml");
+    const relBytes  = await zip.getFile("word/_rels/footnotes.xml.rels"); // may be absent
+
+    if (!docBytes) throw new Error("Missing word/document.xml in this .docx.");
+    if (!footBytes) throw new Error("Missing word/footnotes.xml in this .docx (no footnotes?).");
+
+    const docXml  = parseXml(xmlTextFromBytes(docBytes));
+    const footXml = parseXml(xmlTextFromBytes(footBytes));
+
+    let relsMap = null;
+    if (relBytes) {
+      try { relsMap = parseRelsMap(xmlTextFromBytes(relBytes)); } catch { relsMap = null; }
+    }
+
+    const idToText = new Map();
+    const footnoteEls = Array.from(footXml.getElementsByTagNameNS("*", "footnote"));
+    for (const fn of footnoteEls) {
+      const idStr = getAttrAny(fn, ["w:id", "id"]);
+      if (idStr == null) continue;
+      const id = Number(idStr);
+      if (!Number.isFinite(id) || id <= 0) continue; // skip separators/etc
+      const text = extractFootnoteText(fn, relsMap);
+      idToText.set(String(id), text);
+    }
+
+    const refs = Array.from(docXml.getElementsByTagNameNS("*", "footnoteReference"));
+    const order = [];
+    const seen = new Set();
+    for (const r of refs) {
+      const idStr = getAttrAny(r, ["w:id", "id"]);
+      if (!idStr) continue;
+      if (seen.has(idStr)) continue;
+      seen.add(idStr);
+      order.push(idStr);
+    }
+
+    const blocks = [];
+    for (const id of order) {
+      const text = idToText.get(String(id));
+      if (text && text.trim()) blocks.push(text.trim());
+    }
+    return blocks;
+  }
+
+  async function parseDocxMode(){
+    const file = docxFileEl?.files?.[0];
+    if (!file) { setDocxStatus("Select a .docx first."); return; }
+
+    setDocxStatus("Extracting footnotes & links…");
     hideWorkProgress();
-    render(`Extracted ${items.length} link(s). You can edit the URLs below before submitting.`);
+
+    const start = Math.max(1, Math.floor(Number(startDocxFootnoteEl?.value || "1")));
+    const dedupe = !!dedupeDocxUrlsEl?.checked;
+
+    try {
+      const footnotes = await extractFootnotesFromDocxFile(file);
+
+      const nextItems = [];
+      const seen = new Set();
+      const letters = "abcdefghijklmnopqrstuvwxyz";
+
+      for (let idx = 0; idx < footnotes.length; idx++) {
+        const footnoteNumber = start + idx;
+        const urls = extractUrls(footnotes[idx]);
+        if (!urls.length) continue;
+
+        for (let j = 0; j < urls.length; j++) {
+          const u = urls[j];
+          if (dedupe && seen.has(u)) continue;
+          if (dedupe) seen.add(u);
+
+          const suffix = (urls.length > 1)
+            ? (letters[j] ? letters[j] : String(j+1))
+            : "";
+
+          nextItems.push({ refLabel: `${footnoteNumber}${suffix}`, url: u });
+        }
+      }
+
+      items = nextItems;
+      setDocxStatus(`Extracted ${footnotes.length} footnote(s); found ${items.length} link(s).`);
+      render(`Extracted ${items.length} link(s) from .docx footnotes. You can edit the URLs below before submitting.`);
+    } catch (e) {
+      setDocxStatus("Extraction failed:\n\n" + (e?.message || String(e)));
+      setStatus("Docx extraction failed. See the Docx status box for details.");
+    } finally {
+      syncLocks();
+    }
   }
 
   // API
@@ -1042,7 +1370,6 @@
     if (!Number.isInteger(folderId) || folderId <= 0) return setStatus("Enter a valid numeric Target Folder ID.");
     if (!items.length) return setStatus("Nothing to send. Preview/extract first.");
 
-    // reset items
     items = items.map(it => ({ ...it, status: undefined, guid: undefined, permaLink: undefined, message: undefined, batchId: undefined }));
     render("Submitting batches…");
 
@@ -1069,7 +1396,6 @@
         const batchId = data?.id;
         const jobs = data?.capture_jobs || [];
 
-        // bucket jobs
         const buckets = new Map();
         for (const j of jobs) {
           const k = j.submitted_url;
@@ -1077,7 +1403,6 @@
           buckets.get(k).push(j);
         }
 
-        // assign
         for (const it of items) {
           if (!chunks[i].includes(it.url)) continue;
           const arr = buckets.get(it.url);
@@ -1208,6 +1533,7 @@
   // Bindings
   tabUrls.addEventListener("click", () => setMode("urls"));
   tabFootnotes.addEventListener("click", () => setMode("footnotes"));
+  tabDocx.addEventListener("click", () => setMode("docx"));
 
   loadFoldersBtn.addEventListener("click", loadFolders);
   foldersSelect.addEventListener("change", () => { folderIdEl.value = foldersSelect.value; syncLocks(); });
@@ -1215,11 +1541,17 @@
   previewUrlsBtn.addEventListener("click", () => { setMode("urls"); parseUrlsMode(); syncLocks(); });
   extractFootnotesBtn.addEventListener("click", () => { setMode("footnotes"); parseFootnotesMode(); syncLocks(); });
 
+  extractDocxLinksBtn.addEventListener("click", async () => {
+    setMode("docx");
+    await parseDocxMode();
+  });
+
   createBtn.addEventListener("click", async () => {
     if (isLocked()) return;
     if (!items.length) {
       if (activeMode === "urls") parseUrlsMode();
-      else parseFootnotesMode();
+      else if (activeMode === "footnotes") parseFootnotesMode();
+      else await parseDocxMode(); // docx
     }
     await createBatch();
   });
@@ -1229,7 +1561,14 @@
 
   pdfHelpBtn.addEventListener("click", showPdfHelp);
 
-  const lockInputs = [apiKeyEl, folderIdEl, urlsTextEl, footnotesTextEl, startFootnoteEl, splitModeEl];
+  // Keep locks updated as user types/changes inputs
+  const lockInputs = [
+    apiKeyEl, folderIdEl,
+    urlsTextEl, dedupeUrlsEl,
+    footnotesTextEl, startFootnoteEl, splitModeEl, dedupeFootnoteUrlsEl,
+    docxFileEl, startDocxFootnoteEl, dedupeDocxUrlsEl
+  ].filter(Boolean);
+
   for (const el of lockInputs) {
     el.addEventListener("input", syncLocks);
     el.addEventListener("change", syncLocks);

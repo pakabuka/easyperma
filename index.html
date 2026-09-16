@@ -1,1050 +1,47 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>EasyPerma</title>
-  <style>
-    :root {
-      --yale-blue: #00356B;
-      --yale-accent: #286f9b;
-      --text-main: #222222;
-      --text-muted: #5f5f5f;
-      --bg-body: #F9F9F9;
-      --bg-card: #FFFFFF;
-      --border-color: #dddddd;
-
-      --serif: "YaleNew", "Georgia", "Times New Roman", serif;
-      --sans: "Mallory", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-
-      --radius: 3px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg-body);
-      color: var(--text-main);
-      font-family: var(--sans);
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.5;
-      display: flex; flex-direction: column; min-height: 100vh;
-    }
-
-    a { color: var(--yale-blue); text-decoration: none; font-weight: 600; }
-    a:hover { text-decoration: underline; }
-
-    /* --- TOP BAR --- */
-    .topbar {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--yale-blue);
-      color: #fff;
-      border-bottom: 4px solid #fff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-    .brand {
-      height: 70px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-
-    .brandLeft h1 {
-      font-family: var(--serif);
-      font-weight: 400;
-      font-size: 24px;
-      margin: 0;
-      letter-spacing: 0.5px;
-      color: #fff;
-    }
-    .brandLeft .sub {
-      font-family: var(--sans);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      opacity: 0.8;
-      margin-top: 2px;
-    }
-
-    /* Top Progress Bar */
-    .topProgress {
-      height: 4px;
-      background: #002040;
-      overflow: hidden;
-      width: 100%;
-      position: absolute; bottom: 0; left: 0;
-    }
-    .topProgress.hidden { display: none; }
-    .topProgress .bar {
-      height: 100%;
-      background: #4a90e2;
-      width: 40%;
-      animation: indeterminate 1.5s infinite linear;
-    }
-    @keyframes indeterminate {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(250%); }
-    }
-
-    /* --- HERO --- */
-    main.wrap { padding-top: 40px; padding-bottom: 60px; flex: 1; }
-
-    .hero { margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
-    .hero h2 {
-      font-family: var(--serif);
-      font-size: 32px;
-      color: var(--text-main);
-      margin: 0 0 10px 0;
-      font-weight: 400;
-    }
-    .hero p {
-      font-family: var(--serif);
-      font-size: 18px;
-      color: var(--text-muted);
-      margin: 0;
-      max-width: 800px;
-      line-height: 1.6;
-    }
-    .hero-links {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-    .hero-links a {
-      display: inline-flex; align-items: center; gap: 5px;
-      color: var(--yale-accent);
-    }
-    .hero-links svg { width: 16px; height: 16px; fill: currentColor; }
-
-    /* --- LAYOUT & CARDS --- */
-    .grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
-    @media(min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      position: relative;
-      animation: fadeIn 0.4s ease-out;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    .cardHeader {
-      padding: 15px 20px;
-      background: #fdfdfd;
-      border-bottom: 1px solid var(--border-color);
-    }
-    .cardHeader h3 {
-      margin: 0;
-      font-family: var(--sans);
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--yale-blue);
-      font-weight: 700;
-    }
-    .cardHeader .hint { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-
-    .cardBody { padding: 20px; }
-
-    /* --- FORMS & INPUTS --- */
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    .labelRow {
-      display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;
-    }
-    .labelRow label { margin-bottom: 0; }
-    .helpLink {
-      font-size: 11px; color: var(--yale-accent); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      font-size: 15px;
-      font-family: var(--sans);
-      border: 1px solid #ccc;
-      border-radius: var(--radius);
-      background: #fff;
-      color: #333;
-      transition: all 0.2s;
-    }
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: var(--yale-blue);
-      box-shadow: 0 0 0 3px rgba(0, 53, 107, 0.1);
-    }
-    textarea { min-height: 180px; font-family: var(--mono); font-size: 13px; }
-
-    .row { display: flex; gap: 10px; align-items: center; }
-    .twoCol { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    @media(max-width: 600px) { .twoCol { grid-template-columns: 1fr; } }
-
-    /* --- TABS --- */
-    .tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 15px;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .tab {
-      background: transparent;
-      border: none;
-      border-bottom: 3px solid transparent;
-      padding: 10px 15px;
-      font-family: var(--sans);
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .tab:hover { color: var(--yale-blue); }
-    .tab.active {
-      color: var(--yale-blue);
-      border-bottom-color: var(--yale-blue);
-    }
-
-    /* --- BUTTONS --- */
-    .btn {
-      display: inline-block;
-      padding: 10px 18px;
-      font-size: 14px;
-      font-weight: 600;
-      text-align: center;
-      cursor: pointer;
-      border-radius: var(--radius);
-      transition: background 0.2s, opacity 0.2s;
-      font-family: var(--sans);
-    }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    .btn.primary {
-      background: var(--yale-blue);
-      color: #fff;
-      border: 1px solid var(--yale-blue);
-    }
-    .btn.primary:hover:not(:disabled) { background: #002040; }
-
-    .btn.secondary {
-      background: #fff;
-      color: var(--yale-blue);
-      border: 1px solid #ccc;
-    }
-    .btn.secondary:hover:not(:disabled) {
-      background: #f4f4f4;
-      border-color: var(--yale-blue);
-    }
-    .btn.auto { width: auto; }
-
-    /* --- UTILS --- */
-    .small { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
-    .mono { font-family: var(--mono); }
-
-    .note {
-      background: #f2f7fc;
-      border-left: 3px solid var(--yale-blue);
-      padding: 10px 15px;
-      font-size: 13px;
-      color: #333;
-      margin-top: 15px;
-    }
-
-    .status {
-      margin-top: 15px;
-      padding: 15px;
-      background: #eee;
-      border: 1px solid #ddd;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: #333;
-      border-radius: var(--radius);
-      white-space: pre-wrap;
-    }
-
-    .checkbox {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 0;
-    }
-    .checkbox input { width: auto; margin: 0; }
-    .checkbox span { font-size: 14px; }
-
-    /* --- PROGRESS --- */
-    .workProgress { margin-top: 15px; display: none; }
-    .workProgress .label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; font-weight: 600; }
-    .meter {
-      height: 6px; background: #ddd; border-radius: var(--radius); overflow: hidden;
-    }
-    .meter > div {
-      height: 100%; background: var(--yale-blue); width: 0; transition: width 0.3s;
-    }
-
-    /* --- TABLE & EDITABLE INPUTS --- */
-    .tableWrap {
-      overflow-x: auto;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; }
-    thead th {
-      background: #f8f8f8;
-      color: #333;
-      font-weight: 700;
-      text-align: left;
-      padding: 12px;
-      border-bottom: 2px solid #ddd;
-      font-family: var(--sans);
-      white-space: nowrap;
-    }
-    tbody td {
-      padding: 8px 12px;
-      border-bottom: 1px solid #eee;
-      vertical-align: middle;
-      color: #444;
-    }
-    tbody tr:last-child td { border-bottom: none; }
-
-    .tag {
-      display: inline-block; padding: 2px 6px;
-      border-radius: 2px;
-      font-size: 11px; font-weight: 600; text-transform: uppercase;
-    }
-    .tag.ok { background: #e6fffa; color: #047857; border: 1px solid #a7f3d0; }
-    .tag.bad { background: #fff5f5; color: #b91c1c; border: 1px solid #fecaca; }
-    .tag.mid { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-
-    .tableInput {
-      width: 100%;
-      border: 1px solid transparent;
-      background: transparent;
-      padding: 4px;
-      font-family: var(--sans);
-      font-size: 13px;
-      color: #333;
-      border-radius: 2px;
-      transition: all 0.2s;
-    }
-    .tableInput:hover { background: #fdfdfd; border-color: #eee; }
-    .tableInput:focus {
-      background: #fff;
-      border-color: var(--yale-blue);
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(0, 53, 107, 0.1);
-    }
-    .urlCell { display: flex; align-items: center; gap: 5px; }
-    .testLink {
-      font-size: 14px;
-      color: var(--text-muted);
-      text-decoration: none;
-      opacity: 0.5;
-    }
-    .testLink:hover { opacity: 1; color: var(--yale-blue); }
-
-    /* --- LOCK OVERLAYS --- */
-    .lockOverlay {
-      position: absolute; inset: 0;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(2px);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 5;
-      transition: opacity 0.2s;
-    }
-    .lockOverlay.hidden { opacity: 0; pointer-events: none; }
-
-    .lockCard {
-      background: #fff;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 20px;
-      text-align: center;
-      max-width: 400px;
-      border-radius: var(--radius);
-    }
-    .lockTitle { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--yale-blue); margin-bottom: 5px; }
-    .lockSub { font-size: 13px; color: var(--text-muted); margin: 0; }
-
-    /* Helper helperRow */
-    .helperRow { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-    .helper { font-size: 12px; color: var(--text-muted); font-style: italic; }
-
-    /* --- MODALS --- */
-    .modal {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(2px);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
-    }
-    .modal.open { opacity: 1; pointer-events: auto; }
-    .modalBox {
-      background: #fff; width: 500px; max-width: 90%;
-      padding: 25px; border-radius: var(--radius);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      position: relative;
-    }
-    .modalBox h4 { margin: 0 0 15px; font-family: var(--serif); color: var(--yale-blue); font-size: 18px; }
-    .modalBox p { font-size: 14px; color: #333; line-height: 1.5; margin-bottom: 12px; }
-    .modalBox ol { margin: 0 0 15px; padding-left: 20px; font-size: 14px; color: #333; line-height: 1.5; }
-    .modalBox li { margin-bottom: 6px; }
-    .modalClose {
-      position: absolute; top: 15px; right: 15px;
-      background: none; border: none; font-size: 20px; cursor: pointer; color: #999;
-    }
-    .modalClose:hover { color: #333; }
-
-    /* --- FOOTER --- */
-    .site-footer {
-      background: #f0f0f0;
-      border-top: 1px solid var(--border-color);
-      padding: 20px 0;
-      margin-top: auto;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .site-footer .linkBtn {
-      background: none; border: none; padding: 0;
-      color: var(--text-muted); text-decoration: underline; cursor: pointer;
-      font-size: 12px;
-    }
-    .site-footer .linkBtn:hover { color: var(--yale-blue); }
-  </style>
-</head>
-<body>
-
-  <div class="topbar">
-    <div class="wrap">
-      <div class="brand">
-        <div class="brandLeft">
-          <h1>EasyPerma</h1>
-          <div class="sub">Citation Management Tool</div>
-        </div>
-      </div>
-    </div>
-    <div id="topProgress" class="topProgress hidden" aria-hidden="true"><div class="bar"></div></div>
-  </div>
-
-  <main class="wrap">
-
-    <div class="hero">
-      <h2>Make your Perma.cc experience ever better.</h2>
-      <p>
-        Paste raw URLs or complete footnote blocks — or upload a Word <span class="mono">.docx</span>. This tool extracts links, labels them by footnote number,
-        and sends them to Perma for batch capture.
-      </p>
-      <div class="hero-links">
-        <a href="https://youtu.be/sdDqPIcYfd8" target="_blank" rel="noreferrer noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
-          Watch Tutorial: How to use EasyPerma
-        </a>
-      </div>
-    </div>
-
-    <div class="grid">
-      <section class="card" id="section1">
-        <div class="cardHeader">
-          <h3>Step 1 — Configuration &amp; Input</h3>
-          <div class="hint">Ensure your API key has batch permissions.</div>
-        </div>
-        <div class="cardBody">
-
-          <div class="twoCol">
-            <div>
-              <div class="labelRow">
-                <label>API Key</label>
-                <button id="apiHelpTrigger" class="helpLink" type="button">Where do I find this?</button>
-              </div>
-              <input id="apiKey" type="password" placeholder="Paste your Perma API Key" />
-            </div>
-            <div>
-              <label>Target Folder ID</label>
-              <div class="row">
-                <input id="folderId" inputmode="numeric" placeholder="e.g., 25" />
-                <button id="loadFoldersBtn" class="btn secondary auto" type="button">Load</button>
-              </div>
-              <select id="foldersSelect" style="display:none; margin-top:10px;"></select>
-            </div>
-          </div>
-
-          <div style="margin-top:20px;">
-            <div class="tabs" role="tablist" aria-label="Input mode">
-              <button id="tabUrls" class="tab active" type="button">URL List</button>
-              <button id="tabFootnotes" class="tab" type="button">Footnotes Block</button>
-              <button id="tabDocx" class="tab" type="button">Upload Word (.docx)</button>
-            </div>
-          </div>
-
-          <div id="panelUrls">
-            <label>URLs (One per line)</label>
-            <textarea id="urlsText" placeholder="https://example.com&#10;https://example.com/page"></textarea>
-
-            <div class="row" style="margin-top:15px; justify-content: space-between;">
-              <div class="checkbox">
-                <input id="dedupeUrls" type="checkbox" checked />
-                <span>Remove duplicates</span>
-              </div>
-              <button id="previewUrlsBtn" class="btn secondary auto" type="button">Preview List</button>
-            </div>
-
-            <div class="note">
-              <strong>PDF Note:</strong> Paste direct PDF URLs here. For local PDF files, please use the standard Perma.cc web interface.
-            </div>
-
-            <div class="helperRow">
-              <button id="pdfHelpBtn" class="btn secondary auto" style="padding: 6px 12px; font-size:12px;" type="button">How to upload PDFs?</button>
-            </div>
-          </div>
-
-          <div id="panelFootnotes" style="display:none;">
-            <label>Paste Footnotes Text</label>
-            <textarea id="footnotesText" placeholder="1. Author, Title, https://example.com.&#10;2. Id.&#10;3. See https://other.com..."></textarea>
-
-            <div class="twoCol" style="margin-top:15px;">
-              <div>
-                <label>Start Numbering At</label>
-                <input id="startFootnote" inputmode="numeric" value="1" />
-              </div>
-              <div>
-                <label>Split Method</label>
-                <select id="splitMode">
-                  <option value="auto" selected>Auto Detect</option>
-                  <option value="blank">Blank Lines</option>
-                  <option value="line">New Lines</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row" style="margin-top:15px; justify-content: space-between;">
-              <div class="checkbox">
-                <input id="dedupeFootnoteUrls" type="checkbox" checked />
-                <span>Deduplicate URLs</span>
-              </div>
-              <button id="extractFootnotesBtn" class="btn secondary auto" type="button">Extract Links</button>
-            </div>
-
-            <div class="note">
-              Lines without valid URLs (like "Id.") are automatically skipped.
-            </div>
-          </div>
-
-          <div id="panelDocx" style="display:none;">
-            <label>Upload Word file (.docx)</label>
-            <input id="docxFile" type="file" accept=".docx" />
-
-            <div class="twoCol" style="margin-top:15px;">
-              <div>
-                <label>Start Numbering At</label>
-                <input id="startDocxFootnote" inputmode="numeric" value="1" />
-                <div class="small">First extracted footnote will be labeled with this number.</div>
-              </div>
-              <div class="checkbox" style="align-items:flex-end;">
-                <input id="dedupeDocxUrls" type="checkbox" checked />
-                <span>Deduplicate URLs</span>
-              </div>
-            </div>
-
-            <div class="row" style="margin-top:15px; justify-content: space-between;">
-              <button id="extractDocxLinksBtn" class="btn secondary auto" type="button">Extract Links</button>
-              <div class="small">Processes locally in your browser.</div>
-            </div>
-
-            <div id="docxStatus" class="status">Waiting for a .docx file…</div>
-
-            <div class="note">
-              <strong>Note:</strong> This extracts URLs from <em>footnotes</em>. If your footnotes contain clickable hyperlinks whose display text isn’t the URL,
-              we also try to capture the underlying hyperlink targets when Word stores them as relationships.
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <section class="card" id="section2">
-        <div class="cardHeader">
-          <h3>Step 2 — Creation</h3>
-          <div class="hint">Generates Perma Links (Batch).</div>
-        </div>
-        <div class="cardBody">
-          <div class="row">
-            <button id="createBtn" class="btn primary" style="width:100%" type="button">Create Batch Links</button>
-          </div>
-          <div class="row" style="margin-top:10px;">
-            <button id="refreshBtn" class="btn secondary" style="width:100%" type="button" disabled>Refresh Statuses</button>
-            <button id="exportBtn" class="btn secondary" style="width:100%" type="button" disabled>Export CSV</button>
-          </div>
-
-          <div id="workProgress" class="workProgress">
-            <div class="label">
-              <span id="workLabel">Processing...</span>
-              <span class="mono" id="workPct">0%</span>
-            </div>
-            <div class="meter"><div id="workBar"></div></div>
-          </div>
-
-          <div id="status" class="status">Waiting for input...</div>
-        </div>
-
-        <div id="lock2" class="lockOverlay">
-          <div class="lockCard">
-            <div class="lockTitle">Locked</div>
-            <p class="lockSub">Please complete Step 1 (API Key, Folder, and Input) to proceed.</p>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <section class="card" id="section3" style="margin-top:25px;">
-      <div class="cardHeader">
-        <h3>Step 3 — Results &amp; Editing</h3>
-        <div class="hint">You can edit the URLs below before creating the batch.</div>
-      </div>
-      <div class="cardBody">
-        <div class="tableWrap">
-          <table id="resultsTable" style="display:none;">
-            <thead>
-              <tr>
-                <th style="width:80px;">Ref</th>
-                <th>Target URL (Editable)</th>
-                <th style="width:100px;">Status</th>
-                <th style="width:120px;">GUID</th>
-                <th style="width:200px;">Perma Link</th>
-                <th>Notes</th>
-                <th style="width:100px;">Batch</th>
-              </tr>
-            </thead>
-            <tbody id="resultsBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="lock3" class="lockOverlay">
-        <div class="lockCard">
-          <div class="lockTitle">Awaiting Data</div>
-          <p class="lockSub">Preview or Extract links in Step 1 to view the results table.</p>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <div class="wrap">
-      &copy; 2026 EasyPerma &middot; <button id="privacyTrigger" class="linkBtn" type="button">Privacy Policy</button>
-    </div>
-  </footer>
-
-  <div id="apiHelpModal" class="modal" aria-hidden="true">
-    <div class="modalBox" role="dialog" aria-modal="true">
-      <button class="modalClose" id="apiHelpClose" aria-label="Close">&times;</button>
-      <h4>Finding your API Key</h4>
-      <ol>
-        <li>Log in to <a href="https://perma.cc" target="_blank" rel="noreferrer noopener">perma.cc</a>.</li>
-        <li>Click your <strong>Name</strong> in the top right corner.</li>
-        <li>Select <strong>Tools</strong> from the dropdown menu.</li>
-        <li>Locate the "API Key" section on that page.</li>
-      </ol>
-      <img src="screenshot.png" alt="Screenshot showing Perma.cc Tools and API Key location" style="width: 100%; height: auto; border: 1px solid #ddd; margin-bottom: 15px; border-radius: var(--radius);">
-      <button id="apiHelpBtnClose" class="btn secondary" style="width:100%" type="button">Close</button>
-    </div>
-  </div>
-
-  <div id="privacyModal" class="modal" aria-hidden="true">
-    <div class="modalBox" role="dialog" aria-modal="true">
-      <button class="modalClose" id="privacyClose" aria-label="Close">&times;</button>
-      <h4>Privacy Policy</h4>
-      <p><strong>No Data Collection:</strong> This website operates entirely client-side (in your browser). We do not collect, store, or transmit your data to any third-party servers other than the official Perma.cc API when you execute a request.</p>
-      <p><strong>Local Processing:</strong> Pasted text and uploaded <span class="mono">.docx</span> files are processed locally in your browser memory. Only the URLs you submit are sent to Perma.cc for capture.</p>
-      <p>Your API Key is used strictly to authenticate with Perma.cc and is not saved by this tool unless you use your browser's password manager.</p>
-      <p>If you have any questions, contact the developer Frederick Liu at <a href="mailto:frederick.liu@yale.edu">frederick.liu@yale.edu</a>.</p>
-      <button id="privacyBtnClose" class="btn secondary" style="width:100%; margin-top:10px;" type="button">Close</button>
-    </div>
-  </div>
-
-<script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EasyPerma</title>
+<style>
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#203247;background:#f5f6f8;font-synthesis:none}*{box-sizing:border-box}body{margin:0}main{max-width:900px;margin:64px auto;padding:0 24px}header{margin-bottom:32px}h1{font-family:Georgia,serif;font-weight:normal;font-size:36px;margin:0 0 8px;color:#00356b}p{color:#667386;margin:0;line-height:1.6;font-size:14px}.card{padding:28px;background:white;border:1px solid #e1e5eb;border-radius:16px;box-shadow:0 8px 28px #20324705}.config{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}label.field{display:block;font-size:12px;font-weight:600;letter-spacing:.02em;color:#5d6b7d}input:not([type=checkbox]):not([type=file]),textarea{display:block;width:100%;margin-top:8px;border:1px solid #dce2e9;border-radius:8px;padding:12px;font:inherit;color:#203247;background:white}textarea{font-size:14px;resize:vertical;min-height:130px;line-height:1.6}input:focus,textarea:focus,button:focus-visible,a:focus-visible,summary:focus-visible,.upload:focus-within{outline:3px solid #a9c7e8;outline-offset:3px}a{color:#00356b;text-decoration:none}a:hover{text-decoration:underline}.upload{display:block;position:relative;text-align:center;border:1px dashed #b7c6d7;border-radius:10px;padding:22px;margin-top:16px;color:#00356b;font-size:14px;cursor:pointer;background:#f9fbfe}.upload input{position:absolute;width:1px;height:1px;opacity:0}.upload small{display:block;margin-top:5px;color:#738095;font-size:12px}.settings{display:flex;gap:24px;flex-wrap:wrap;margin:24px 0}.toggle{display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer}.toggle input{appearance:none;width:32px;height:19px;border-radius:20px;background:#ccd4df;position:relative;margin:0;cursor:pointer;flex-shrink:0}.toggle input:before{content:"";position:absolute;width:13px;height:13px;top:3px;left:3px;background:white;border-radius:50%;transition:transform .15s}.toggle input:checked{background:#00356b}.toggle input:checked:before{transform:translateX(13px)}button{width:100%;border:0;border-radius:9px;background:#00356b;color:white;padding:14px;font:600 14px inherit;font-family:inherit;font-size:14px;cursor:pointer}button:disabled{opacity:.5;cursor:wait}#status{min-height:22px;margin:14px 0 0;font-size:13px;white-space:pre-line}progress{width:100%;height:4px;accent-color:#00356b;margin-top:18px}details{font-size:12px;color:#6b7788;margin-top:18px}summary{cursor:pointer;width:fit-content}details p{font-size:12px;margin:12px 0}details .field{max-width:180px;margin-top:14px}.results{margin-top:28px}#summary{font-size:13px;color:#667386;margin-bottom:12px}.tablewrap{overflow:auto;border:1px solid #e1e5eb;border-radius:10px;background:white}table{border-collapse:collapse;width:100%;font-size:12px;text-align:left}th{font-weight:600;color:#667386;background:#f9fafc;padding:12px;white-space:nowrap}td{padding:12px;border-top:1px solid #edf0f4;vertical-align:top}td.url{min-width:220px;max-width:330px;overflow-wrap:anywhere}td a{overflow-wrap:anywhere}.url input{font-size:12px!important;padding:6px!important;margin:0!important;min-width:210px}td small{display:block;color:#7b8797;margin-top:4px;max-width:220px}.ok{color:#23734e}.bad{color:#a53636}.muted{color:#758297}[hidden]{display:none!important}footer{margin:24px 0;color:#8b95a3;font-size:11px} @media(max-width:600px){main{margin:30px auto;padding:0 16px}.card{padding:20px}.config{grid-template-columns:1fr}.settings{gap:15px}h1{font-size:32px}}
+</style>
+</head><body><main>
+<header><h1>EasyPerma</h1><p>Footnotes to permanent links.</p></header>
+<section class="card">
+<div class="config">
+<label class="field" for="apiKey">Perma API key<input id="apiKey" type="password" autocomplete="off" placeholder="API key" spellcheck="false"></label>
+<label class="field" for="folderId">Folder<input id="folderId" inputmode="numeric" list="folders" placeholder="Folder ID"><datalist id="folders"></datalist></label>
+</div>
+<label class="field" for="source">URLs or footnotes<textarea id="source" placeholder="Paste links or footnotes here…" spellcheck="false"></textarea></label>
+<label class="upload" id="dropzone"><input id="docxFile" type="file" accept=".docx"><span id="fileLabel">Or drop a Word document · browse</span><small>Footnotes extracted automatically</small></label>
+<div class="settings">
+<label class="toggle"><input id="dedupe" type="checkbox" role="switch" checked>Merge duplicate links</label>
+<label class="toggle"><input id="verify" type="checkbox" role="switch" checked>Check archive content</label>
+</div>
+<button id="action" type="button">Create links &amp; download Excel</button>
+<progress id="progress" hidden></progress><p id="status" role="status" aria-live="polite">Ready when you are.</p>
+<details><summary>Details</summary>
+<label class="field" for="startNumber">First footnote number<input id="startNumber" type="number" min="1" step="1" value="1"></label>
+<p>Find your key in <a href="https://perma.cc/settings/tools" target="_blank" rel="noopener noreferrer">Perma settings</a>. Folders load when you leave the key field; you can also enter a folder ID.</p>
+<p>Files stay in your browser. Only extracted URLs are sent to Perma. No API key is saved.</p>
+<p>Content checks inspect the archive where the browser allows access and flag common error pages. They cannot prove that an archive supports a citation. Blocked or unreadable pages are marked “Needs review.”</p>
+<p>Capture statuses follow the <a href="https://perma.cc/docs/developer" target="_blank" rel="noopener noreferrer">Perma API</a>. Pending captures can be checked again with the same main button, without creating new links.</p>
+</details>
+</section>
+<section id="results" class="results" hidden><div id="summary"></div><div class="tablewrap"><table><thead><tr><th>Footnote</th><th>Target URL</th><th>Created</th><th>Perma link</th><th>Content check</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<footer>EasyPerma</footer>
+</main><script>
+'use strict';
 (() => {
-  const API_BASE = "https://api.perma.cc/v1";
-  const $ = (id) => document.getElementById(id);
-
-  // Top progress
-  const topProgress = $("topProgress");
-  let busyCount = 0;
-  function setBusy(on){
-    if (on) busyCount++;
-    else busyCount = Math.max(0, busyCount - 1);
-    topProgress.classList.toggle("hidden", busyCount === 0);
-  }
-
-  // Tabs
-  const tabUrls = $("tabUrls");
-  const tabFootnotes = $("tabFootnotes");
-  const tabDocx = $("tabDocx");
-
-  const panelUrls = $("panelUrls");
-  const panelFootnotes = $("panelFootnotes");
-  const panelDocx = $("panelDocx");
-
-  // Docx controls
-  const docxFileEl = $("docxFile");
-  const extractDocxLinksBtn = $("extractDocxLinksBtn");
-  const docxStatusEl = $("docxStatus");
-  const startDocxFootnoteEl = $("startDocxFootnote");
-  const dedupeDocxUrlsEl = $("dedupeDocxUrls");
-
-  function setDocxStatus(msg){ if (docxStatusEl) docxStatusEl.textContent = msg; }
-
-  // Config
-  const apiKeyEl = $("apiKey");
-  const folderIdEl = $("folderId");
-  const loadFoldersBtn = $("loadFoldersBtn");
-  const foldersSelect = $("foldersSelect");
-
-  // URL mode
-  const urlsTextEl = $("urlsText");
-  const dedupeUrlsEl = $("dedupeUrls");
-  const previewUrlsBtn = $("previewUrlsBtn");
-  const pdfHelpBtn = $("pdfHelpBtn");
-
-  // Footnotes mode
-  const footnotesTextEl = $("footnotesText");
-  const startFootnoteEl = $("startFootnote");
-  const splitModeEl = $("splitMode");
-  const dedupeFootnoteUrlsEl = $("dedupeFootnoteUrls");
-  const extractFootnotesBtn = $("extractFootnotesBtn");
-
-  // Actions
-  const createBtn = $("createBtn");
-  const exportBtn = $("exportBtn");
-  const refreshBtn = $("refreshBtn");
-  const statusEl = $("status");
-
-  // Work progress
-  const workProgress = $("workProgress");
-  const workLabel = $("workLabel");
-  const workPct = $("workPct");
-  const workBar = $("workBar");
-  function showWorkProgress(label, pct){
-    workProgress.style.display = "";
-    workLabel.textContent = label || "Working…";
-    const safe = Math.max(0, Math.min(100, Math.round(pct || 0)));
-    workPct.textContent = safe + "%";
-    workBar.style.width = safe + "%";
-  }
-  function hideWorkProgress(){
-    workProgress.style.display = "none";
-    workBar.style.width = "0%";
-    workPct.textContent = "0%";
-    workLabel.textContent = "";
-  }
-
-  // Results
-  const resultsTable = $("resultsTable");
-  const resultsBody = $("resultsBody");
-
-  // Locks
-  const lock2 = $("lock2");
-  const lock3 = $("lock3");
-
-  // Modal Logic
-  const apiHelpTrigger = $("apiHelpTrigger");
-  const apiHelpModal = $("apiHelpModal");
-  const apiHelpClose = $("apiHelpClose");
-  const apiHelpBtnClose = $("apiHelpBtnClose");
-
-  function openHelp() { apiHelpModal.classList.add("open"); apiHelpModal.setAttribute("aria-hidden","false"); }
-  function closeHelp() { apiHelpModal.classList.remove("open"); apiHelpModal.setAttribute("aria-hidden","true"); }
-
-  apiHelpTrigger.addEventListener("click", openHelp);
-  apiHelpClose.addEventListener("click", closeHelp);
-  apiHelpBtnClose.addEventListener("click", closeHelp);
-  apiHelpModal.addEventListener("click", (e) => { if (e.target === apiHelpModal) closeHelp(); });
-
-  const privacyTrigger = $("privacyTrigger");
-  const privacyModal = $("privacyModal");
-  const privacyClose = $("privacyClose");
-  const privacyBtnClose = $("privacyBtnClose");
-
-  function openPrivacy() { privacyModal.classList.add("open"); privacyModal.setAttribute("aria-hidden","false"); }
-  function closePrivacy() { privacyModal.classList.remove("open"); privacyModal.setAttribute("aria-hidden","true"); }
-
-  privacyTrigger.addEventListener("click", openPrivacy);
-  privacyClose.addEventListener("click", closePrivacy);
-  privacyBtnClose.addEventListener("click", closePrivacy);
-  privacyModal.addEventListener("click", (e) => { if (e.target === privacyModal) closePrivacy(); });
-
-  // State
-  let items = [];
-  let activeMode = "urls";
-
-  function setStatus(msg){ statusEl.textContent = msg; }
-
-  function escapeHtml(s){
-    return String(s ?? "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
-function beginsStarBlock(block) {
-  return /^\*+/.test((block ?? "").trim());
-}
-function stripLeadingStarMarker(block) {
-  return (block ?? "").trim().replace(/^\*+\s*/, "").trim();
-}
-
-  function normalizeUrl(raw){
-    return raw.replace(/[)\].,;:]+$/g, "");
-  }
-
-  function cleanPdfArtifacts(text) {
-    let clean = String(text ?? "");
-    clean = clean.replace(/(\S)-\s+([a-zA-Z0-9/._])/g, "$1-$2");
-    clean = clean.replace(/(\/)\s+([a-zA-Z0-9])/g, "$1$2");
-    clean = clean.replace(/([a-zA-Z0-9])\s+(\.(html|php|aspx|jsp|pdf))/gi, "$1$2");
-    return clean;
-  }
-
-
-
-  function extractUrls(text){
-    const re = /https?:\/\/[^\s<>"']+/gi;
-    const out = [];
-    const cleaned = cleanPdfArtifacts(text);
-    let m;
-    while ((m = re.exec(cleaned)) !== null) {
-      const u = normalizeUrl(m[0]);
-      try {
-        const parsed = new URL(u);
-        if (/^https?:$/.test(parsed.protocol)) out.push(parsed.toString());
-      } catch {}
-    }
-    return out;
-  }
-
-  function chunk(arr, n){
-    const out=[];
-    for (let i=0;i<arr.length;i+=n) out.push(arr.slice(i,i+n));
-    return out;
-  }
-
-  function render(statusMsg){
-    if (statusMsg) setStatus(statusMsg);
-    resultsBody.innerHTML = "";
-
-    items.forEach((it, index) => {
-      const tr = document.createElement("tr");
-
-      const st = it.status;
-      const tag = st
-        ? (st === "completed" || st === "success") ? `<span class="tag ok">✓ ${escapeHtml(st)}</span>`
-          : (st === "pending" || st === "in_progress") ? `<span class="tag mid">${escapeHtml(st)}</span>`
-          : `<span class="tag bad">! ${escapeHtml(st)}</span>`
-        : `<span class="tag">preview</span>`;
-
-      const guid = it.guid || "";
-      const perma = guid ? `https://perma.cc/${guid}` : "";
-
-      tr.innerHTML = `
-        <td class="mono"><strong>${escapeHtml(it.refLabel || "")}</strong></td>
-        <td>
-          <div class="urlCell">
-            <input class="tableInput" data-idx="${index}" value="${escapeHtml(it.url)}" spellcheck="false" />
-            <a href="${escapeHtml(it.url)}" target="_blank" class="testLink" title="Test Link in new tab" rel="noreferrer noopener">↗</a>
-          </div>
-        </td>
-        <td>${tag}</td>
-        <td class="mono">${escapeHtml(guid)}</td>
-        <td>${perma ? `<a href="${perma}" target="_blank" rel="noreferrer noopener">${perma}</a>` : ""}</td>
-        <td style="font-size:11px; color:#666;">${escapeHtml(it.message || "")}</td>
-        <td class="mono">${escapeHtml(it.batchId || "")}</td>
-      `;
-      resultsBody.appendChild(tr);
-    });
-
-    document.querySelectorAll('.tableInput').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const idx = parseInt(e.target.dataset.idx, 10);
-        const val = e.target.value.trim();
-        if (items[idx]) {
-          items[idx].url = val;
-          const arrow = e.target.nextElementSibling;
-          if (arrow) arrow.href = val;
-        }
-      });
-    });
-
-    resultsTable.style.display = items.length ? "" : "none";
-    exportBtn.disabled = items.length === 0 || isLocked();
-    refreshBtn.disabled = !canRefresh() || isLocked();
-    syncLocks();
-  }
-
-  function setMode(mode){
-    activeMode = mode;
-
-    tabUrls.classList.toggle("active", mode === "urls");
-    tabFootnotes.classList.toggle("active", mode === "footnotes");
-    tabDocx.classList.toggle("active", mode === "docx");
-
-    panelUrls.style.display = (mode === "urls") ? "" : "none";
-    panelFootnotes.style.display = (mode === "footnotes") ? "" : "none";
-    panelDocx.style.display = (mode === "docx") ? "" : "none";
-
-    syncLocks();
-  }
-
-  function section1Complete(){
-    const apiKeyOk = apiKeyEl.value.trim().length > 0;
-    const folderId = Number(folderIdEl.value.trim());
-    const folderOk = Number.isInteger(folderId) && folderId > 0;
-
-    const inputOk =
-      (activeMode === "urls")
-        ? urlsTextEl.value.trim().length > 0
-        : (activeMode === "footnotes")
-          ? footnotesTextEl.value.trim().length > 0
-          : !!(docxFileEl && docxFileEl.files && docxFileEl.files[0]); // docx
-
-    return apiKeyOk && folderOk && inputOk;
-  }
-  function isLocked(){ return !section1Complete(); }
-function syncLocks() {
-  // Step 2 should stay locked until Step 1 is complete (API key + folder + some input)
-  const step1Ready = section1Complete();
-
-  // Step 3 should unlock as soon as you have extracted/previewed data
-  const hasData = items.length > 0;
-
-  // Lock overlays
-  lock2.classList.toggle("hidden", step1Ready); // hide lock2 when ready
-  lock3.classList.toggle("hidden", hasData);    // hide lock3 when we have rows
-
-  // Buttons
-  createBtn.disabled = !step1Ready;
-  exportBtn.disabled = !step1Ready || items.length === 0;
-  refreshBtn.disabled = !step1Ready || !canRefresh();
-}
-
-  // URLs
-  function parseUrlsMode(){
-    const rawText = cleanPdfArtifacts(urlsTextEl.value);
-    const lines = rawText.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-    const raw = [];
-    for (const line of lines) {
-      try {
-        const u = new URL(line);
-        if (!/^https?:$/.test(u.protocol)) continue;
-        raw.push(u.toString());
-      } catch {}
-    }
-
-    let final = raw;
-    if (dedupeUrlsEl.checked) {
-      const seen = new Set();
-      final = [];
-      for (const u of raw) if (!seen.has(u)) { seen.add(u); final.push(u); }
-    }
-
-    items = final.map((u, i) => ({ refLabel: String(i+1), url: u }));
-    hideWorkProgress();
-    render("Preview ready (URLs mode). You can edit URLs in the table below.");
-  }
-
-  // Footnotes
-  function splitFootnotes(text){
-    const mode = splitModeEl.value;
-    const cleaned = String(text ?? "").replace(/\r\n/g, "\n");
-
-    const splitByBlankLines = () =>
-      cleaned.split(/\n\s*\n+/).map(s => s.trim()).filter(Boolean);
-
-    const splitByLines = () =>
-      cleaned.split("\n").map(s => s.trim()).filter(Boolean);
-
-    if (mode === "blank") return splitByBlankLines();
-    if (mode === "line") return splitByLines();
-
-    const blocks = splitByBlankLines();
-    if (blocks.length >= 2) return blocks;
-    return splitByLines();
-  }
-
- function parseFootnotesMode(){
-  const rawText = cleanPdfArtifacts(footnotesTextEl.value || "");
-  const start = Math.max(1, Math.floor(Number(startFootnoteEl.value || "1")));
-  const blocksAll = splitFootnotes(rawText);
-
-  const nextItems = [];
-  const seen = new Set();
-  const letters = "abcdefghijklmnopqrstuvwxyz";
-
-  // 1) Peel off leading star blocks (author info) WITHOUT counting them toward numbering
-  const starBlocks = [];
-  let k = 0;
-  while (k < blocksAll.length && beginsStarBlock(blocksAll[k])) {
-    starBlocks.push(stripLeadingStarMarker(blocksAll[k]));
-    k++;
-  }
-  const numberedBlocks = blocksAll.slice(k);
-
-  // Optional: still extract URLs from author-info blocks (but label separately)
-  for (let i = 0; i < starBlocks.length; i++) {
-    const urls = extractUrls(starBlocks[i]);
-    if (!urls.length) continue;
-
-    for (let j = 0; j < urls.length; j++) {
-      const u = urls[j];
-      if (dedupeFootnoteUrlsEl.checked && seen.has(u)) continue;
-      if (dedupeFootnoteUrlsEl.checked) seen.add(u);
-
-      const suffix = (urls.length > 1)
-        ? (letters[j] ? letters[j] : String(j + 1))
-        : "";
-
-      const baseLabel = (starBlocks.length > 1) ? `author${i + 1}` : "author";
-      nextItems.push({ refLabel: `${baseLabel}${suffix}`, url: u });
-    }
-  }
-
-  // 2) Now number ONLY the non-star blocks starting at `start`
-  for (let idx = 0; idx < numberedBlocks.length; idx++) {
-    const footnoteNumber = start + idx;
-    const urls = extractUrls(numberedBlocks[idx]);
-    if (!urls.length) continue;
-
-    for (let j = 0; j < urls.length; j++) {
-      const u = urls[j];
-      if (dedupeFootnoteUrlsEl.checked && seen.has(u)) continue;
-      if (dedupeFootnoteUrlsEl.checked) seen.add(u);
-
-      const suffix = (urls.length > 1)
-        ? (letters[j] ? letters[j] : String(j + 1))
-        : "";
-
-      nextItems.push({ refLabel: `${footnoteNumber}${suffix}`, url: u });
-    }
-  }
-
-  items = nextItems;
-  hideWorkProgress();
-  render(`Extracted ${items.length} link(s). You can edit the URLs below before submitting.`);
-}
-
-  // -------- Docx unzip + footnote extraction (client-side) --------
+const $=id=>document.getElementById(id), API='https://api.perma.cc/v1';
+let items=[], file=null, running=false, submitted=false, checksDirty=false, revision=0, previewTimer, downloadUrl;
+const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+const status=s=>{$('status').textContent=s;};
+function canonical(raw){try{const u=new URL(raw);return /^https?:$/.test(u.protocol)?u.href:null;}catch{return null;}}
+function normalizeUrl(raw){let u=raw.replace(/[.,;:!?]+$/g,'');while(/[)\]}]$/.test(u)){const end=u.slice(-1),start={')':'(',']':'[','}':'{'}[end];if(u.split(end).length<=u.split(start).length)break;u=u.slice(0,-1);}return u;}
+function extractUrls(text){return (String(text).match(/https?:\/\/[^\s<>"']+/gi)||[]).map(x=>canonical(normalizeUrl(x))).filter(Boolean);}
+function cleanPdfArtifacts(s){return s;}
   function u16(view, off) { return view.getUint16(off, true); }
   function u32(view, off) { return view.getUint32(off, true); }
 
@@ -1157,427 +154,249 @@ function syncLocks() {
     return map;
   }
 
-  function extractFootnoteText(footnoteEl, relsMap) {
-    let out = "";
-    const seenHyper = new Set();
-
-    const walker = footnoteEl.ownerDocument.createTreeWalker(
-      footnoteEl,
-      NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT,
-      null
-    );
-
-    let node;
-    let lastWasText = false;
-
-    while ((node = walker.nextNode())) {
-      if (node.nodeType === Node.TEXT_NODE) continue;
-
-      const ln = localName(node);
-
-      if (ln === "hyperlink") {
-        const rid = getAttrAny(node, ["r:id", "id"]);
-        const target = rid && relsMap ? relsMap.get(rid) : null;
-        if (target && !seenHyper.has(target)) {
-          out += (out && !out.endsWith(" ")) ? " " : "";
-          out += target;
-          seenHyper.add(target);
-          lastWasText = true;
-        }
-        continue;
-      }
-
-      if (ln === "t") {
-        const t = node.textContent ?? "";
-        if (t) { out += t; lastWasText = true; }
-      } else if (ln === "tab") {
-        out += "\t"; lastWasText = false;
-      } else if (ln === "br" || ln === "cr") {
-        out += "\n"; lastWasText = false;
-      } else if (ln === "p") {
-        if (lastWasText) out += "\n";
-        lastWasText = false;
-      }
+// A hyperlink target and its displayed text are alternative representations,
+// never adjacent text. Preserve adjacent Word runs inside ordinary text.
+function extractFootnoteText(fn,rels){
+  let out='';
+  function walk(n){
+    if(n.nodeType!==1)return;
+    const name=localName(n);
+    if(['del','moveFrom','instrText','delText'].includes(name))return;
+    if(name==='hyperlink'){
+      const rid=n.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id')||getAttrAny(n,['r:id','id']);
+      const target=canonical(rels?.get(rid)||'');
+      if(target){out+=' '+target+' ';return;}
+      out+=' ';for(const c of n.children)walk(c);out+=' ';return;
     }
-
-    return cleanPdfArtifacts(out.replace(/\n+/g, " ").trim());
+    if(name==='fldSimple'){
+      const instr=getAttrAny(n,['w:instr','instr'])||'';
+      const match=instr.match(/HYPERLINK\s+"([^"]+)"/i);
+      if(match&&canonical(match[1])){out+=' '+canonical(match[1])+' ';return;}
+    }
+    if(name==='t'){out+=n.textContent||'';return;}
+    if(['tab','br','cr'].includes(name)){out+=' ';return;}
+    for(const c of n.children)walk(c);
+    if(name==='p')out+='\n';
   }
-
-  async function extractFootnotesFromDocxFile(file) {
-    if (!file) throw new Error("No file selected.");
-    if (!file.name.toLowerCase().endsWith(".docx")) throw new Error("Please upload a .docx file.");
-
-    const buf = await file.arrayBuffer();
-    const zip = await unzipDocx(buf);
-
-    const docBytes  = await zip.getFile("word/document.xml");
-    const footBytes = await zip.getFile("word/footnotes.xml");
-    const relBytes  = await zip.getFile("word/_rels/footnotes.xml.rels"); // may be absent
-
-    if (!docBytes) throw new Error("Missing word/document.xml in this .docx.");
-    if (!footBytes) throw new Error("Missing word/footnotes.xml in this .docx (no footnotes?).");
-
-    const docXml  = parseXml(xmlTextFromBytes(docBytes));
-    const footXml = parseXml(xmlTextFromBytes(footBytes));
-
-    let relsMap = null;
-    if (relBytes) {
-      try { relsMap = parseRelsMap(xmlTextFromBytes(relBytes)); } catch { relsMap = null; }
-    }
-
-    const idToText = new Map();
-    const footnoteEls = Array.from(footXml.getElementsByTagNameNS("*", "footnote"));
-    for (const fn of footnoteEls) {
-      const idStr = getAttrAny(fn, ["w:id", "id"]);
-      if (idStr == null) continue;
-      const id = Number(idStr);
-      if (!Number.isFinite(id) || id <= 0) continue; // skip separators/etc
-      const text = extractFootnoteText(fn, relsMap);
-      idToText.set(String(id), text);
-    }
-
-    const refs = Array.from(docXml.getElementsByTagNameNS("*", "footnoteReference"));
-    const order = [];
-    const seen = new Set();
-    for (const r of refs) {
-      const idStr = getAttrAny(r, ["w:id", "id"]);
-      if (!idStr) continue;
-      if (seen.has(idStr)) continue;
-      seen.add(idStr);
-      order.push(idStr);
-    }
-
-    const blocks = [];
-    for (const id of order) {
-      const text = idToText.get(String(id));
-      if (text && text.trim()) blocks.push(text.trim());
-    }
-    return blocks;
+  walk(fn);
+  // Complex Word HYPERLINK field instructions may be split across runs.
+  const instr=[...fn.getElementsByTagNameNS('*','instrText')].filter(n=>!n.closest('del')).map(n=>n.textContent).join('');
+  for(const m of instr.matchAll(/HYPERLINK\s+"([^"]+)"/gi))if(canonical(m[1]))out+=' '+canonical(m[1])+' ';
+  return out;
+}
+async function docxBlocks(f){
+  const zip=await unzipDocx(await f.arrayBuffer());
+  const [d,b,r]=await Promise.all(['word/document.xml','word/footnotes.xml','word/_rels/footnotes.xml.rels'].map(p=>zip.getFile(p)));
+  if(!d||!b)throw Error('This Word document has no readable footnotes.');
+  const doc=parseXml(xmlTextFromBytes(d)),foot=parseXml(xmlTextFromBytes(b));
+  const rels=r?parseRelsMap(xmlTextFromBytes(r)):new Map();
+  const notes=new Map();
+  for(const n of foot.getElementsByTagNameNS('*','footnote')){
+    const type=getAttrAny(n,['w:type','type']);
+    if(type&&type!=='normal')continue;
+    notes.set(getAttrAny(n,['w:id','id']),extractFootnoteText(n,rels));
   }
-
-  async function parseDocxMode(){
-    const file = docxFileEl?.files?.[0];
-    if (!file) { setDocxStatus("Select a .docx first."); return; }
-
-    setDocxStatus("Extracting footnotes & links…");
-    hideWorkProgress();
-
-    const start = Math.max(1, Math.floor(Number(startDocxFootnoteEl?.value || "1")));
-    const dedupe = !!dedupeDocxUrlsEl?.checked;
-
-    try {
-      const footnotes = await extractFootnotesFromDocxFile(file);
-
-      const nextItems = [];
-      const seen = new Set();
-      const letters = "abcdefghijklmnopqrstuvwxyz";
-
-      for (let idx = 0; idx < footnotes.length; idx++) {
-        const footnoteNumber = start + idx;
-        const urls = extractUrls(footnotes[idx]);
-        if (!urls.length) continue;
-
-        for (let j = 0; j < urls.length; j++) {
-          const u = urls[j];
-          if (dedupe && seen.has(u)) continue;
-          if (dedupe) seen.add(u);
-
-          const suffix = (urls.length > 1)
-            ? (letters[j] ? letters[j] : String(j+1))
-            : "";
-
-          nextItems.push({ refLabel: `${footnoteNumber}${suffix}`, url: u });
-        }
-      }
-
-      items = nextItems;
-      setDocxStatus(`Extracted ${footnotes.length} footnote(s); found ${items.length} link(s).`);
-      render(`Extracted ${items.length} link(s) from .docx footnotes. You can edit the URLs below before submitting.`);
-    } catch (e) {
-      setDocxStatus("Extraction failed:\n\n" + (e?.message || String(e)));
-      setStatus("Docx extraction failed. See the Docx status box for details.");
-    } finally {
-      syncLocks();
-    }
+  const seen=new Set(),blocks=[];
+  for(const n of doc.getElementsByTagNameNS('*','footnoteReference')){
+    const id=getAttrAny(n,['w:id','id']);
+    if(seen.has(id)||!notes.has(id))continue;
+    seen.add(id);blocks.push(notes.get(id)); // Empty notes still occupy a number.
   }
-
-  // API
-  async function permaFetch(path, { method="GET", apiKey, json } = {}){
-    setBusy(true);
-    try{
-      const headers = {
-        "Authorization": `ApiKey ${apiKey}`,
-        "Accept": "application/json"
-      };
-      if (json !== undefined) headers["Content-Type"] = "application/json";
-
-      const res = await fetch(`${API_BASE}${path}`, {
-        method,
-        headers,
-        body: json !== undefined ? JSON.stringify(json) : undefined
-      });
-
-      const text = await res.text();
-      let data;
-      try { data = JSON.parse(text); } catch { data = { raw: text }; }
-
-      if (!res.ok) throw new Error(data?.detail || data?.error || data?.raw || `HTTP ${res.status}`);
-      return data;
-    } finally {
-      setBusy(false);
-    }
+  return blocks;
+}
+function textBlocks(text,start){
+  const lines=text.replace(/\r\n?/g,'\n').trim();
+  if(!lines)return [];
+  // Explicit numbers win, so "Id." and skipped numbers retain their positions.
+  if(/^\s*\d+[.)]\s/m.test(lines)){
+    const out=[];let current;
+    for(const line of lines.split('\n')){
+      const m=line.match(/^\s*(\d+)[.)]\s+(.*)/);
+      if(m){current={ref:m[1],text:m[2]};out.push(current);}
+      else if(current)current.text+=' '+line;
+      else if(line.trim())out.push({ref:'author',text:line});
+    }return out;
   }
-
-  async function loadFolders(){
-    const apiKey = apiKeyEl.value.trim();
-    if (!apiKey) return setStatus("Enter your API key first.");
-
-    hideWorkProgress();
-    setStatus("Loading folders… (GET /v1/user/)");
-    try {
-      const data = await permaFetch("/user/", { apiKey });
-      const folders = data?.top_level_folders || [];
-      if (!folders.length) {
-        foldersSelect.style.display = "none";
-        return setStatus("No folders returned. Double-check your API key.");
-      }
-
-      foldersSelect.innerHTML = "";
-      for (const f of folders) {
-        const opt = document.createElement("option");
-        opt.value = f.id;
-        opt.textContent = `${f.name} (id: ${f.id})`;
-        foldersSelect.appendChild(opt);
-      }
-      foldersSelect.style.display = "";
-      folderIdEl.value = String(folders[0].id);
-      setStatus("Folders loaded.");
-    } catch (e) {
-      setStatus(
-        "Folder load failed.\n\n" + e.message +
-        "\n\nIf your console shows a CORS error, the browser blocked the request."
-      );
-    } finally {
-      syncLocks();
-    }
-  }
-
-  async function createBatch(){
-    const apiKey = apiKeyEl.value.trim();
-    const folderId = Number(folderIdEl.value.trim());
-
-    if (!apiKey) return setStatus("Enter your API key.");
-    if (!Number.isInteger(folderId) || folderId <= 0) return setStatus("Enter a valid numeric Target Folder ID.");
-    if (!items.length) return setStatus("Nothing to send. Preview/extract first.");
-
-    items = items.map(it => ({ ...it, status: undefined, guid: undefined, permaLink: undefined, message: undefined, batchId: undefined }));
-    render("Submitting batches…");
-
-    createBtn.disabled = true;
-    refreshBtn.disabled = true;
-    exportBtn.disabled = true;
-
-    const urls = items.map(it => it.url);
-    const CHUNK_SIZE = 50;
-    const chunks = chunk(urls, CHUNK_SIZE);
-
-    try {
-      for (let i=0;i<chunks.length;i++){
-        const pct = Math.round((i / Math.max(1, chunks.length)) * 100);
-        showWorkProgress(`Submitting batch ${i+1}/${chunks.length}`, pct);
-        setStatus(`Submitting batch ${i+1}/${chunks.length} (${chunks[i].length} URL(s))…`);
-
-        const data = await permaFetch("/archives/batches", {
-          method: "POST",
-          apiKey,
-          json: { urls: chunks[i], target_folder: folderId }
-        });
-
-        const batchId = data?.id;
-        const jobs = data?.capture_jobs || [];
-
-        const buckets = new Map();
-        for (const j of jobs) {
-          const k = j.submitted_url;
-          if (!buckets.has(k)) buckets.set(k, []);
-          buckets.get(k).push(j);
-        }
-
-        for (const it of items) {
-          if (!chunks[i].includes(it.url)) continue;
-          const arr = buckets.get(it.url);
-          if (arr && arr.length) {
-            const j = arr.shift();
-            it.status = j.status;
-            it.guid = j.guid;
-            it.message = j.message;
-            it.batchId = batchId;
-          } else {
-            it.batchId = batchId;
-          }
-        }
-
-        render(`Batch ${i+1}/${chunks.length} submitted.`);
-      }
-
-      showWorkProgress("Submitted. You can refresh statuses.", 100);
-      setStatus(
-        "Submitted.\n\n" +
-        "Captures can remain pending/in_progress briefly.\n" +
-        "Use “Refresh statuses” to pull updated statuses for the batch.\n" +
-        "Perma link format is https://perma.cc/<GUID> once completed."
-      );
-    } catch (e) {
-      hideWorkProgress();
-      setStatus(
-        "Batch failed.\n\n" + e.message +
-        "\n\nIf your console shows a CORS error, the browser blocked the request."
-      );
-    } finally {
-      createBtn.disabled = isLocked();
-      exportBtn.disabled = (items.length === 0) || isLocked();
-      refreshBtn.disabled = !canRefresh() || isLocked();
-      syncLocks();
-    }
-  }
-
-  function canRefresh(){
-    return items.some(it => it.batchId);
-  }
-
-  async function refreshStatuses(){
-    const apiKey = apiKeyEl.value.trim();
-    if (!apiKey) return setStatus("Enter your API key.");
-    const batchIds = Array.from(new Set(items.map(it => it.batchId).filter(Boolean)));
-    if (!batchIds.length) return setStatus("No batch IDs found to refresh.");
-
-    try{
-      createBtn.disabled = true;
-      refreshBtn.disabled = true;
-
-      for (let i=0;i<batchIds.length;i++){
-        const id = batchIds[i];
-        const pct = Math.round((i / Math.max(1, batchIds.length)) * 100);
-        showWorkProgress(`Refreshing batch ${i+1}/${batchIds.length}`, pct);
-        setStatus(`Refreshing status for batch ${id}…`);
-
-        const data = await permaFetch(`/archives/batches/${encodeURIComponent(id)}`, { apiKey });
-        const jobs = data?.capture_jobs || data?.objects || [];
-
-        const buckets = new Map();
-        for (const j of jobs) {
-          const k = j.submitted_url;
-          if (!k) continue;
-          if (!buckets.has(k)) buckets.set(k, []);
-          buckets.get(k).push(j);
-        }
-
-        for (const it of items) {
-          if (String(it.batchId) !== String(id)) continue;
-          const arr = buckets.get(it.url);
-          if (arr && arr.length) {
-            const j = arr.shift();
-            it.status = j.status ?? it.status;
-            it.guid = j.guid ?? it.guid;
-            it.message = j.message ?? it.message;
-          }
-        }
-
-        render(`Refreshed batch ${id}.`);
-      }
-
-      showWorkProgress("Refresh complete.", 100);
-      setStatus("Refresh complete. Pending jobs may still take a moment.");
-    } catch(e){
-      hideWorkProgress();
-      setStatus(
-        "Refresh failed.\n\n" + e.message +
-        "\n\nIf your console shows a CORS error, the browser blocked the request."
-      );
-    } finally {
-      createBtn.disabled = isLocked();
-      refreshBtn.disabled = !canRefresh() || isLocked();
-      exportBtn.disabled = (items.length === 0) || isLocked();
-      syncLocks();
-    }
-  }
-
-  function exportCsv(){
-    const header = ["footnote","submitted_url","status","guid","perma_link","message","batch_id"].join(",");
-    const lines = items.map(it => {
-      const perma = it.guid ? `https://perma.cc/${it.guid}` : "";
-      const esc = (s) => `"${String(s ?? "").replaceAll('"','""')}"`;
-      return [it.refLabel, it.url, it.status, it.guid, perma, it.message, it.batchId].map(esc).join(",");
+  let num=start;
+  return lines.split(/\n\s*\n/.test(lines)?/\n\s*\n+/:/\n/).filter(x=>x.trim()).map(t=>({ref:/^\s*\*/.test(t)?'author':String(num++),text:t}));
+}
+function rowsFromBlocks(blocks,merge){
+  const result=[],seen=new Map();
+  for(const b of blocks){
+    const urls=[...new Set(extractUrls(b.text))]; // Always remove alternate DOCX representations.
+    urls.forEach((url,i)=>{
+      const ref=b.ref+(urls.length>1?String.fromCharCode(97+i%26)+(i>=26?Math.floor(i/26):''):'');
+      if(merge&&seen.has(url)){const row=seen.get(url);if(!row.refs.includes(ref))row.refs.push(ref);}
+      else {const row={refs:[ref],url,created:'Not submitted',content:'Not checked',status:'',note:''};result.push(row);seen.set(url,row);}
     });
-    const csv = [header, ...lines].join("\n");
-    const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "easyperma-results.csv";
-    a.click();
-    URL.revokeObjectURL(a.href);
+  }return result;
+}
+async function preview(){
+  const token=++revision;
+  if(running)return;
+  submitted=false;items=[];render();
+  try{
+    const start=Math.max(1,Math.floor(Number($('startNumber').value)||1));
+    const blocks=file?(await docxBlocks(file)).map((text,i)=>({ref:String(start+i),text})):textBlocks($('source').value,start);
+    if(token!==revision)return;
+    items=rowsFromBlocks(blocks,$('dedupe').checked);render();status(items.length?`${items.length} link${items.length===1?'':'s'} ready.`:'No links found.');
+  }catch(e){if(token===revision)status(e.message);}
+}
+function render(){
+  $('results').hidden=!items.length;
+  $('summary').textContent=submitted?`${items.length} links · ${items.filter(x=>x.created==='Yes').length} created · ${items.filter(x=>x.content==='Needs review'||x.content==='Possible error page').length} to review`:`${items.length} links`;
+  $('rows').innerHTML=items.map((it,i)=>`<tr><td>${escapeHtml(it.refs.join(', '))}</td><td class="url">${submitted?escapeHtml(it.url):`<input aria-label="Target URL ${escapeHtml(it.refs.join(', '))}" data-index="${i}" value="${escapeHtml(it.url)}" ${running?'disabled':''}>`}</td><td class="${it.created==='Yes'?'ok':it.created==='No'?'bad':'muted'}">${escapeHtml(it.created)}<small>${escapeHtml(it.status)}</small></td><td>${it.guid?`<a href="https://perma.cc/${encodeURIComponent(it.guid)}" target="_blank" rel="noopener noreferrer">${escapeHtml(it.guid)} ↗</a>`:'—'}</td><td>${escapeHtml(it.content)}<small>${escapeHtml(it.note)}</small></td></tr>`).join('');
+  $('action').textContent=running?'Working…':submitted?(items.some(isPending)||checksDirty?'Check again & download Excel':'Download Excel'):'Create links & download Excel';
+}
+function isPending(it){return it.batchId&&!['completed','success','failed','invalid','deleted'].includes(it.status);}
+function busy(on){running=on;document.querySelectorAll('input,textarea,button').forEach(el=>el.disabled=on);$('progress').hidden=!on;render();}
+async function api(path,method='GET',data){
+  const response=await fetch(API+path,{method,headers:{Authorization:`ApiKey ${$('apiKey').value.trim()}`,Accept:'application/json',...(data?{'Content-Type':'application/json'}:{})},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(30000)});
+  const body=await response.json().catch(()=>({}));
+  if(!response.ok)throw Error(typeof body.detail==='string'?body.detail:`Perma request failed (${response.status}).`);
+  return body;
+}
+function updateJobs(rows,data){
+  const buckets=new Map();
+  for(const j of data.capture_jobs||data.objects||[]){const key=canonical(j.submitted_url);if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(j);}
+  for(const row of rows){
+    const j=buckets.get(row.url)?.shift();if(!j)continue;
+    row.status=j.user_deleted?'deleted':(j.status||'pending');row.guid=j.guid||row.guid;row.title=j.title||row.title;
+    row.message=typeof j.message==='string'?j.message:JSON.stringify(j.message||'');
+    row.created=['failed','invalid','deleted'].includes(row.status)?'No':(['completed','success'].includes(row.status)&&row.guid?'Yes':'Pending');
   }
-
-  function showPdfHelp(){
-    setStatus(
-      "PDF upload (Perma web UI):\n" +
-      "1) Open Perma in a new tab.\n" +
-      "2) Leave the URL field blank.\n" +
-      "3) Click “Create Perma Link”.\n" +
-      "4) Click “Upload Your Own Archive” and upload the PDF.\n\n" +
-      "In this tool: direct PDF *URLs* work (paste them like any other URL)."
-    );
-    try { window.open("https://perma.cc/", "_blank", "noopener,noreferrer"); } catch {}
-  }
-
-  // Bindings
-  tabUrls.addEventListener("click", () => setMode("urls"));
-  tabFootnotes.addEventListener("click", () => setMode("footnotes"));
-  tabDocx.addEventListener("click", () => setMode("docx"));
-
-  loadFoldersBtn.addEventListener("click", loadFolders);
-  foldersSelect.addEventListener("change", () => { folderIdEl.value = foldersSelect.value; syncLocks(); });
-
-  previewUrlsBtn.addEventListener("click", () => { setMode("urls"); parseUrlsMode(); syncLocks(); });
-  extractFootnotesBtn.addEventListener("click", () => { setMode("footnotes"); parseFootnotesMode(); syncLocks(); });
-
-  extractDocxLinksBtn.addEventListener("click", async () => {
-    setMode("docx");
-    await parseDocxMode();
-  });
-
-  createBtn.addEventListener("click", async () => {
-    if (isLocked()) return;
-    if (!items.length) {
-      if (activeMode === "urls") parseUrlsMode();
-      else if (activeMode === "footnotes") parseFootnotesMode();
-      else await parseDocxMode(); // docx
+}
+async function submit(){
+  for(let offset=0;offset<items.length;offset+=50){
+    const group=items.slice(offset,offset+50);status(`Creating links ${offset+1}–${offset+group.length} of ${items.length}…`);
+    group.forEach(it=>{it.status='submitting';it.created='Pending';});render();
+    try{
+      const data=await api('/archives/batches','POST',{urls:group.map(x=>x.url),target_folder:Number($('folderId').value)});
+      if(!data.id)throw Error('Perma returned no batch ID. Check your Perma account before submitting again.');
+      group.forEach(it=>{it.batchId=data.id;it.status='pending';});updateJobs(group,data);render();
+    }catch(e){
+      group.forEach(it=>{it.status='submission_unknown';it.created='Unknown';it.note='Submission could not be confirmed. Check your Perma account before retrying.';it.message=e.message;});
+      items.slice(offset+50).forEach(it=>{it.created='Not submitted';it.note='Submission stopped after an error.';});throw e;
     }
-    await createBatch();
-  });
-
-  exportBtn.addEventListener("click", () => { if (!isLocked()) exportCsv(); });
-  refreshBtn.addEventListener("click", () => { if (!isLocked()) refreshStatuses(); });
-
-  pdfHelpBtn.addEventListener("click", showPdfHelp);
-
-  // Keep locks updated as user types/changes inputs
-  const lockInputs = [
-    apiKeyEl, folderIdEl,
-    urlsTextEl, dedupeUrlsEl,
-    footnotesTextEl, startFootnoteEl, splitModeEl, dedupeFootnoteUrlsEl,
-    docxFileEl, startDocxFootnoteEl, dedupeDocxUrlsEl
-  ].filter(Boolean);
-
-  for (const el of lockInputs) {
-    el.addEventListener("input", syncLocks);
-    el.addEventListener("change", syncLocks);
   }
-
-  setMode("urls");
-  setStatus("Ready. Fill Step 1, then Preview/Extract to populate results.");
-  syncLocks();
+}
+async function poll(){
+  // Bounded polling. Subsequent clicks only recheck existing batches.
+  const deadline=Date.now()+120000;
+  while(items.some(isPending)&&Date.now()<deadline){
+    for(const id of [...new Set(items.filter(isPending).map(x=>x.batchId))]){
+      status('Waiting for Perma captures…');
+      updateJobs(items.filter(x=>x.batchId===id),await api('/archives/batches/'+encodeURIComponent(id)));render();
+    }
+    if(items.some(isPending))await new Promise(r=>setTimeout(r,4000));
+  }
+}
+const errorPattern=/\b(access denied|page not found|403 forbidden|404 not found|verify (?:that )?you are human|checking your browser|just a moment|captcha|site can.t be reached|service unavailable)\b/i;
+function analyzeHtml(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  doc.querySelectorAll('script,style,noscript,nav,footer,header,template,[hidden],[aria-hidden="true"]').forEach(n=>n.remove());
+  const text=(doc.body?.textContent||'').replace(/\s+/g,' ').trim();
+  const heading=[doc.title,...[...doc.querySelectorAll('h1,h2')].map(n=>n.textContent)].join(' ');
+  if(errorPattern.test(heading)||errorPattern.test(text.slice(0,600)))return {content:'Possible error page',note:'The archived page contains an error or bot-check message.'};
+  if(text.length<250||text.split(/\s+/).length<40)return {content:'Needs review',note:'Too little readable text to assess the archive.'};
+  return {content:'Text detected',note:'Readable archived text found; citation accuracy and completeness still need review.'};
+}
+async function inspectReplay(guid){
+  const url='https://perma.cc/'+encodeURIComponent(guid);
+  const res=await fetch(url,{credentials:'omit',signal:AbortSignal.timeout(12000)});
+  if(!res.ok)return {content:'Needs review',note:`Perma page returned HTTP ${res.status}.`};
+  const shell=new DOMParser().parseFromString(await res.text(),'text/html');
+  // Never assess the Perma navigation shell as if it were the captured source.
+  const frame=shell.querySelector('iframe#replay_iframe,iframe#replay,iframe[src*="/warc/"],iframe[src*="/replay/"]');
+  if(!frame?.getAttribute('src'))return {content:'Needs review',note:'Archive viewer requires an interactive browser review.'};
+  const replay=new URL(frame.getAttribute('src'),res.url||url);
+  if(replay.protocol!=='https:'||!(replay.hostname==='perma.cc'||replay.hostname.endsWith('.perma.cc')))return {content:'Needs review',note:'Archive playback is on a separate origin; open the Perma link to review.'};
+  const page=await fetch(replay.href,{credentials:'omit',signal:AbortSignal.timeout(12000)});
+  if(!page.ok)return {content:'Needs review',note:`Playback returned HTTP ${page.status}.`};
+  if(!page.headers.get('content-type')?.includes('text/html'))return {content:'Needs review',note:'PDF, image, or other non-HTML archive; open the link to inspect.'};
+  const html=await page.text();
+  const d=new DOMParser().parseFromString(html,'text/html');
+  if(d.querySelector('iframe,replay-web-page'))return {content:'Needs review',note:'Nested archive viewer; open the link to inspect the captured page.'};
+  return analyzeHtml(html);
+}
+async function verifyArchives(){
+  for(let i=0;i<items.length;i++){
+    const it=items[i];
+    if(!it.guid||!['completed','success'].includes(it.status)){it.content=it.created==='No'?'No archive':'Not checked';continue;}
+    status(`Checking archive ${i+1} of ${items.length}…`);
+    try{
+      const detail=await api('/archives/'+encodeURIComponent(it.guid)+'/');
+      const primary=(detail.captures||[]).find(c=>c.role==='primary');
+      it.title=detail.title||it.title;it.captureStatus=primary?.status||'unknown';it.checkedAt=new Date().toISOString();
+      if(detail.user_deleted||primary?.status==='failed'){it.created='No';it.content='No archive';it.note='Perma reports a failed or deleted primary capture.';}
+      else if(primary?.status!=='success'){it.created='Pending';it.status='pending';it.content='Not checked';it.note='Primary capture is not yet confirmed.';}
+      else {
+        it.created='Yes';
+        if(errorPattern.test(it.title||'')){it.content='Possible error page';it.note='Archive title suggests an error or bot-check page.';}
+        else if(!$('verify').checked){it.content='Not checked';it.note='Content checking is off.';}
+        else {try{Object.assign(it,await inspectReplay(it.guid));}catch{it.content='Needs review';it.note='Browser access was blocked or timed out. Open the Perma link to inspect the captured page.';}}
+      }
+    }catch(e){it.content='Needs review';it.note='Capture details could not be verified: '+e.message;}
+    render();
+  }
+}
+// A dependency-free XLSX writer: inline string cells avoid formula execution.
+function zipStored(files){
+  const enc=new TextEncoder(),parts=[],central=[];let offset=0;
+  const crc32=bytes=>{let crc=0xffffffff;for(const b of bytes){crc^=b;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return (crc^0xffffffff)>>>0;};
+  for(const [name,text] of Object.entries(files)){
+    const n=enc.encode(name),b=enc.encode(text),crc=crc32(b),h=new Uint8Array(30+n.length),v=new DataView(h.buffer);
+    v.setUint32(0,0x04034b50,true);v.setUint16(4,20,true);v.setUint32(14,crc,true);v.setUint32(18,b.length,true);v.setUint32(22,b.length,true);v.setUint16(26,n.length,true);h.set(n,30);parts.push(h,b);
+    const c=new Uint8Array(46+n.length),w=new DataView(c.buffer);w.setUint32(0,0x02014b50,true);w.setUint16(4,20,true);w.setUint16(6,20,true);w.setUint32(16,crc,true);w.setUint32(20,b.length,true);w.setUint32(24,b.length,true);w.setUint16(28,n.length,true);w.setUint32(42,offset,true);c.set(n,46);central.push(c);offset+=h.length+b.length;
+  }
+  const end=new Uint8Array(22),v=new DataView(end.buffer);v.setUint32(0,0x06054b50,true);v.setUint16(8,central.length,true);v.setUint16(10,central.length,true);v.setUint32(12,central.reduce((n,c)=>n+c.length,0),true);v.setUint32(16,offset,true);
+  return new Blob([...parts,...central,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+function workbook(){
+  const headers=['Footnote','Target URL','Perma link','Created successfully','Capture job status','Primary capture status','Content check','Review notes','Archive title','API message','Batch ID','Checked at (UTC)'];
+  const data=[headers,...items.map(it=>[it.refs.join(', '),it.url,it.guid?'https://perma.cc/'+it.guid:'',it.created,it.status,it.captureStatus,it.content,it.note,it.title,it.message,it.batchId,it.checkedAt])];
+  const xml=s=>escapeHtml(String(s??'').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,'').slice(0,32767));
+  const sheet=`<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${headers.map((_,i)=>`<col min="${i+1}" max="${i+1}" width="${[1,2,7].includes(i)?55:24}" customWidth="1"/>`).join('')}</cols><sheetData>${data.map((row,i)=>`<row r="${i+1}">${row.map((v,j)=>`<c r="${String.fromCharCode(65+j)}${i+1}" t="inlineStr"><is><t xml:space="preserve">${xml(v)}</t></is></c>`).join('')}</row>`).join('')}</sheetData><autoFilter ref="A1:L${data.length}"/></worksheet>`;
+  return zipStored({
+    '[Content_Types].xml':'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>',
+    '_rels/.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+    'xl/workbook.xml':'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Perma results" sheetId="1" r:id="rId1"/></sheets></workbook>',
+    'xl/_rels/workbook.xml.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>',
+    'xl/worksheets/sheet1.xml':sheet
+  });
+}
+function download(){if(downloadUrl)URL.revokeObjectURL(downloadUrl);downloadUrl=URL.createObjectURL(workbook());const a=document.createElement('a');a.href=downloadUrl;a.download='easyperma-results.xlsx';a.click();}
+$('action').addEventListener('click',async()=>{
+  if(running)return;
+  if(submitted&&!items.some(isPending)&&!checksDirty){download();return;}
+  if(!$('apiKey').value.trim()){status('Enter your Perma API key.');$('apiKey').focus();return;}
+  if(!submitted&&(!Number.isInteger(Number($('folderId').value))||Number($('folderId').value)<=0)){status('Enter a valid folder ID.');$('folderId').focus();return;}
+  clearTimeout(previewTimer);
+  if(!submitted&&!items.length)await preview();
+  if(!items.length)return;
+  if(items.some(it=>!canonical(it.url))){status('Please correct the invalid target URL before creating links.');return;}
+  items.forEach(it=>it.url=canonical(it.url));
+  busy(true);
+  try{
+    if(!submitted){submitted=true;await submit();}
+    await poll();await verifyArchives();checksDirty=false;download();
+    status(items.some(isPending)?'Excel downloaded. Some captures are pending; check again shortly.':'Excel downloaded. Open any flagged Perma links to review.');
+  }catch(e){status(e.message+' Results so far are available with the main button.');if(submitted)download();}
+  finally{busy(false);}
+});
+$('verify').addEventListener('change',()=>{checksDirty=submitted;render();});
+$('rows').addEventListener('input',e=>{if(e.target.dataset.index!==undefined&&!submitted)items[Number(e.target.dataset.index)].url=e.target.value.trim();});
+$('source').addEventListener('input',()=>{file=null;$('docxFile').value='';$('fileLabel').textContent='Or drop a Word document · browse';++revision;items=[];submitted=false;render();clearTimeout(previewTimer);previewTimer=setTimeout(preview,250);});
+function selectFile(f){if(!f)return;if(!f.name.toLowerCase().endsWith('.docx')){status('Choose a .docx document.');return;}file=f;$('source').value='';$('fileLabel').textContent=f.name;clearTimeout(previewTimer);preview();}
+$('docxFile').addEventListener('change',e=>selectFile(e.target.files[0]));
+$('dropzone').addEventListener('dragover',e=>e.preventDefault());
+$('dropzone').addEventListener('drop',e=>{e.preventDefault();if(!running)selectFile(e.dataTransfer.files[0]);});
+for(const id of ['dedupe','startNumber'])$(id).addEventListener('change',()=>{if(!running)preview();});
+let folderRevision=0;
+$('apiKey').addEventListener('blur',async()=>{
+  if(running||!$('apiKey').value.trim())return;
+  const token=++folderRevision,key=$('apiKey').value;
+  try{const data=await api('/user/');if(token!==folderRevision||key!==$('apiKey').value||running)return;const folders=(data.top_level_folders||[]).filter(x=>!x.read_only);$('folders').innerHTML=folders.map(f=>`<option value="${escapeHtml(f.id)}">${escapeHtml(f.name)}</option>`).join('');if(!$('folderId').value&&folders.length===1)$('folderId').value=folders[0].id;}catch{ /* Manual folder ID remains available. */ }
+});
 })();
-</script>
-</body>
-</html>
+</script></body></html>

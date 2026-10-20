@@ -36,7 +36,7 @@
 <p>If a submission response is lost, use Find unconfirmed links to look for its existing archive without submitting a duplicate.</p>
 </details>
 </section>
-<section id="results" class="results" hidden><div class="resultHead"><h2>Your Perma links</h2><div id="summary"></div><label class="filter"><input id="missingPermaOnly" type="checkbox">Only show links without a permalink</label><label class="filter"><input id="flaggedOnly" type="checkbox">Only failures</label></div><div id="warningBanner" class="warningBanner" role="status" aria-live="polite" hidden></div><div class="tablewrap"><table><thead><tr><th>Footnote</th><th>Target URL</th><th>Capture progress</th><th>Perma link</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section id="results" class="results" hidden><div class="resultHead"><h2>Your Perma links</h2><div id="summary"></div><button id="downloadTable" type="button" class="secondary" style="width:auto" title="Download the currently visible table rows as Excel" disabled>Download table</button><label class="filter"><input id="missingPermaOnly" type="checkbox">Only show links without a permalink</label><label class="filter"><input id="flaggedOnly" type="checkbox">Only failures</label></div><div id="warningBanner" class="warningBanner" role="status" aria-live="polite" hidden></div><div class="tablewrap"><table><thead><tr><th>Footnote</th><th>Target URL</th><th>Capture progress</th><th>Perma link</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></section>
 
 </main><script>
 'use strict';
@@ -344,6 +344,7 @@ function render(){
   $('refreshCaptureStatus').disabled=running||captureRefreshBusy||!items.some(it=>it.guid&&!it.existing);
   $('refreshCaptureStatus').textContent=captureRefreshBusy?'Refreshing capture status…':'Refresh capture status';
   $('download').disabled=!canDownload();
+  $('downloadTable').disabled=!items.some(visibleInResults);
   $('recheck').textContent=unknown?`Find unconfirmed links (${unknown})`:'Find unconfirmed links';
   $('recheck').disabled=running||!unknown;
   $('downloadDocx').disabled=running||docxBusy||!docxUrl;
@@ -633,9 +634,9 @@ async function prepareDocx(){
 $('appendDocx').addEventListener('change',()=>{invalidateDocx();render();if($('appendDocx').checked&&submitted)prepareDocx();});
 $('downloadDocx').addEventListener('click',()=>{if(!docxUrl||running||docxBusy)return;const a=document.createElement('a');a.href=docxUrl;a.download=(file?.name||'document.docx').replace(/\.docx$/i,'')+'-perma.docx';a.click();});
 
-function workbook(){
+function workbook(rows=items){
   const headers=['Footnote','Target URL','Perma link','Submission result','Submission status','Capture checks','Content checks','Notes','Archive title','API message','Batch ID','Submitted at (UTC)','Flag','Flag severity','Included in Word'];
-  const data=[headers,...items.map(it=>[it.refs.join(', '),it.url,it.guid?'https://perma.cc/'+it.guid:'',sourceDisabled(it)?'Disabled until enabled':it.created,it.status,'Disabled','Disabled',it.note,it.title,it.message,it.batchId,it.submittedAt,flagFor(it)?.label||'',flagFor(it)?.level||'',eligibleForDocx(it)?'Yes':'No'])];
+  const data=[headers,...rows.map(it=>[it.refs.join(', '),it.url,it.guid?'https://perma.cc/'+it.guid:'',sourceDisabled(it)?'Disabled until enabled':it.created,it.status,'Disabled','Disabled',it.note,it.title,it.message,it.batchId,it.submittedAt,flagFor(it)?.label||'',flagFor(it)?.level||'',eligibleForDocx(it)?'Yes':'No'])];
   const xml=s=>escapeHtml(String(s??'').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,'').slice(0,32767));
   const sheet=`<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${headers.map((_,i)=>`<col min="${i+1}" max="${i+1}" width="${[1,2,7].includes(i)?55:24}" customWidth="1"/>`).join('')}</cols><sheetData>${data.map((row,i)=>`<row r="${i+1}">${row.map((v,j)=>`<c r="${String.fromCharCode(65+j)}${i+1}" t="inlineStr"><is><t xml:space="preserve">${xml(v)}</t></is></c>`).join('')}</row>`).join('')}</sheetData><autoFilter ref="A1:O${data.length}"/></worksheet>`;
   return zipStored({
@@ -648,6 +649,13 @@ function workbook(){
 }
 
 function download(){if(!canDownload()){status('Wait for link submissions to finish before downloading.');return;}if(downloadUrl)URL.revokeObjectURL(downloadUrl);downloadUrl=URL.createObjectURL(workbook());const a=document.createElement('a');a.href=downloadUrl;a.download='easyperma-results.xlsx';a.click();}
+function downloadVisibleTable(){
+  const rows=items.filter(visibleInResults);
+  if(!rows.length){status('No visible rows to download.');return;}
+  if(downloadUrl)URL.revokeObjectURL(downloadUrl);
+  downloadUrl=URL.createObjectURL(workbook(rows));
+  const a=document.createElement('a');a.href=downloadUrl;a.download='easyperma-table.xlsx';a.click();
+}
 async function run(selected,create=false){
   if(running){status('A batch is already running. Its progress is shown here.');return;}
   let outcome;
@@ -687,6 +695,7 @@ async function run(selected,create=false){
 $('action').addEventListener('click',()=>run(selectedForCreation(),true));
 $('recheck').addEventListener('click',()=>run(items.filter(needsRecheck)));
 $('download').addEventListener('click',download);
+$('downloadTable').addEventListener('click',downloadVisibleTable);
 $('refreshCaptureStatus').addEventListener('click',()=>refreshCaptureStatuses());
 $('flaggedOnly').addEventListener('change',render);
 $('missingPermaOnly').addEventListener('change',()=>{missingPermaSelection=null;render();});

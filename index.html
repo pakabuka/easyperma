@@ -17,37 +17,49 @@
 <div class="tabPanel" id="panelDoc" role="tabpanel" aria-labelledby="tabDoc" hidden><label class="upload" id="dropzone"><input id="docxFile" type="file" accept=".docx"><span class="uploadIcon" aria-hidden="true">↥</span><span id="fileLabel">Drop a Word document here, or click to browse</span><small>Footnotes extracted automatically</small></label></div>
 <div class="settings">
 <label class="toggle"><input id="dedupe" type="checkbox" role="switch" checked>Merge duplicate links</label>
-<label class="toggle"><input id="verify" type="checkbox" role="switch" checked>Compare source and archive</label>
-<label class="toggle" id="appendOption" hidden><input id="appendDocx" type="checkbox" role="switch" checked>Append usable links to Word</label>
+<label class="toggle" id="appendOption" hidden><input id="appendDocx" type="checkbox" role="switch" checked>Append returned links to Word</label>
 </div>
 <button id="action" type="button">Create all links</button>
-<div class="actions"><button id="download" type="button" class="secondary" disabled>Download Excel</button><button id="recheck" type="button" class="secondary" disabled>Recheck archives</button></div>
+<p id="actionMessage" class="hint" role="status" aria-live="polite" style="font-size:13px;color:#515154;white-space:pre-line"></p>
+<div class="actions"><button id="download" type="button" class="secondary" disabled>Download Excel</button><button id="recheck" type="button" class="secondary" disabled>Find unconfirmed links</button></div>
+<button id="refreshCaptureStatus" type="button" class="secondary" disabled style="margin-top:10px">Refresh capture status</button>
 <button id="downloadDocx" type="button" class="secondary" disabled hidden style="margin-top:10px">Download Word document</button><p id="docxStatus" class="hint" role="status" hidden></p>
-<p class="hint" id="downloadHint">Existing Perma links are kept as supplied. New captures unlock Excel after their checks and reviews are complete.</p>
-<div class="overall" id="overall" hidden><p id="overallLabel"></p><progress id="progress" max="100" value="0" aria-label="Overall capture workflow"></progress><p class="hint">Percentages show workflow milestones, not exact capture completion.</p></div><p id="status" role="status" aria-live="polite">Ready when you are.</p>
+<p class="hint" id="downloadHint">Returned Perma links are included in exports. Only rejected submissions and reported capture failures are flagged.</p>
+<div class="overall" id="overall" hidden><p id="overallLabel"></p><progress id="progress" max="100" value="0" aria-label="Overall capture workflow"></progress><p class="hint">Bars show submission and capture milestones, not exact capture completion. Green means Perma reported a successful capture. Pending statuses refresh automatically every 10 seconds. You can also refresh manually.</p></div><p id="status" role="status" aria-live="polite">Ready when you are.</p>
 <details><summary>Details</summary>
 <label class="field" for="startNumber">First footnote number<input id="startNumber" type="number" min="1" step="1" value="1"></label>
 <p>Find your key in <a href="https://perma.cc/settings/tools" target="_blank" rel="noopener noreferrer">Perma settings</a>. Folders and subfolders load when you paste your key. Use Refresh to reload them, or choose “Enter a folder ID manually.”</p>
-<p>Files stay in your browser. URLs are sent to Perma. Content comparison reads the source and its saved archive without sending your API key to the source site.</p>
-<p>Verified means the saved capture succeeded and its readable content substantially matches the source. Matching ignores navigation, scripts, and repeated page furniture. Pages that cannot be compared remain red until reviewed. Mark a saved page Usable to include it in Word.</p>
-<p>Existing Perma links are kept as supplied and excluded from creation. Remove affects this list only. Word export inserts automatically verified links and new links you mark Usable beside their original footnote URLs as URL [https://perma.cc/XXXX-XXXX]. Failed, pending, and unapproved links stay unchanged.</p>
-<p>Capture statuses follow the <a href="https://perma.cc/docs/developer" target="_blank" rel="noopener noreferrer">Perma API</a>. Pending captures can be checked again without creating new links. Create an individual link using its row button.</p>
+<p>Files stay in your browser. URLs are sent to Perma. Pending capture statuses refresh automatically every 10 seconds; content checks are disabled.</p>
+<p>Before creating links, the app searches archives accessible through your API key across all folders. Exact source URLs are matched, ignoring fragments. Successful captures are preferred; pending captures are reused to avoid duplicates. If lookup fails, creation stops so duplicates are not generated blindly.</p>
+<p>Perma links are included as soon as the API returns their IDs. Automatic status refreshes flag failures reported later. Refreshes run in the background without blocking exports or verifying page content.</p>
+<p>Existing Perma links are kept as supplied and excluded from creation. Word export adds returned links beside their original footnote URLs as URL [https://perma.cc/XXXX-XXXX]. URLs without a returned Perma link stay unchanged.</p>
+<p>If a submission response is lost, use Find unconfirmed links to look for its existing archive without submitting a duplicate.</p>
 </details>
 </section>
-<section id="results" class="results" hidden><div class="resultHead"><h2>Your Perma links</h2><div id="summary"></div><label class="filter"><input id="flaggedOnly" type="checkbox">Only warnings</label></div><div id="warningBanner" class="warningBanner" role="status" aria-live="polite" hidden></div><div class="tablewrap"><table><thead><tr><th>Footnote</th><th>Target URL</th><th>Capture progress</th><th>Perma link</th><th>Content &amp; flags</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section id="results" class="results" hidden><div class="resultHead"><h2>Your Perma links</h2><div id="summary"></div><label class="filter"><input id="missingPermaOnly" type="checkbox">Only show links without a permalink</label><label class="filter"><input id="flaggedOnly" type="checkbox">Only failures</label></div><div id="warningBanner" class="warningBanner" role="status" aria-live="polite" hidden></div><div class="tablewrap"><table><thead><tr><th>Footnote</th><th>Target URL</th><th>Capture progress</th><th>Perma link</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></section>
 
 </main><script>
 'use strict';
 (() => {
 const $=id=>document.getElementById(id), API='https://api.perma.cc/v1';
-let items=[], file=null, running=false, submitted=false, checksDirty=false, revision=0, previewTimer, downloadUrl, activeTab='paste';
+let missingPermaSelection=null;
+let items=[], file=null, running=false, submitted=false, revision=0, previewTimer, downloadUrl, activeTab='paste';
 let docxUrl='',docxRevision=0,docxBusy=false;
+let captureRefreshBusy=false,autoCaptureTimer;
 let folderRevision=0,folderTimer,folderLoading=false,folderKey='',folderList=[];
 const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
-const status=s=>{$('status').textContent=s;};
+const status=s=>{$('status').textContent=s;$('actionMessage').textContent=s;};
 function canonical(raw){try{const u=new URL(raw);return /^https?:$/.test(u.protocol)?u.href:null;}catch{return null;}}
 function permaGuid(raw){try{const u=new URL(raw);return /^(?:www\.)?perma\.cc$/i.test(u.hostname)?u.pathname.match(/^\/([a-z0-9]{4}-[a-z0-9]{4})\/?$/i)?.[1].toUpperCase()||'':'';}catch{return '';}}
 function retryable(it){return !it.guid&&!it.existing&&!permaGuid(it.url)&&(!it.status||it.status==='submission_rejected');}
+function restrictedSource(it){
+  try{
+    const host=new URL(it.url).hostname.toLowerCase();
+    return ['forbes.com','washingtonpost.com','nytimes.com','nyti.ms','wapo.st','cnbc.com','ft.com','wsj.com','on.wsj.com','reddit.com','redd.it'].find(domain=>host===domain||host.endsWith('.'+domain))||'';
+  }catch{return '';}
+}
+function sourceDisabled(it){const source=restrictedSource(it);return retryable(it)&&!!source&&it.enabledSource!==source;}
+function creationAllowed(it){return retryable(it)&&!sourceDisabled(it);}
 function recognizeExisting(it){const guid=permaGuid(it.url);if(guid&&!it.guid)Object.assign(it,{guid,status:'existing',created:'Existing link',existing:true,note:'Already a Perma link. Excluded from creation.',content:'Already archived',checkComplete:true});}
 function recoverable(it){return it.status==='submission_unknown';}
 function normalizeUrl(raw){let u=raw.replace(/[.,;:!?]+$/g,'');while(/[)\]}]$/.test(u)){const end=u.slice(-1),start={')':'(',']':'[','}':'{'}[end];if(u.split(end).length<=u.split(start).length)break;u=u.slice(0,-1);}return u;}
@@ -231,14 +243,47 @@ function textBlocks(text,start){
   let num=start;
   return lines.split(/\n\s*\n/.test(lines)?/\n\s*\n+/:/\n/).filter(x=>x.trim()).map(t=>({ref:/^\s*\*/.test(t)?'author':String(num++),text:t}));
 }
+function sourceEntries(text){
+  // Keep URL positions so a bracketed archive belongs only to the URL before it.
+  const value=String(text).replace(/\[(?=\s*https?:\/\/(?:www\.)?perma\.cc\/)/gi,' [');
+  const matches=[...value.matchAll(/https?:\/\/[^\s<>"']+/gi)];
+  const entries=[];
+  for(let i=0;i<matches.length;i++){
+    const m=matches[i],url=canonical(normalizeUrl(m[0]));if(!url)continue;
+    const next=matches[i+1];let guid='';
+    if(!permaGuid(url)&&next){
+      const raw=normalizeUrl(next[0]),candidate=permaGuid(raw);
+      const between=value.slice(m.index+m[0].length,next.index);
+      if(candidate&&/^[\s.,;]*\[\s*$/.test(between)&&/^\s*\]/.test(value.slice(next.index+raw.length))){guid=candidate;i++;}
+    }
+    entries.push({url,guid:guid||permaGuid(url),paired:!!guid});
+  }
+  return entries;
+}
+function markExistingArchive(row,guid,paired=false){
+  Object.assign(row,{guid,status:'existing',created:'Existing link',existing:true,note:paired?'A bracketed Perma link already follows this URL. Excluded from creation.':'Already a Perma link. Excluded from creation.',content:'Already archived',checkComplete:true});
+}
 function rowsFromBlocks(blocks,merge){
   const result=[],seen=new Map();
   for(const b of blocks){
-    const urls=[...new Set(extractUrls(b.text))]; // Always remove alternate DOCX representations.
-    urls.forEach((url,i)=>{
-      const ref=b.ref+(urls.length>1?String.fromCharCode(97+i%26)+(i>=26?Math.floor(i/26):''):'');
-      if(merge&&seen.has(url)){const row=seen.get(url);if(!row.refs.includes(ref))row.refs.push(ref);if(b.noteId&&!row.noteIds.includes(b.noteId))row.noteIds.push(b.noteId);}
-      else {const row={refs:[ref],noteIds:b.noteId?[b.noteId]:[],url,created:'Not submitted',content:'Not checked',status:'',note:''};const guid=permaGuid(url);if(guid)Object.assign(row,{guid,status:'existing',created:'Existing link',existing:true,note:'Already a Perma link. Excluded from creation.',content:'Already archived',checkComplete:true});result.push(row);seen.set(url,row);}
+    // Alternate Word representations collapse to one source, retaining its archive.
+    const unique=new Map();
+    for(const entry of sourceEntries(b.text)){
+      const previous=unique.get(entry.url);
+      if(!previous||(!previous.guid&&entry.guid))unique.set(entry.url,entry);
+    }
+    const entries=[...unique.values()];
+    entries.forEach((entry,i)=>{
+      const {url,guid,paired}=entry;
+      const ref=b.ref+(entries.length>1?String.fromCharCode(97+i%26)+(i>=26?Math.floor(i/26):''):'');
+      if(merge&&seen.has(url)){
+        const row=seen.get(url);if(!row.refs.includes(ref))row.refs.push(ref);if(b.noteId&&!row.noteIds.includes(b.noteId))row.noteIds.push(b.noteId);
+        if(guid&&!row.guid)markExistingArchive(row,guid,paired);
+      }else {
+        const row={refs:[ref],noteIds:b.noteId?[b.noteId]:[],url,created:'Not submitted',content:'Not checked',status:'',note:''};
+        if(guid)markExistingArchive(row,guid,paired);
+        result.push(row);seen.set(url,row);
+      }
     });
   }return result;
 }
@@ -251,60 +296,64 @@ async function preview(){
     if(activeTab==='doc'&&!file){status('Choose a Word document.');return;}
     const blocks=activeTab==='doc'&&file?(await docxBlocks(file)).map((b,i)=>({ref:String(start+i),...b})):textBlocks($('source').value,start);
     if(token!==revision)return;
-    items=rowsFromBlocks(blocks,$('dedupe').checked);render();status(items.length?`${items.length} link${items.length===1?'':'s'} ready.`:'No links found.');
+    items=rowsFromBlocks(blocks,$('dedupe').checked);missingPermaSelection=null;render();status(items.length?`${items.length} link${items.length===1?'':'s'} ready.`:'No links found.');
   }catch(e){if(token===revision)status(e.message);}
 }
 
-const failures=new Set(['failed','invalid','deleted']);
+function captureFailed(it){return it.captureStatus==='failed'||['capture_failed','failed','invalid','deleted'].includes(it.status);}
 function flagFor(it){
-  if(it.created==='No'||failures.has(it.status)||it.captureStatus==='failed')return {level:'red',label:'Capture failed',reason:it.note||it.message||'Perma could not save the primary page.'};
-  if(it.content==='Content mismatch'||it.content==='Could not verify content')return {level:'red',label:it.content,reason:it.note};
-  if(it.content==='Suspected bot check'||it.content==='Possible error page'||it.content==='Missing content')return {level:'red',label:it.content,reason:it.note};
-  if(it.status==='submission_rejected')return {level:'red',label:'Submission rejected',reason:it.note};
-  if(!running&&it.created==='Pending'&&!it.existing)return {level:'red',label:it.content==='Could not verify content'?it.content:'Capture pending',reason:it.content==='Could not verify content'?it.note:'Not finished. Not appended to Word.'};
-  if(recoverable(it))return {level:'red',label:'Submission unconfirmed',reason:it.note};
-  if(it.content==='Needs review'||(it.created==='Yes'&&it.content==='Not checked'))return {level:'amber',label:'Needs review',reason:it.note||'Content has not been inspected.'};
+  if(it.status==='submission_rejected')return {level:'red',label:'Submission rejected',reason:it.note||it.message};
+  if(captureFailed(it))return {level:'red',label:'Capture failed',reason:it.note||it.message||'Perma reported a failed capture.'};
   return null;
 }
-function canDownload(){return !running&&!checksDirty&&items.length>0&&items.every(it=>(it.existing&&it.status==='existing'&&it.guid&&it.review!=='rejected')||(it.guid&&it.created==='Yes'&&it.captureStatus==='success'&&it.checkComplete&&(!flagFor(it)||it.review==='accepted')));}
-function isPending(it){return it.status!=='existing'&&!!(it.batchId||it.guid)&&!failures.has(it.status)&&it.created!=='No'&&(it.created==='Pending'||!['completed','success'].includes(it.status));}
-function milestone(it){
-  if(it.existing&&it.status==='existing')return 100;
-  if(it.checkComplete||it.created==='No')return 100;
-  if(it.stage==='Checking saved content')return 95;
-  if(it.created==='Yes')return 85;
-  if(it.status==='submission_unknown')return 10;
-  if(['completed','success'].includes(it.status))return 80;
-  if(it.status==='in_progress')return 55;
-  if(it.guid||it.batchId)return 30;
-  if(it.status==='submitting')return 10;
-  return 0;
+function canDownload(){return !running&&items.length>0;}
+function needsRecheck(it){return !it.existing&&!it.guid&&recoverable(it);}
+function visibleInResults(it){
+  if($('missingPermaOnly').checked){
+    // Keep session submissions visible across filter toggles; hide imported archives.
+    if(!missingPermaSelection)missingPermaSelection=new Set(items.filter(row=>!row.existing&&(!!row.submittedAt||(!row.guid&&!permaGuid(row.url)))));
+    if(!missingPermaSelection.has(it))return false;
+  }
+  if($('flaggedOnly').checked&&!flagFor(it))return false;
+  return true;
+}
+function selectedForCreation(){return items.filter(it=>visibleInResults(it)&&creationAllowed(it));}
+function captureProgress(it){
+  if(captureFailed(it)||it.status==='submission_rejected')return {percent:100,color:'red',label:flagFor(it).label};
+  if(it.existing)return {percent:100,color:'',label:'Already archived'};
+  if(it.captureStatus==='success')return {percent:100,color:'green',label:'Captured successfully'};
+  if(it.guid)return {percent:60,color:'',label:'Link returned — capture not confirmed'};
+  if(it.status==='submitting')return {percent:20,color:'',label:'Submitting'};
+  return {percent:0,color:'',label:sourceDisabled(it)?'Disabled until enabled':'Not submitted'};
 }
 function render(){
   renderFolderControls();
-  const flags=items.map(flagFor),red=flags.filter(f=>f?.level==='red').length,amber=flags.filter(f=>f?.level==='amber').length;
+  const rejected=items.filter(it=>it.status==='submission_rejected').length,failed=items.filter(captureFailed).length,returned=items.filter(it=>it.guid&&!it.existing).length,unknown=items.filter(needsRecheck).length;
   $('results').hidden=!items.length;
-  $('summary').textContent=`${items.length} links · ${items.filter(retryable).length} to create · ${items.filter(x=>x.existing).length} existing · ${items.filter(x=>!x.existing&&x.verifiedMatch).length} verified${red||amber?' · '+(red+amber)+' to review':''}`;
-  $('warningBanner').hidden=!(red||amber);
-  $('warningBanner').textContent=`${red?'⚑ '+red+' red flag'+(red===1?'':'s')+'. ':''}${amber?amber+' archive'+(amber===1?'':'s')+' need manual review. ':''}Read each warning below. Unconfirmed submissions can be checked with Recheck archives. Open available Perma links to inspect the saved page.`;
+  $('summary').textContent=`${items.length} links · ${selectedForCreation().length} to create · ${items.filter(sourceDisabled).length} disabled · ${items.filter(it=>it.existing).length} existing · ${returned} returned${rejected?' · '+rejected+' rejected':''}${failed?' · '+failed+' capture failed':''}`;
+  $('warningBanner').hidden=!(rejected||failed);
+  $('warningBanner').textContent=`${rejected} submissions rejected · ${failed} captures failed. See the errors below. Other links remain available for export.`;
   $('rows').innerHTML=items.map((it,i)=>{
-    const flag=flags[i],percent=milestone(it),reviewed=it.review==='accepted',failed=it.created==='No'||failures.has(it.status),color=flag?.level==='red'?'red':flag?'amber':it.verifiedMatch?'green':'';
-    if($('flaggedOnly').checked&&!flag)return '';
-    const stage=it.existing&&it.status==='existing'?'Excluded from creation':it.stage||(failed?'Capture failed':it.checkComplete?'Checks complete':it.stepDescription||({pending:'Waiting for capture',submitting:'Submitting',in_progress:'Capturing page',submission_unknown:'Awaiting confirmation',submission_rejected:'Request rejected',completed:'Capture complete'}[it.status])||'Ready to create');
-    return `<tr class="${it.existing?'row-existing ':''}${flag?.level==='red'?'row-flag':flag?'row-review':''}"><td>${escapeHtml(it.refs.join(', '))}</td><td class="url">${it.guid||it.batchId||!retryable(it)?escapeHtml(it.url):`<input aria-label="Target URL ${escapeHtml(it.refs.join(', '))}" data-index="${i}" value="${escapeHtml(it.url)}" ${running?'disabled':''}>`}</td><td class="progressCell"><div class="progressLabel"><span>${escapeHtml(it.created==='Yes'?(it.verifiedMatch?'Verified':'Captured'):it.created)}</span><span>${percent}%</span></div><div class="track" role="progressbar" aria-label="Capture workflow for footnote ${escapeHtml(it.refs.join(', '))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><div class="fill ${color}" style="width:${percent}%"></div></div><small>${escapeHtml(stage)}</small></td><td class="permaCell">${it.guid?`<a href="https://perma.cc/${encodeURIComponent(it.guid)}" target="_blank" rel="noopener noreferrer">${escapeHtml(it.guid)} ↗</a>`:'—'}${it.existing?'<button class="secondary rowAction" type="button" disabled title="This URL is already a Perma link. It will be reused without creating a duplicate.">Already a Perma link</button>':''}${retryable(it)?`<button class="secondary rowAction" data-create="${i}" ${running?'disabled':''}>${it.status==='submission_rejected'?'Retry this link':'Create this link'}</button>`:''}${!it.existing&&((it.guid&&!failed)||recoverable(it))?`<button class="secondary rowAction" data-check="${i}" ${running?'disabled':''}>Recheck</button>`:''}</td><td class="contentCell">${flag?`<span class="badge badge-${flag.level}"><span aria-hidden="true">${flag.level==='red'?'⚑':'⚠'}</span>${escapeHtml(flag.label)}</span>`:`<span class="badge ${it.verifiedMatch?'badge-green':'badge-gray'}">${escapeHtml(it.content)}</span>`}<small>${escapeHtml(reviewed?(flag?.reason||it.note||'').replace(/ Not appended to Word\./g,''):flag?.reason||it.note)}</small>${recoverable(it)?`<label class="manualFolder">Found it in Perma? Paste its link<input data-recover="${i}" aria-label="Existing Perma link for ${escapeHtml(it.refs.join(', '))}" placeholder="https://perma.cc/ABCD-1234" ${running?'disabled':''}></label>`:''}${it.review==='rejected'?'<small class="bad">Marked unusable — export locked.</small>':reviewed?'<small class="ok">Marked usable. Included in Word; warning retained in Excel.</small>':''}${flag&&it.guid&&it.created==='Yes'&&it.checkComplete?`<div class="reviewActions"><button class="secondary" data-review="${i}" data-value="accepted" ${running?'disabled':''}>Usable</button><button class="secondary" data-review="${i}" data-value="rejected" ${running?'disabled':''}>Unusable</button></div>`:''}</td><td><button class="secondary rowAction" type="button" data-remove="${i}" aria-label="Remove link for footnote ${escapeHtml(it.refs.join(', '))}" title="Remove from this list only" ${running?'disabled':''}>Remove</button></td></tr>`;
+    if(!visibleInResults(it))return '';
+    const progress=captureProgress(it),flag=flagFor(it),label=flag?flag.label:sourceDisabled(it)?'Disabled until enabled':it.existing?'Already archived':it.captureStatus==='success'?'Captured successfully':it.guid?'Link returned':recoverable(it)?'Submission unconfirmed':it.status==='submitting'?'Submitting':'Not submitted';
+    return `<tr class="${it.existing?'row-existing ':''}${flag?'row-flag':''}"><td>${escapeHtml(it.refs.join(', '))}</td><td class="url">${retryable(it)?`<input aria-label="Target URL ${escapeHtml(it.refs.join(', '))}" data-index="${i}" value="${escapeHtml(it.url)}" ${running?'disabled':''}>`:escapeHtml(it.url)}</td><td class="progressCell"><div class="progressLabel"><span>${escapeHtml(label)}</span><span>${progress.percent}%</span></div><div class="track" role="progressbar" aria-label="Capture progress for footnote ${escapeHtml(it.refs.join(', '))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percent}"><div class="fill ${progress.color}" style="width:${progress.percent}%"></div></div><small>${escapeHtml(progress.label)}</small></td><td class="permaCell">${it.guid?`<a href="https://perma.cc/${encodeURIComponent(it.guid)}" target="_blank" rel="noopener noreferrer">${escapeHtml(it.guid)} ↗</a>`:'—'}${sourceDisabled(it)?`<button class="secondary rowAction" type="button" data-enable="${i}" ${running?'disabled':''}>Enable</button>`:''}${creationAllowed(it)?`<button class="secondary rowAction" data-create="${i}" ${running?'disabled':''}>${flag?'Retry this link':'Create this link'}</button>`:''}${needsRecheck(it)?`<button class="secondary rowAction" data-check="${i}" ${running?'disabled':''}>Find existing link</button>`:''}</td><td class="contentCell"><span class="badge ${flag?'badge-red':'badge-gray'}">${escapeHtml(label)}</span><small>${escapeHtml(it.note||'')}</small>${needsRecheck(it)?`<label class="manualFolder">Found it in Perma? Paste its link<input data-recover="${i}" placeholder="https://perma.cc/ABCD-1234" ${running?'disabled':''}></label>`:''}</td><td><button class="secondary rowAction" type="button" data-remove="${i}" ${running?'disabled':''}>Remove</button></td></tr>`;
   }).join('');
-  const remaining=items.filter(retryable).length,newRows=remaining>0;
-  $('action').textContent=running?'Creating your links…':newRows?`Create all remaining links (${remaining})`:'No links left to create';
-  $('action').disabled=running||!newRows;
+  const remaining=selectedForCreation().length;
+  $('action').textContent=running?'Creating your links…':remaining?`Create all remaining links (${remaining})`:'No links left to create';
+  $('action').disabled=running||!remaining;
+  $('refreshCaptureStatus').disabled=running||captureRefreshBusy||!items.some(it=>it.guid&&!it.existing);
+  $('refreshCaptureStatus').textContent=captureRefreshBusy?'Refreshing capture status…':'Refresh capture status';
   $('download').disabled=!canDownload();
-  $('recheck').disabled=running||!items.some(it=>!it.existing&&(it.guid||it.batchId||recoverable(it)));
+  $('recheck').textContent=unknown?`Find unconfirmed links (${unknown})`:'Find unconfirmed links';
+  $('recheck').disabled=running||!unknown;
   $('downloadDocx').disabled=running||docxBusy||!docxUrl;
   $('downloadDocx').hidden=activeTab!=='doc'||!$('appendDocx').checked;
   $('appendOption').hidden=activeTab!=='doc';
   $('overall').hidden=!submitted;
-  $('progress').value=items.length?items.reduce((n,it)=>n+milestone(it),0)/items.length:0;
-  $('overallLabel').textContent=`${items.filter(it=>it.checkComplete||it.created==='No').length} of ${items.length} checks finished`;
-  $('downloadHint').textContent=canDownload()?'Ready to export. Existing Perma links are included as supplied; new captures include their check results.':red?'Excel locked: resolve failed captures and review red flags.':items.some(it=>it.content==='Needs review'||(it.created==='Yes'&&it.content==='Not checked'))?'Excel locked: review archives whose content could not be verified.':'Existing Perma links are kept as supplied. New captures unlock Excel after their checks and reviews are complete.';
+  const attempted=items.filter(it=>!it.existing&&it.submittedAt),finished=attempted.filter(it=>it.status!=='submitting').length;
+  $('progress').value=attempted.length?100*finished/attempted.length:0;
+  $('overallLabel').textContent=`${running?'Submitting':'Submissions finished'}: ${returned} links returned · ${rejected} rejected · ${failed} capture failed · ${unknown} unconfirmed · ${items.filter(sourceDisabled).length} disabled (skipped)`;
+  $('downloadHint').textContent=running?'Submitting links…':'Excel is available. Word appends returned links except reported failed captures; other URLs remain unchanged. Pending capture statuses refresh automatically every 10 seconds; content checks are disabled.';
 }
 function busy(on){running=on;document.querySelectorAll('input,textarea,button,select').forEach(el=>el.disabled=on);render();}
 function apiMessage(body,fallback){
@@ -313,14 +362,16 @@ function apiMessage(body,fallback){
   if(body&&typeof body==='object')return Object.entries(body).map(([key,value])=>`${key}: ${apiMessage(value,'Invalid value')}`).join('; ').slice(0,600)||fallback;
   return body==null?fallback:String(body);
 }
-async function api(path,method='GET',data){
+async function api(path,method='GET',data,timeoutMs=30000){
   let response;
-  try{response=await fetch(API+path,{method,headers:{Authorization:`ApiKey ${$('apiKey').value.trim()}`,Accept:'application/json',...(data?{'Content-Type':'application/json'}:{})},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(30000)});}
+  try{response=await fetch(API+path,{method,headers:{Authorization:`ApiKey ${$('apiKey').value.trim()}`,Accept:'application/json',...(data?{'Content-Type':'application/json'}:{})},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(timeoutMs)});}
   catch(cause){throw Error(cause.name==='TimeoutError'?'Perma request timed out.':'Could not reach Perma (network or browser access restriction).');}
   const raw=await response.text();let body;try{body=JSON.parse(raw);}catch{body=null;}
   if(!response.ok){
     const error=Error(apiMessage(body,`Perma request failed (HTTP ${response.status}).`));
     error.httpStatus=response.status;
+    const retryAfter=response.headers.get('Retry-After');
+    error.retryAfterMs=retryAfter?(Number.isFinite(Number(retryAfter))?Number(retryAfter)*1000:Math.max(0,Date.parse(retryAfter)-Date.now())):5000;
     // 408 and server failures can follow an accepted write; never blindly retry those.
     error.rejected=response.status>=400&&response.status<500&&response.status!==408;
     throw error;
@@ -329,12 +380,56 @@ async function api(path,method='GET',data){
   return body;
 }
 function applyArchive(it,detail){
-  const primary=(detail.captures||[]).find(c=>c.role==='primary');
   if(detail.guid)it.guid=detail.guid;
-  it.title=detail.title||it.title;it.captureStatus=primary?.status||'unknown';
-  it.status=detail.user_deleted?'deleted':primary?.status==='failed'?'failed':primary?.status==='success'?'completed':'pending';
-  it.created=failures.has(it.status)?'No':it.status==='completed'?'Yes':'Pending';
-  it.note='';it.message='';
+  it.title=detail.title||it.title;it.status='link_returned';it.created='Link returned';
+  it.captureStatus=(detail.captures||[]).find(c=>c.role==='primary')?.status||'unknown';
+  if(detail.user_deleted||it.captureStatus==='failed'){
+    it.status='capture_failed';it.created='Capture failed';it.note=detail.user_deleted?'Perma reported a deleted archive.':'Perma reported a failed primary capture.';
+  }else it.note='Perma link returned. Capture and content were not checked.';
+  it.message='';
+}
+function pendingCaptureRows(){
+  return items.filter(it=>!it.existing&&it.guid&&!captureFailed(it)&&it.captureStatus!=='success');
+}
+function scheduleCaptureRefresh(){
+  clearTimeout(autoCaptureTimer);
+  if(!pendingCaptureRows().length||!$('apiKey').value.trim())return;
+  autoCaptureTimer=setTimeout(()=>{
+    if(running||captureRefreshBusy){scheduleCaptureRefresh();return;}
+    void refreshCaptureStatuses(pendingCaptureRows());
+  },10000);
+}
+async function refreshCaptureStatuses(selected=items){
+  if(running||captureRefreshBusy)return;
+  if(!$('apiKey').value.trim()){status('Enter your Perma API key to refresh capture statuses.');return;}
+  const rows=selected.filter(it=>it.guid&&!it.existing),token=revision;
+  if(!rows.length)return;
+  clearTimeout(autoCaptureTimer);captureRefreshBusy=true;render();let cursor=0,changed=false,unavailable=0;
+  async function worker(){
+    while(cursor<rows.length&&token===revision){
+      const it=rows[cursor++],guid=it.guid;
+      try{
+        // One bounded metadata request per link per pass; page content is never inspected.
+        const detail=await api('/archives/'+encodeURIComponent(guid)+'/','GET',undefined,8000);
+        if(token!==revision||!items.includes(it)||it.guid!==guid)continue;
+        const wasFailed=captureFailed(it);
+        applyArchive(it,detail);
+        it.note=captureFailed(it)?it.note:'Perma status refreshed. Page content was not checked.';
+        if(wasFailed!==captureFailed(it)){changed=true;invalidateDocx();}
+        render();
+      }catch{unavailable++;}
+    }
+  }
+  try{await Promise.all(Array.from({length:Math.min(4,rows.length)},()=>worker()));}
+  finally{
+    captureRefreshBusy=false;render();
+    if(token===revision&&!running){
+      if(changed)await prepareDocx();
+      const pending=pendingCaptureRows().length;
+      if(!$('actionMessage').textContent.startsWith('Batch stopped')&&!$('actionMessage').textContent.startsWith('Cannot start')&&!$('actionMessage').textContent.includes(' rejected, '))status(`Capture statuses updated.${pending?' '+pending+' pending; refreshing again in 10 seconds.':' No captures awaiting confirmation.'}${unavailable?' '+unavailable+' statuses unavailable; existing results kept.':''}`);
+    }
+    scheduleCaptureRefresh();
+  }
 }
 async function recoverSubmissions(selected){
   const unknown=selected.filter(recoverable);if(!unknown.length)return;
@@ -353,232 +448,82 @@ async function recoverSubmissions(selected){
       }
       for(const it of rows){
         const matches=archives.filter(a=>a.guid&&!a.user_deleted&&canonical(a.url)===it.url&&Date.parse(a.creation_timestamp)>=Date.parse(it.submittedAt)-5000);
-        if(matches.length===1){applyArchive(it,matches[0]);it.checkComplete=false;}
+        if(matches.length===1){applyArchive(it,matches[0]);}
         else it.note=matches.length?'Multiple matching archives found. Paste the intended Perma link below.':'No matching archive found yet. Recheck later, or paste its Perma link below. No duplicate was submitted.';
       }
     }catch(e){rows.forEach(it=>it.note='Could not check the destination folder: '+e.message+' Paste the existing Perma link below if available.');}
     render();
   }
 }
-function updateJobs(rows,data){
-  const buckets=new Map();
-  for(const j of data.capture_jobs||data.objects||[]){const key=canonical(j.submitted_url);if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(j);}
-  for(const row of rows){
-    const j=buckets.get(row.url)?.shift();if(!j)continue;
-    row.stepDescription=j.step_description||'';row.status=j.user_deleted?'deleted':(j.status||'pending');row.guid=j.guid||row.guid;row.title=j.title||row.title;
-    row.message=typeof j.message==='string'?j.message:JSON.stringify(j.message||'');
-    row.created=['failed','invalid','deleted'].includes(row.status)?'No':(['completed','success'].includes(row.status)&&row.guid?'Yes':'Pending');
-    if(row.created==='No'){row.content='No archive';row.note=row.message||'Perma reports that the capture failed.';row.checkComplete=true;}
+function lookupKey(raw){try{const url=new URL(raw);url.hash='';return url.href;}catch{return '';}}
+async function reuseExistingArchives(selected){
+  const targets=selected.filter(it=>!it.guid&&!it.existing),matches=new Map();
+  if(!targets.length)return 0;
+  const wanted=new Set(targets.map(it=>lookupKey(it.url)));
+  let path='/archives/?limit=300',page=0;const seen=new Set();
+  while(path){
+    if(seen.has(path))throw Error('Archive lookup returned repeated pages. No new links were submitted.');
+    seen.add(path);status(`Looking for existing Perma links across your accessible folders… page ${++page}`);
+    const data=await api(path);
+    const archives=Array.isArray(data)?data:data.objects;
+    if(!Array.isArray(archives))throw Error('Perma archive list could not be read. No new links were submitted.');
+    if(!archives.length)break;
+    for(const archive of archives){
+      const key=lookupKey(archive.url),primary=(archive.captures||[]).find(c=>c.role==='primary');
+      if(!wanted.has(key)||!archive.guid||archive.user_deleted||!['success','pending','in_progress'].includes(primary?.status))continue;
+      const previous=matches.get(key),rank=primary.status==='success'?2:1,oldRank=previous?.captures?.find(c=>c.role==='primary')?.status==='success'?2:1;
+      if(!previous||rank>oldRank||(rank===oldRank&&Date.parse(archive.creation_timestamp)>Date.parse(previous.creation_timestamp)))matches.set(key,archive);
+    }
+    if([...wanted].every(key=>matches.get(key)?.captures?.some(c=>c.role==='primary'&&c.status==='success')))break;
+    if(!data.meta?.next)break;
+    const next=new URL(data.meta.next,API+'/');
+    if(next.origin!==new URL(API).origin||next.pathname!=='/v1/archives/')throw Error('Unexpected archive-list pagination. No new links were submitted.');
+    path=next.pathname.slice(3)+next.search;
   }
+  let reused=0;
+  for(const it of targets){
+    const match=matches.get(lookupKey(it.url));if(!match)continue;
+    applyArchive(it,match);it.reused=true;it.submittedAt=it.submittedAt||new Date().toISOString();
+    it.note=it.captureStatus==='success'?'Reused an existing successful capture from your Perma account. No new archive created.':'Reused an existing pending capture to avoid creating a duplicate. Status refresh will continue.';
+    reused++;
+  }
+  render();return reused;
 }
 async function submit(selected=items.filter(retryable)){
-  selected.forEach(recognizeExisting);selected=selected.filter(retryable);
-  // Use the documented single-archive endpoint so one bad request cannot
-  // strand fifty unrelated rows. Never automatically repeat an uncertain POST.
+  selected.forEach(recognizeExisting);selected=selected.filter(creationAllowed);
+  const outcome={total:selected.length,attempted:0,returned:0,rejected:0,unknown:0,stopReason:''};
+  const folder=Number($('folderId').value);
   for(let i=0;i<selected.length;i++){
-    const it=selected[i];status(`Creating link ${i+1} of ${selected.length}…`);
-    Object.assign(it,{status:'submitting',created:'Pending',note:'',message:'',submittedAt:new Date().toISOString(),targetFolder:Number($('folderId').value)});render();
+    outcome.attempted++;
+    const it=selected[i];status(`Sending link ${i+1} of ${selected.length}…`);
+    Object.assign(it,{status:'submitting',created:'Pending',note:'',message:'',submittedAt:new Date().toISOString(),targetFolder:folder});render();
     try{
-      const data=await api('/archives/','POST',{url:it.url,folder:it.targetFolder});
-      if(!data.guid)throw Error('Perma returned no archive ID; the submission may have been accepted.');
-      applyArchive(it,data);render();
-    }catch(e){
-      it.status=e.rejected?'submission_rejected':'submission_unknown';it.created=e.rejected?'Not submitted':'Unknown';
-      it.message=e.message;it.note=e.message+(e.rejected?' Correct the problem and retry this link.':' Use Recheck archives to look for the accepted submission before retrying.');render();
-      // Stop on account, quota, rate-limit, endpoint, or transport errors.
-      // Only URL-specific validation errors permit the next request.
-      if(!e.rejected||![400,422].includes(e.httpStatus))break;
-    }
-  }
-}
-async function poll(selected=items){
-  // Bounded polling. Subsequent clicks only recheck existing batches.
-  const deadline=Date.now()+120000;
-  while(selected.some(isPending)&&Date.now()<deadline){
-    for(const id of [...new Set(selected.filter(x=>isPending(x)&&x.batchId).map(x=>x.batchId))]){
-      status('Waiting for Perma captures…');
-      updateJobs(selected.filter(x=>x.batchId===id),await api('/archives/batches/'+encodeURIComponent(id)));render();
-    }
-    for(const it of selected.filter(x=>isPending(x)&&!x.batchId&&x.guid)){
-      try{const detail=await archiveDetails(it);applyArchive(it,detail);}catch(e){it.note='Capture status could not be checked: '+e.message;it.message=e.message;}render();
-    }
-    if(selected.some(isPending))await new Promise(r=>setTimeout(r,4000));
-  }
-}
-const botPattern=/\b(?:verify (?:that )?you(?:'re| are) (?:a )?human|checking your browser|checking (?:if )?(?:the )?site connection|performing (?:a )?security (?:check|verification)|please (?:complete|solve) (?:the )?(?:captcha|security check)|unusual traffic from your|enable javascript and cookies to continue|press and hold to (?:confirm|verify)|pardon (?:the|our) interruption|automated (?:access|requests) (?:is|are) (?:blocked|prohibited)|security verification)\b/i;
-const errorPattern=/\b(?:access denied|403 forbidden|404 not found|page not found|service unavailable|request (?:blocked|rejected)|temporarily blocked|you (?:have been|are) blocked|robot check)\b/i;
-function titleFlag(title){
-  const value=String(title||'').trim();
-  if(botPattern.test(value)||/^(?:just a moment|attention required|are you a (?:robot|human)|captcha|human verification|security check|robot or human)[.!?…\s-]*(?:\|.*)?$/i.test(value))return {content:'Suspected bot check',note:'The archive title suggests a human-verification or bot-check page: '+value};
-  if(errorPattern.test(value))return {content:'Possible error page',note:'The archive title suggests an error or blocked page: '+value};
-  return null;
-}
-function analyzeHtmlStatus(html){
-  const doc=new DOMParser().parseFromString(html,'text/html');
-  const challenge=!!doc.querySelector('#challenge-form,#cf-challenge-running,#px-captcha,form[action*="challenge"],script[src*="/cdn-cgi/challenge-platform/"],script[src*="captcha-delivery.com/"]');
-  const heading=[doc.title,...[...doc.querySelectorAll('h1,h2')].map(n=>n.textContent)].join(' ');
-  const titleResult=titleFlag(doc.title);
-  doc.querySelectorAll('script,style,noscript,nav,footer,template,[hidden],[aria-hidden="true"]').forEach(n=>n.remove());
-  doc.querySelectorAll('p,div,h1,h2,h3,li,section,article,br').forEach(n=>n.append(' '));
-  const text=(doc.body?.textContent||'').replace(/\s+/g,' ').trim();
-  if(titleResult)return titleResult;
-  if(botPattern.test(heading)||(text.length<2500&&(botPattern.test(text)||challenge)))return {content:'Suspected bot check',note:'Saved HTML appears to contain a human-verification, CAPTCHA, or browser-security challenge instead of the source. Open the archive to confirm.'};
-  if(errorPattern.test(heading)||(text.length<1500&&errorPattern.test(text.slice(0,600))))return {content:'Possible error page',note:'Saved HTML appears to show access denied, a blocked request, or an error page.'};
-  if(text.length<120)return {content:'Missing content',note:'Almost no readable text was saved. The page may be blank, require JavaScript, or contain only a viewer or image; inspect the archive.'};
-  if(text.length<250||text.split(/\s+/).length<40)return {content:'Needs review',note:'Too little readable text to assess the saved page. Inspect it before marking it usable.'};
-  return {content:'Text detected',note:'Readable saved HTML detected. This does not verify citation accuracy or completeness.'};
-}
-function readableText(html){
-  const doc=new DOMParser().parseFromString(html,'text/html');
-  doc.querySelectorAll('script,style,noscript,nav,header,footer,aside,template,[hidden],[aria-hidden="true"],.cookie-banner,[role="navigation"],[role="banner"]').forEach(n=>n.remove());
-  const candidates=[...doc.querySelectorAll('article,[role="main"],main')];
-  const root=candidates.sort((a,b)=>(b.textContent||'').length-(a.textContent||'').length)[0]||doc.body;
-  if(!root)return '';
-  root.querySelectorAll('p,div,h1,h2,h3,h4,li,section,article,br,td').forEach(n=>n.append(' '));
-  return (root.textContent||'').normalize('NFKC').replace(/\s+/g,' ').trim();
-}
-function analyzeHtml(html){return {...analyzeHtmlStatus(html),text:readableText(html)};}
-function comparisonTokens(text){
-  return (text||'').normalize('NFKC').toLocaleLowerCase().replace(/\p{Script=Han}/gu,' $& ').match(/[\p{L}\p{N}]+/gu)||[];
-}
-function compareContent(source,saved){
-  const a=comparisonTokens(source),b=comparisonTokens(saved);
-  const shingles=t=>{const out=new Set();for(let i=0;i+4<t.length;i++)out.add(t.slice(i,i+5).join(' '));return out;};
-  if(a.length<60||b.length<60||new Set(a).size<25||new Set(b).size<25)return {match:false,score:0,reason:'Too little distinct readable content to compare.'};
-  const aa=shingles(a),bb=shingles(b);let shared=0;for(const x of aa)if(bb.has(x))shared++;
-  const sourceCoverage=shared/aa.size,archiveCoverage=shared/bb.size,dice=2*shared/(aa.size+bb.size),ratio=b.length/a.length;
-  // Bidirectional phrase overlap rejects archives containing only common
-  // navigation, a short excerpt, or a repeated error page. Length is a guard,
-  // not the similarity metric. Both pages must pass the error-page checks too.
-  const match=sourceCoverage>=.75&&archiveCoverage>=.70&&dice>=.75&&ratio>=.65&&ratio<=1.55;
-  return {match,score:dice,sourceCoverage,archiveCoverage,reason:match?'':'Saved content differs substantially from the source.'};
-}
-async function readOriginal(url){
-  const response=await fetch(url,{credentials:'omit',headers:{Accept:'text/html,application/xhtml+xml'},signal:AbortSignal.timeout(15000)});
-  if(!response.ok)throw Error('Source returned HTTP '+response.status+'.');
-  if(!/text\/html|application\/xhtml\+xml/i.test(response.headers.get('content-type')||''))throw Error('Source is not readable HTML.');
-  const bytes=await limitedBytes(response.body,8*1024*1024);
-  const charset=response.headers.get('content-type')?.match(/charset=["']?([^;\s"']+)/i)?.[1]||'utf-8';
-  return analyzeHtml(new TextDecoder(charset).decode(bytes));
-}
-async function compareArchive(it,detail,primary){
-  let saved;
-  try{saved=await inspectStored(it,detail,primary);}
-  catch{try{saved=await inspectReplay(it.guid);}catch{return {content:'Could not verify content',note:'Archive content could not be read. Not appended to Word.',verifiedMatch:false};}}
-  if(['Suspected bot check','Possible error page','Missing content'].includes(saved.content))return {...saved,verifiedMatch:false};
-  if(!saved.text)return {content:'Could not verify content',note:'Archive is not readable HTML. Not appended to Word.',verifiedMatch:false};
-  let source;
-  try{source=await readOriginal(it.url);}
-  catch{return {content:'Could not verify content',note:'Source content could not be read for comparison. Not appended to Word.',verifiedMatch:false};}
-  if(source.content!=='Text detected')return {content:'Could not verify content',note:'Source page is blocked, incomplete, or too short to compare. Not appended to Word.',verifiedMatch:false};
-  const result=compareContent(source.text,saved.text);
-  return {content:result.match?'Successfully created':'Content mismatch',note:result.match?`Content matches (${Math.round(result.score*100)}%).`:(result.reason+' Not appended to Word.'),similarity:result.score,verifiedMatch:result.match};
-}
-
-async function inspectReplay(guid){
-  const url='https://perma.cc/'+encodeURIComponent(guid);
-  const res=await fetch(url,{credentials:'omit',signal:AbortSignal.timeout(12000)});
-  if(!res.ok)throw Error('Archive viewer could not be read.');
-  const shell=new DOMParser().parseFromString(await res.text(),'text/html');
-  // The outer Perma navigation shell is never evidence of saved source content.
-  const frame=shell.querySelector('iframe#replay_iframe,iframe#replay,iframe[src*="/warc/"],iframe[src*="/replay/"]');
-  if(!frame?.getAttribute('src'))throw Error('Archive viewer needs interactive review.');
-  const replay=new URL(frame.getAttribute('src'),res.url||url);
-  if(replay.protocol!=='https:'||!(replay.hostname==='perma.cc'||replay.hostname.endsWith('.perma.cc')))throw Error('Archive viewer is on an unsupported origin.');
-  const page=await fetch(replay.href,{credentials:'omit',signal:AbortSignal.timeout(12000)});
-  if(!page.ok)throw Error('Archive playback could not be read.');
-  if(!page.headers.get('content-type')?.includes('text/html'))return {content:'Needs review',note:'PDF, image, or other non-HTML capture. Open the archive to inspect it.'};
-  const html=await page.text(),d=new DOMParser().parseFromString(html,'text/html');
-  if(d.querySelector('replay-web-page,iframe#replay_iframe,iframe[src*="/replay/"]'))throw Error('Nested viewer requires manual review.');
-  return analyzeHtml(html);
-}
-// Reading the saved WARC through the authenticated API also works when the
-// playback viewer is inaccessible. Source comparison is fetched separately.
-async function limitedBytes(stream,limit){
-  if(!stream)throw Error('No readable archive stream.');
-  const reader=stream.getReader(),chunks=[];let size=0;
-  try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>limit)throw Error('Archive exceeds the automatic inspection limit.');chunks.push(value);}}
-  finally{await reader.cancel().catch(()=>{});reader.releaseLock();}
-  const all=new Uint8Array(size);let offset=0;for(const c of chunks){all.set(c,offset);offset+=c.length;}return all;
-}
-function headerEnd(bytes,start){for(let i=start;i+3<bytes.length;i++)if(bytes[i]===13&&bytes[i+1]===10&&bytes[i+2]===13&&bytes[i+3]===10)return i;return -1;}
-function headers(text){const out={};for(const line of text.split('\r\n').slice(1)){const at=line.indexOf(':');if(at>0)out[line.slice(0,at).toLowerCase()]=line.slice(at+1).trim();}return out;}
-function archiveUrl(raw){try{const u=new URL(String(raw).replace(/^<|>$/g,''));u.hash='';return u.href;}catch{return '';}}
-function savedResponse(bytes,target){
-  const decoder=new TextDecoder(),records=[];let offset=0;
-  while(offset<bytes.length){
-    while(bytes[offset]===13||bytes[offset]===10)offset++;
-    const end=headerEnd(bytes,offset);if(end<0)break;
-    const raw=decoder.decode(bytes.subarray(offset,end));if(!raw.startsWith('WARC/'))throw Error('Unsupported archive format.');
-    const h=headers(raw),length=Number(h['content-length']),start=end+4;
-    if(!h['content-length']||!Number.isSafeInteger(length)||length<0||start+length>bytes.length)throw Error('Incomplete archive record.');
-    if(h['warc-type']==='response'){
-      const stop=headerEnd(bytes,start);
-      if(stop>=start&&stop<start+length){const http=decoder.decode(bytes.subarray(start,stop)),hh=headers(http),code=Number(http.match(/^HTTP\/\S+\s+(\d+)/)?.[1]);records.push({url:archiveUrl(h['warc-target-uri']),h:hh,code,body:bytes.subarray(stop+4,start+length)});}
-    }
-    offset=start+length;
-  }
-  let url=archiveUrl(target);const seen=new Set();
-  for(let i=0;i<10;i++){
-    if(seen.has(url))throw Error('Saved redirect loop.');seen.add(url);
-    const candidates=records.filter(r=>r.url===url),r=candidates.find(r=>r.code>=200&&r.code<300)||candidates.find(r=>r.code>=400)||candidates[0];
-    if(!r)throw Error('Primary saved response not found.');
-    if(r.code>=300&&r.code<400&&r.h.location){url=archiveUrl(new URL(r.h.location,url).href);continue;}
-    return r;
-  }
-  throw Error('Too many saved redirects.');
-}
-function unchunk(bytes){
-  let pos=0,size=0;const parts=[],decoder=new TextDecoder();
-  while(pos<bytes.length){let end=pos;while(end+1<bytes.length&&!(bytes[end]===13&&bytes[end+1]===10))end++;const hex=decoder.decode(bytes.subarray(pos,end)).split(';')[0].trim();if(!/^[0-9a-f]+$/i.test(hex))throw Error('Unsupported saved transfer encoding.');const len=parseInt(hex,16);if(!len){const out=new Uint8Array(size);let off=0;for(const p of parts){out.set(p,off);off+=p.length;}return out;}pos=end+2;if(pos+len+2>bytes.length||bytes[pos+len]!==13||bytes[pos+len+1]!==10)throw Error('Incomplete saved transfer encoding.');parts.push(bytes.subarray(pos,pos+len));size+=len;pos+=len+2;}
-  throw Error('Incomplete chunked content.');
-}
-async function inspectStored(it,detail,primary){
-  if(Number(detail.warc_size)>32*1024*1024)throw Error('Archive too large for automatic inspection.');
-  const response=await fetch(API+'/archives/'+encodeURIComponent(it.guid)+'/download',{headers:{Authorization:`ApiKey ${$('apiKey').value.trim()}`},credentials:'omit',signal:AbortSignal.timeout(20000)});
-  if(!response.ok)throw Error('Saved archive could not be downloaded for inspection.');
-  let bytes=await limitedBytes(response.body,32*1024*1024);
-  if(bytes[0]===31&&bytes[1]===139)bytes=await limitedBytes(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')),64*1024*1024);
-  const r=savedResponse(bytes,primary.url||detail.url||it.url);
-  if(r.code>=400)return {content:'Possible error page',note:`The saved source returned HTTP ${r.code}. It may contain a blocked request or error page.`};
-  if(!r.code||r.code<200||r.code>=300)throw Error('Saved response is not a final content response.');
-  if(!/\b(?:text\/html|application\/xhtml\+xml)\b/i.test(r.h['content-type']||primary.content_type||''))return {content:'Needs review',note:'Saved PDF, image, or non-HTML source. Inspect the archive manually.'};
-  let body=r.body;
-  if(/chunked/i.test(r.h['transfer-encoding']||''))body=unchunk(body);
-  const encoding=(r.h['content-encoding']||'identity').toLowerCase();
-  if(encoding!=='identity'){if(!['gzip','deflate'].includes(encoding))throw Error('Saved content encoding needs manual review.');body=await limitedBytes(new Blob([body]).stream().pipeThrough(new DecompressionStream(encoding)),16*1024*1024);}
-  const charset=r.h['content-type']?.match(/charset=["']?([^;\s"']+)/i)?.[1]||'utf-8';
-  return analyzeHtml(new TextDecoder(charset).decode(body));
-}
-async function archiveDetails(it){
-  try{return await api('/archives/'+encodeURIComponent(it.guid)+'/');}
-  catch(e){if(it.existing&&[403,404].includes(e.httpStatus))return api('/public/archives/'+encodeURIComponent(it.guid)+'/');throw e;}
-}
-async function verifyArchives(selected=items){
-  for(let i=0;i<selected.length;i++){
-    const it=selected[i];
-    if(it.created==='No'||failures.has(it.status)){it.content='No archive';it.note=it.note||it.message||'Perma reports that the primary capture failed.';it.checkComplete=true;render();continue;}
-    if(!it.guid)continue;
-    status(`Checking archive ${i+1} of ${selected.length}…`);it.stage='Verifying primary capture';it.checkComplete=false;it.verifiedMatch=false;it.similarity=null;it.review='';render();
-    try{
-      const detail=await archiveDetails(it);
-      const primary=(detail.captures||[]).find(c=>c.role==='primary');
-      it.title=detail.title||it.title;it.captureStatus=primary?.status||'unknown';it.checkedAt=new Date().toISOString();
-      if(detail.user_deleted||primary?.status==='failed'){it.created='No';it.status=detail.user_deleted?'deleted':'failed';it.content='No archive';it.note='Perma reports a failed or deleted primary capture.';it.checkComplete=true;}
-      else if(primary?.status!=='success'){it.created='Pending';it.status='pending';it.content='Not checked';it.note='Primary capture is not yet confirmed.';}
-      else {
-        it.created='Yes';it.status='completed';it.stage='Checking saved content';render();
-        const titleResult=titleFlag(it.title);
-        if(titleResult)Object.assign(it,titleResult);
-        else if(!$('verify').checked){it.content='Could not verify content';it.note='Content comparison is off. Not appended to Word.';}
-        else {
-          Object.assign(it,await compareArchive(it,detail,primary));
+      let data;
+      for(let attempt=0;attempt<2;attempt++){
+        try{data=await api('/archives/','POST',{url:it.url,folder});break;}
+        catch(e){
+          // A 429 is a confirmed rejection, so retrying it does not duplicate
+          // an accepted archive. Never retry an uncertain POST or server error.
+          if(e.httpStatus!==429||attempt!==0||e.retryAfterMs>60000)throw e;
+          const wait=Math.max(1000,e.retryAfterMs||5000);
+          status(`Perma rate limit: waiting ${Math.ceil(wait/1000)} seconds, then continuing link ${i+1} of ${selected.length}…`);
+          await new Promise(resolve=>setTimeout(resolve,wait));
         }
-        it.checkComplete=true;
       }
-    }catch(e){it.created='Pending';it.content='Could not verify content';it.note='Capture details unavailable. Not appended to Word.';}
-    it.stage='';render();
+      if(!data?.guid)throw Error('Perma returned no archive ID; the submission may have been accepted.');
+      applyArchive(it,data);outcome.returned++;render();
+    }catch(e){
+      if(e.rejected)outcome.rejected++;else outcome.unknown++;
+      it.status=e.rejected?'submission_rejected':'submission_unknown';it.created=e.rejected?'Not submitted':'Unknown';
+      it.message=e.message;it.note=e.message+(e.rejected?' Correct the problem and retry this link.':' Use Find unconfirmed links to find this submission before retrying it. Other links continue.');render();
+      // Only account-wide refusals or a persistent rate limit stop the queue.
+      // Every independent remaining URL is still attempted after any other error.
+      if([401,403,429].includes(e.httpStatus)){
+        outcome.stopReason='HTTP '+e.httpStatus+': '+e.message+(e.httpStatus===429?' Perma is still rate-limiting requests. Retry remaining links after the limit clears.':' Check your API key and destination-folder access.');break;
+      }
+    }
   }
+  return outcome;
 }
 // A dependency-free XLSX writer: inline string cells avoid formula execution.
 function zipStored(files,mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
@@ -593,7 +538,7 @@ function zipStored(files,mime='application/vnd.openxmlformats-officedocument.spr
   return new Blob([...parts,...central,end],{type:mime});
 }
 const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main',R='http://schemas.openxmlformats.org/officeDocument/2006/relationships',PKG='http://schemas.openxmlformats.org/package/2006/relationships',DOCX_MIME='application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-function eligibleForDocx(it){return !it.existing&&!!it.guid&&it.created==='Yes'&&it.captureStatus==='success'&&it.checkComplete&&(it.verifiedMatch===true||it.review==='accepted')&&it.review!=='rejected';}
+function eligibleForDocx(it){return !it.existing&&!!it.guid&&it.status!=='submission_rejected'&&!captureFailed(it);}
 function invalidateDocx(){++docxRevision;docxBusy=false;if(docxUrl)URL.revokeObjectURL(docxUrl);docxUrl='';$('downloadDocx').disabled=true;$('docxStatus').hidden=true;}
 function wordAncestor(node,name){for(let n=node;n;n=n.parentNode)if(n.nodeType===1&&n.namespaceURI===W&&localName(n)===name)return n;return null;}
 function excludedWord(node){return ['del','moveFrom'].some(name=>wordAncestor(node,name));}
@@ -680,7 +625,7 @@ async function prepareDocx(){
     if(token!==docxRevision)return;
     if(docxUrl)URL.revokeObjectURL(docxUrl);docxUrl=URL.createObjectURL(result.blob);
     const omitted=items.filter(it=>!it.existing&&!eligibleForDocx(it)).length;
-    $('docxStatus').textContent=`${result.count} permalink${result.count===1?'':'s'} appended${omitted?' · '+omitted+' unapproved link'+(omitted===1?'':'s')+' left unchanged':''}.`;
+    $('docxStatus').textContent=`${result.count} permalink${result.count===1?'':'s'} appended${omitted?' · '+omitted+' omitted link'+(omitted===1?'':'s')+' left unchanged':''}.`;
     $('downloadDocx').textContent='Download Word document';
   }catch(e){if(token===docxRevision){docxUrl='';$('docxStatus').textContent='Word export failed: '+e.message;}}
   finally{if(token===docxRevision){docxBusy=false;render();}}
@@ -689,8 +634,8 @@ $('appendDocx').addEventListener('change',()=>{invalidateDocx();render();if($('a
 $('downloadDocx').addEventListener('click',()=>{if(!docxUrl||running||docxBusy)return;const a=document.createElement('a');a.href=docxUrl;a.download=(file?.name||'document.docx').replace(/\.docx$/i,'')+'-perma.docx';a.click();});
 
 function workbook(){
-  const headers=['Footnote','Target URL','Perma link','Created successfully','Capture job status','Primary capture status','Content check','Review notes','Archive title','API message','Batch ID','Checked at (UTC)','Flag','Flag severity','Manual review'];
-  const data=[headers,...items.map(it=>[it.refs.join(', '),it.url,it.guid?'https://perma.cc/'+it.guid:'',it.created,it.status,it.captureStatus,it.content,it.note+(it.similarity!=null?' (similarity '+Math.round(it.similarity*100)+'%)':''),it.title,it.message,it.batchId,it.checkedAt,flagFor(it)?.label||'',flagFor(it)?.level||'',it.review||''])];
+  const headers=['Footnote','Target URL','Perma link','Submission result','Submission status','Capture checks','Content checks','Notes','Archive title','API message','Batch ID','Submitted at (UTC)','Flag','Flag severity','Included in Word'];
+  const data=[headers,...items.map(it=>[it.refs.join(', '),it.url,it.guid?'https://perma.cc/'+it.guid:'',sourceDisabled(it)?'Disabled until enabled':it.created,it.status,'Disabled','Disabled',it.note,it.title,it.message,it.batchId,it.submittedAt,flagFor(it)?.label||'',flagFor(it)?.level||'',eligibleForDocx(it)?'Yes':'No'])];
   const xml=s=>escapeHtml(String(s??'').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,'').slice(0,32767));
   const sheet=`<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${headers.map((_,i)=>`<col min="${i+1}" max="${i+1}" width="${[1,2,7].includes(i)?55:24}" customWidth="1"/>`).join('')}</cols><sheetData>${data.map((row,i)=>`<row r="${i+1}">${row.map((v,j)=>`<c r="${String.fromCharCode(65+j)}${i+1}" t="inlineStr"><is><t xml:space="preserve">${xml(v)}</t></is></c>`).join('')}</row>`).join('')}</sheetData><autoFilter ref="A1:O${data.length}"/></worksheet>`;
   return zipStored({
@@ -702,47 +647,65 @@ function workbook(){
   });
 }
 
-function download(){if(!canDownload()){status('Excel is locked until all captures and reviews are ready.');return;}if(downloadUrl)URL.revokeObjectURL(downloadUrl);downloadUrl=URL.createObjectURL(workbook());const a=document.createElement('a');a.href=downloadUrl;a.download='easyperma-results.xlsx';a.click();}
+function download(){if(!canDownload()){status('Wait for link submissions to finish before downloading.');return;}if(downloadUrl)URL.revokeObjectURL(downloadUrl);downloadUrl=URL.createObjectURL(workbook());const a=document.createElement('a');a.href=downloadUrl;a.download='easyperma-results.xlsx';a.click();}
 async function run(selected,create=false){
-  if(running)return;
-  selected.forEach(recognizeExisting);
-  if(create)selected=selected.filter(retryable);
-  if(!selected.length){render();status('No links left to create. Existing Perma links are excluded.');return;}
-  if(!$('apiKey').value.trim()){status('Enter your Perma API key.');$('apiKey').focus();return;}
-  if(create&&(!Number.isInteger(Number($('folderId').value))||Number($('folderId').value)<=0)){status('Enter a valid folder ID.');$('folderId').focus();return;}
-  if(!selected.length)return;
-  if(selected.some(it=>!canonical(it.url))){status('Please correct invalid target URLs before creating links.');return;}
-  selected.forEach(it=>{it.url=canonical(it.url);recognizeExisting(it);});
-  clearTimeout(previewTimer);++revision;invalidateDocx();busy(true);submitted=true;
+  if(running){status('A batch is already running. Its progress is shown here.');return;}
+  let outcome;
   try{
-    await recoverSubmissions(selected);
-    if(create)await submit(selected.filter(retryable));
-    await poll(selected);await verifyArchives(selected);checksDirty=items.some(it=>it.guid&&!it.checkComplete);
-    status(selected.some(recoverable)?'Some submissions are unconfirmed. Recheck archives to find them without creating duplicates.':selected.some(it=>it.status==='submission_rejected')?'Perma rejected some submissions. The exact errors are shown beside each link.':selected.some(isPending)?'Some captures are still pending. Check again shortly.':items.some(flagFor)?'Checks finished. Red links were not added to Word.':'Checks finished. Your confirmed links are ready.');
-  }catch(e){status(e.message+' No Excel was downloaded. Recheck existing captures; unconfirmed submissions must be checked in your Perma account.');}
-  finally{busy(false);await prepareDocx();}
+    selected.forEach(recognizeExisting);
+    if(create)selected=selected.filter(creationAllowed);
+    if(!selected.length){render();status('No eligible links are visible. Check the filters and Enable buttons.');return;}
+    if(!$('apiKey').value.trim()){status('Cannot start: enter your Perma API key above.');$('apiKey').focus();return;}
+    if(create&&(!Number.isInteger(Number($('folderId').value))||Number($('folderId').value)<=0)){
+      status('Cannot start: choose a destination folder above. Use Load folders, or choose Enter a folder ID manually.');
+      $('folderSelect').focus();return;
+    }
+    if(selected.some(it=>!canonical(it.url))){status('Cannot start: correct the invalid target URLs in the table.');return;}
+    // Copy the selection before background updates or table rendering can change it.
+    selected=[...selected];
+    selected.forEach(it=>{it.url=canonical(it.url);recognizeExisting(it);});
+    clearTimeout(previewTimer);clearTimeout(autoCaptureTimer);++revision;invalidateDocx();submitted=true;
+    busy(true);
+    if(create){
+      const reused=await reuseExistingArchives(selected);
+      const remaining=selected.filter(creationAllowed);
+      status(`Reused ${reused} existing links. Sending ${remaining.length} unmatched links…`);
+      outcome=await submit(remaining);outcome.reused=reused;
+    }else await recoverSubmissions(selected);
+  }catch(e){status('Batch error: '+e.message+'. Returned links remain available for export.');}
+  finally{
+    if(running){busy(false);await prepareDocx();}
+    if(outcome){
+      const left=outcome.total-outcome.attempted;
+      status(`${outcome.stopReason?'Batch stopped':'Batch finished'}: ${outcome.returned} links returned, ${outcome.reused||0} existing links reused, ${outcome.rejected} rejected, ${outcome.unknown} unconfirmed, ${left} not attempted.${outcome.stopReason?' '+outcome.stopReason:''}${outcome.unknown?' Use Find unconfirmed links before retrying those submissions.':''}`);
+    }
+    // Background refresh must not overwrite an actionable submission error.
+    if(outcome?.stopReason||outcome?.rejected||outcome?.unknown)scheduleCaptureRefresh();
+    else if(submitted)void refreshCaptureStatuses(selected);
+  }
 }
-$('action').addEventListener('click',()=>run(items.filter(retryable),true));
-$('recheck').addEventListener('click',()=>run(items.filter(it=>!it.existing&&(it.guid||it.batchId||recoverable(it)))));
+$('action').addEventListener('click',()=>run(selectedForCreation(),true));
+$('recheck').addEventListener('click',()=>run(items.filter(needsRecheck)));
 $('download').addEventListener('click',download);
+$('refreshCaptureStatus').addEventListener('click',()=>refreshCaptureStatuses());
 $('flaggedOnly').addEventListener('change',render);
-$('verify').addEventListener('change',()=>{invalidateDocx();items.filter(it=>!it.existing).forEach(it=>it.verifiedMatch=false);checksDirty=items.some(it=>it.guid&&it.status!=='existing');items.filter(it=>it.created==='Yes').forEach(it=>{it.checkComplete=false;it.review='';});render();});
+$('missingPermaOnly').addEventListener('change',()=>{missingPermaSelection=null;render();});
 $('rows').addEventListener('input',e=>{if(e.target.dataset.index!==undefined&&!running)items[Number(e.target.dataset.index)].url=e.target.value.trim();});
 $('rows').addEventListener('change',e=>{
   if(running)return;
   if(e.target.dataset.index!==undefined){recognizeExisting(items[Number(e.target.dataset.index)]);render();return;}
   if(e.target.dataset.recover===undefined)return;
   const guid=permaGuid(e.target.value.trim());if(!guid){status('Paste a valid Perma link, such as https://perma.cc/ABCD-1234.');return;}
-  const it=items[Number(e.target.dataset.recover)];Object.assign(it,{guid,status:'pending',created:'Pending',existing:!!permaGuid(it.url),note:'',checkComplete:false});run([it]);
+  const it=items[Number(e.target.dataset.recover)];applyArchive(it,{guid});invalidateDocx();render();prepareDocx();
 });
 $('rows').addEventListener('click',e=>{
   const button=e.target.closest('button');if(!button||running)return;
-  if(button.dataset.remove!==undefined){const index=Number(button.dataset.remove);const [removed]=items.splice(index,1);if(!removed)return;invalidateDocx();checksDirty=checksDirty&&items.some(it=>it.guid&&!it.checkComplete);render();status(`Removed the link for footnote ${removed.refs.join(', ')} from the list.`);prepareDocx();return;}
+  if(button.dataset.enable!==undefined){const it=items[Number(button.dataset.enable)];if(!it||!sourceDisabled(it))return;it.enabledSource=restrictedSource(it);render();status('Link enabled. It is now included in bulk creation when shown by your filters.');return;}
+  if(button.dataset.remove!==undefined){const index=Number(button.dataset.remove);const [removed]=items.splice(index,1);if(!removed)return;invalidateDocx();render();status(`Removed the link for footnote ${removed.refs.join(', ')} from the list.`);prepareDocx();return;}
   if(button.dataset.create!==undefined)run([items[Number(button.dataset.create)]],true);
   if(button.dataset.check!==undefined)run([items[Number(button.dataset.check)]]);
-  if(button.dataset.review!==undefined){const it=items[Number(button.dataset.review)];it.review=button.dataset.value;invalidateDocx();render();prepareDocx();status(it.review==='accepted'?'Marked usable. Word download updated to include this link.':'Archive marked unusable. Excel remains locked.');}
 });
-function reset(){invalidateDocx();++revision;items=[];submitted=false;checksDirty=false;render();}
+function reset(){clearTimeout(autoCaptureTimer);invalidateDocx();++revision;missingPermaSelection=null;items=[];submitted=false;render();}
 function setTab(tab){
   if(running)return;activeTab=tab;
   for(const [name,id,panel] of [['paste','tabPaste','panelPaste'],['doc','tabDoc','panelDoc']]){const chosen=name===tab;$(id).setAttribute('aria-selected',String(chosen));$(id).tabIndex=chosen?0:-1;$(panel).hidden=!chosen;}
@@ -753,7 +716,19 @@ for(const [id,name] of [['tabPaste','paste'],['tabDoc','doc']]){
   $(id).addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const next=e.key==='Home'?'paste':e.key==='End'?'doc':activeTab==='paste'?'doc':'paste';setTab(next);$(next==='paste'?'tabPaste':'tabDoc').focus();}});
 }
 $('source').addEventListener('input',()=>{reset();clearTimeout(previewTimer);previewTimer=setTimeout(preview,250);});
-function selectFile(f){if(!f||running)return;if(!f.name.toLowerCase().endsWith('.docx')){status('Choose a .docx document.');return;}file=f;$('fileLabel').textContent=f.name;setTab('doc');}
+let fileLoadRevision=0;
+async function selectFile(f){
+  if(!f||running)return;
+  if(!f.name.toLowerCase().endsWith('.docx')){status('Choose a .docx document.');return;}
+  const token=++fileLoadRevision;status('Loading Word document…');
+  try{
+    const bytes=await f.arrayBuffer();
+    if(token!==fileLoadRevision||running)return;
+    // Copy immediately: later exports never reopen the browser's original file handle.
+    file=new File([bytes],f.name,{type:DOCX_MIME,lastModified:f.lastModified});
+    $('fileLabel').textContent=f.name;setTab('doc');
+  }catch(e){if(token===fileLoadRevision)status('Could not read the Word document. Please select it again. '+e.message);}
+}
 $('docxFile').addEventListener('change',e=>selectFile(e.target.files[0]));
 $('dropzone').addEventListener('dragover',e=>{e.preventDefault();$('dropzone').classList.add('dragging');});
 $('dropzone').addEventListener('dragleave',()=>$('dropzone').classList.remove('dragging'));

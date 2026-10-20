@@ -5,37 +5,49 @@
 <title>EasyPerma</title>
 <style>
 :root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#203247;background:#f5f6f8;font-synthesis:none}*{box-sizing:border-box}body{margin:0}main{max-width:900px;margin:64px auto;padding:0 24px}header{margin-bottom:32px}h1{font-family:Georgia,serif;font-weight:normal;font-size:36px;margin:0 0 8px;color:#00356b}p{color:#667386;margin:0;line-height:1.6;font-size:14px}.card{padding:28px;background:white;border:1px solid #e1e5eb;border-radius:16px;box-shadow:0 8px 28px #20324705}.config{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}label.field{display:block;font-size:12px;font-weight:600;letter-spacing:.02em;color:#5d6b7d}input:not([type=checkbox]):not([type=file]),textarea{display:block;width:100%;margin-top:8px;border:1px solid #dce2e9;border-radius:8px;padding:12px;font:inherit;color:#203247;background:white}textarea{font-size:14px;resize:vertical;min-height:130px;line-height:1.6}input:focus,textarea:focus,button:focus-visible,a:focus-visible,summary:focus-visible,.upload:focus-within{outline:3px solid #a9c7e8;outline-offset:3px}a{color:#00356b;text-decoration:none}a:hover{text-decoration:underline}.upload{display:block;position:relative;text-align:center;border:1px dashed #b7c6d7;border-radius:10px;padding:22px;margin-top:16px;color:#00356b;font-size:14px;cursor:pointer;background:#f9fbfe}.upload input{position:absolute;width:1px;height:1px;opacity:0}.upload small{display:block;margin-top:5px;color:#738095;font-size:12px}.settings{display:flex;gap:24px;flex-wrap:wrap;margin:24px 0}.toggle{display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer}.toggle input{appearance:none;width:32px;height:19px;border-radius:20px;background:#ccd4df;position:relative;margin:0;cursor:pointer;flex-shrink:0}.toggle input:before{content:"";position:absolute;width:13px;height:13px;top:3px;left:3px;background:white;border-radius:50%;transition:transform .15s}.toggle input:checked{background:#00356b}.toggle input:checked:before{transform:translateX(13px)}button{width:100%;border:0;border-radius:9px;background:#00356b;color:white;padding:14px;font:600 14px inherit;font-family:inherit;font-size:14px;cursor:pointer}button:disabled{opacity:.5;cursor:wait}#status{min-height:22px;margin:14px 0 0;font-size:13px;white-space:pre-line}progress{width:100%;height:4px;accent-color:#00356b;margin-top:18px}details{font-size:12px;color:#6b7788;margin-top:18px}summary{cursor:pointer;width:fit-content}details p{font-size:12px;margin:12px 0}details .field{max-width:180px;margin-top:14px}.results{margin-top:28px}#summary{font-size:13px;color:#667386;margin-bottom:12px}.tablewrap{overflow:auto;border:1px solid #e1e5eb;border-radius:10px;background:white}table{border-collapse:collapse;width:100%;font-size:12px;text-align:left}th{font-weight:600;color:#667386;background:#f9fafc;padding:12px;white-space:nowrap}td{padding:12px;border-top:1px solid #edf0f4;vertical-align:top}td.url{min-width:220px;max-width:330px;overflow-wrap:anywhere}td a{overflow-wrap:anywhere}.url input{font-size:12px!important;padding:6px!important;margin:0!important;min-width:210px}td small{display:block;color:#7b8797;margin-top:4px;max-width:220px}.ok{color:#23734e}.bad{color:#a53636}.muted{color:#758297}[hidden]{display:none!important}footer{margin:24px 0;color:#8b95a3;font-size:11px} @media(max-width:600px){main{margin:30px auto;padding:0 16px}.card{padding:20px}.config{grid-template-columns:1fr}.settings{gap:15px}h1{font-size:32px}}
+
+main{max-width:1180px;margin:56px auto}header,.card{max-width:740px;margin-left:auto;margin-right:auto}header{margin-bottom:28px}
+.tabs{display:flex;gap:4px;padding:4px;background:#eef2f7;border-radius:10px;margin-bottom:12px}.tab{flex:1;background:none;color:#5c6c7f;padding:9px 12px;font-size:13px;border-radius:7px}.tab[aria-selected=true]{background:white;color:#00356b;box-shadow:0 1px 3px #20324718}.tabPanel{margin-bottom:24px}.upload{min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0}.upload.dragging{background:#eaf1fa}.uploadIcon{font-size:26px;margin-bottom:8px}
+.actions{display:flex;gap:10px;margin-top:14px}.secondary{background:#edf2f8;color:#00356b;border:1px solid #d6e0eb}.rowAction{width:auto;padding:7px 10px;font-size:11px;white-space:nowrap}button:disabled{cursor:not-allowed}.resultHead{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px}.resultHead h2{font-size:15px;color:#344960;margin:0}.resultHead #summary{margin:0}.filter{font-size:12px;display:flex;align-items:center;gap:7px}
+.config{grid-template-columns:1fr 1fr}.folderPicker{display:flex;gap:7px;margin-top:8px}.folderPicker select{min-width:0;flex:1;width:100%;border:1px solid #dce2e9;border-radius:8px;padding:12px;background:white;font:inherit;font-size:13px;color:#203247}.folderPicker button{width:auto;padding:9px 12px;font-size:12px}.folderHint{font-size:11px;line-height:1.5;margin-top:7px}.manualFolder{margin-top:8px;font-size:11px;color:#5d6b7d}.manualFolder input{font-size:12px!important;margin-top:5px!important}.folderHint.bad{color:#a53636}@media(max-width:600px){.config{grid-template-columns:1fr}}
+.warningBanner{border:1px solid #efb9b9;border-radius:10px;padding:13px 16px;background:#fff2f2;color:#9c2929;margin-bottom:14px;font-size:13px;line-height:1.6}.row-flag{background:#fff5f5}.row-flag td:first-child{box-shadow:inset 3px 0 #d73b3b}.row-review{background:#fffbf1}.row-review td:first-child{box-shadow:inset 3px 0 #c38b19}.badge{display:inline-flex;gap:5px;align-items:center;border-radius:6px;padding:5px 8px;font-weight:600;line-height:1.4}.badge-red{background:#ffe3e3;color:#a42626}.badge-amber{background:#fff0c8;color:#855a00}.badge-green{background:#e7f5ec;color:#246343}.badge-gray{background:#eef2f7;color:#64758a}.contentCell{min-width:210px}.contentCell small{line-height:1.5}.permaCell{min-width:135px}.permaCell .rowAction{margin-top:8px}.progressCell{min-width:180px}.track{height:7px;background:#e8edf3;border-radius:8px;overflow:hidden;margin:9px 0 6px}.fill{height:100%;background:#336da5;border-radius:8px;transition:width .35s ease}.fill.red{background:#cc3a3a}.fill.green{background:#2d8a60}.fill.amber{background:#c39123}.progressLabel{display:flex;justify-content:space-between;font-size:11px;gap:12px}.hint{font-size:11px;margin-top:8px}.reviewActions{display:flex;gap:6px;margin-top:9px}.reviewActions button{padding:6px 8px;font-size:10px;width:auto}.overall{margin-top:16px}.overall progress{height:7px;margin:6px 0}.overall p{font-size:12px}footer{text-align:center}table{min-width:940px}
+.folderPicker select:focus-visible{outline:3px solid #a9c7e8;outline-offset:3px}
+@media(max-width:600px){main{margin:28px auto}.resultHead{align-items:flex-start;flex-direction:column}.actions{flex-direction:column}}@media(prefers-reduced-motion:reduce){.fill{transition:none}}
 </style>
 </head><body><main>
 <header><h1>EasyPerma</h1><p>Footnotes to permanent links.</p></header>
 <section class="card">
 <div class="config">
 <label class="field" for="apiKey">Perma API key<input id="apiKey" type="password" autocomplete="off" placeholder="API key" spellcheck="false"></label>
-<label class="field" for="folderId">Folder<input id="folderId" inputmode="numeric" list="folders" placeholder="Folder ID"><datalist id="folders"></datalist></label>
+<div><label class="field" for="folderSelect">Folder</label><div class="folderPicker"><select id="folderSelect" aria-describedby="folderHint"><option value="">Enter an API key to load folders</option><option value="__manual__">Enter a folder ID manually…</option></select><button id="loadFolders" type="button" class="secondary" disabled>Load folders</button></div><p id="folderHint" class="folderHint" role="status" aria-live="polite">Paste your API key to load folders and subfolders.</p><label id="manualFolder" class="manualFolder" for="folderId" hidden>Folder ID<input id="folderId" inputmode="numeric" placeholder="Enter folder ID"></label></div>
 </div>
-<label class="field" for="source">URLs or footnotes<textarea id="source" placeholder="Paste links or footnotes here…" spellcheck="false"></textarea></label>
-<label class="upload" id="dropzone"><input id="docxFile" type="file" accept=".docx"><span id="fileLabel">Or drop a Word document · browse</span><small>Footnotes extracted automatically</small></label>
+<div class="tabs" role="tablist" aria-label="Link source"><button type="button" class="tab" role="tab" id="tabPaste" aria-controls="panelPaste" aria-selected="true">Paste links or footnotes</button><button type="button" class="tab" role="tab" id="tabDoc" aria-controls="panelDoc" aria-selected="false" tabindex="-1">Upload Word document</button></div>
+<div class="tabPanel" id="panelPaste" role="tabpanel" aria-labelledby="tabPaste"><textarea id="source" aria-label="URLs or footnotes" placeholder="Paste links or footnotes here…" spellcheck="false"></textarea></div>
+<div class="tabPanel" id="panelDoc" role="tabpanel" aria-labelledby="tabDoc" hidden><label class="upload" id="dropzone"><input id="docxFile" type="file" accept=".docx"><span class="uploadIcon" aria-hidden="true">📄</span><span id="fileLabel">Drop a Word document here, or click to browse</span><small>Footnotes extracted automatically</small></label></div>
 <div class="settings">
 <label class="toggle"><input id="dedupe" type="checkbox" role="switch" checked>Merge duplicate links</label>
 <label class="toggle"><input id="verify" type="checkbox" role="switch" checked>Check archive content</label>
 </div>
-<button id="action" type="button">Create links &amp; download Excel</button>
-<progress id="progress" hidden></progress><p id="status" role="status" aria-live="polite">Ready when you are.</p>
+<button id="action" type="button">Create all links</button>
+<div class="actions"><button id="download" type="button" class="secondary" disabled>Download Excel</button><button id="recheck" type="button" class="secondary" disabled>Recheck archives</button></div>
+<p class="hint" id="downloadHint">Excel unlocks when every link is displayed, its capture succeeds, and any content warnings are reviewed.</p>
+<div class="overall" id="overall" hidden><p id="overallLabel"></p><progress id="progress" max="100" value="0" aria-label="Overall capture workflow"></progress><p class="hint">Percentages show workflow milestones, not exact capture completion.</p></div><p id="status" role="status" aria-live="polite">Ready when you are.</p>
 <details><summary>Details</summary>
 <label class="field" for="startNumber">First footnote number<input id="startNumber" type="number" min="1" step="1" value="1"></label>
-<p>Find your key in <a href="https://perma.cc/settings/tools" target="_blank" rel="noopener noreferrer">Perma settings</a>. Folders load when you leave the key field; you can also enter a folder ID.</p>
+<p>Find your key in <a href="https://perma.cc/settings/tools" target="_blank" rel="noopener noreferrer">Perma settings</a>. Folders and subfolders load when you paste your key. Use Refresh to reload them, or choose “Enter a folder ID manually.”</p>
 <p>Files stay in your browser. Only extracted URLs are sent to Perma. No API key is saved.</p>
-<p>Content checks inspect the archive where the browser allows access and flag common error pages. They cannot prove that an archive supports a citation. Blocked or unreadable pages are marked “Needs review.”</p>
-<p>Capture statuses follow the <a href="https://perma.cc/docs/developer" target="_blank" rel="noopener noreferrer">Perma API</a>. Pending captures can be checked again with the same main button, without creating new links.</p>
+<p>Red flags identify failed captures, suspected bot checks, access-denied pages, and missing content. Content checks inspect saved HTML, never the live source. Unreadable archives get an amber “Needs review” badge; review them before export. An API success alone does not verify the source content. Manual review decisions are included in Excel.</p>
+<p>Capture statuses follow the <a href="https://perma.cc/docs/developer" target="_blank" rel="noopener noreferrer">Perma API</a>. Pending captures can be checked again without creating new links. Create an individual link using its row button.</p>
 </details>
 </section>
-<section id="results" class="results" hidden><div id="summary"></div><div class="tablewrap"><table><thead><tr><th>Footnote</th><th>Target URL</th><th>Created</th><th>Perma link</th><th>Content check</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section id="results" class="results" hidden><div class="resultHead"><h2>Your Perma links</h2><div id="summary"></div><label class="filter"><input id="flaggedOnly" type="checkbox">Only warnings</label></div><div id="warningBanner" class="warningBanner" role="status" aria-live="polite" hidden></div><div class="tablewrap"><table><thead><tr><th>Footnote</th><th>Target URL</th><th>Capture progress</th><th>Perma link</th><th>Content &amp; flags</th></tr></thead><tbody id="rows"></tbody></table></div></section>
 <footer>EasyPerma</footer>
 </main><script>
 'use strict';
 (() => {
 const $=id=>document.getElementById(id), API='https://api.perma.cc/v1';
-let items=[], file=null, running=false, submitted=false, checksDirty=false, revision=0, previewTimer, downloadUrl;
+let items=[], file=null, running=false, submitted=false, checksDirty=false, revision=0, previewTimer, downloadUrl, activeTab='paste';
+let folderRevision=0,folderTimer,folderLoading=false,folderKey='',folderList=[];
 const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const status=s=>{$('status').textContent=s;};
 function canonical(raw){try{const u=new URL(raw);return /^https?:$/.test(u.protocol)?u.href:null;}catch{return null;}}
@@ -237,19 +249,58 @@ async function preview(){
   submitted=false;items=[];render();
   try{
     const start=Math.max(1,Math.floor(Number($('startNumber').value)||1));
-    const blocks=file?(await docxBlocks(file)).map((text,i)=>({ref:String(start+i),text})):textBlocks($('source').value,start);
+    if(activeTab==='doc'&&!file){status('Choose a Word document.');return;}
+    const blocks=activeTab==='doc'&&file?(await docxBlocks(file)).map((text,i)=>({ref:String(start+i),text})):textBlocks($('source').value,start);
     if(token!==revision)return;
     items=rowsFromBlocks(blocks,$('dedupe').checked);render();status(items.length?`${items.length} link${items.length===1?'':'s'} ready.`:'No links found.');
   }catch(e){if(token===revision)status(e.message);}
 }
-function render(){
-  $('results').hidden=!items.length;
-  $('summary').textContent=submitted?`${items.length} links · ${items.filter(x=>x.created==='Yes').length} created · ${items.filter(x=>x.content==='Needs review'||x.content==='Possible error page').length} to review`:`${items.length} links`;
-  $('rows').innerHTML=items.map((it,i)=>`<tr><td>${escapeHtml(it.refs.join(', '))}</td><td class="url">${submitted?escapeHtml(it.url):`<input aria-label="Target URL ${escapeHtml(it.refs.join(', '))}" data-index="${i}" value="${escapeHtml(it.url)}" ${running?'disabled':''}>`}</td><td class="${it.created==='Yes'?'ok':it.created==='No'?'bad':'muted'}">${escapeHtml(it.created)}<small>${escapeHtml(it.status)}</small></td><td>${it.guid?`<a href="https://perma.cc/${encodeURIComponent(it.guid)}" target="_blank" rel="noopener noreferrer">${escapeHtml(it.guid)} ↗</a>`:'—'}</td><td>${escapeHtml(it.content)}<small>${escapeHtml(it.note)}</small></td></tr>`).join('');
-  $('action').textContent=running?'Working…':submitted?(items.some(isPending)||checksDirty?'Check again & download Excel':'Download Excel'):'Create links & download Excel';
+
+const failures=new Set(['failed','invalid','deleted']);
+function flagFor(it){
+  if(it.created==='No'||failures.has(it.status)||it.captureStatus==='failed')return {level:'red',label:'Capture failed',reason:it.note||it.message||'Perma could not save the primary page.'};
+  if(it.content==='Suspected bot check'||it.content==='Possible error page'||it.content==='Missing content')return {level:'red',label:it.content,reason:it.note};
+  if(it.status==='submission_unknown')return {level:'red',label:'Submission unconfirmed',reason:it.note};
+  if(it.content==='Needs review'||(it.created==='Yes'&&it.content==='Not checked'))return {level:'amber',label:'Needs review',reason:it.note||'Content has not been inspected.'};
+  return null;
 }
-function isPending(it){return it.batchId&&!['completed','success','failed','invalid','deleted'].includes(it.status);}
-function busy(on){running=on;document.querySelectorAll('input,textarea,button').forEach(el=>el.disabled=on);$('progress').hidden=!on;render();}
+function canDownload(){return !running&&!checksDirty&&items.length>0&&items.every(it=>it.guid&&it.created==='Yes'&&it.captureStatus==='success'&&it.checkComplete&&(!flagFor(it)||it.review==='accepted'));}
+function isPending(it){return !!(it.batchId||it.guid)&&!failures.has(it.status)&&it.created!=='No'&&(it.created==='Pending'||!['completed','success'].includes(it.status));}
+function milestone(it){
+  if(it.checkComplete||it.created==='No')return 100;
+  if(it.stage==='Checking saved content')return 95;
+  if(it.created==='Yes')return 85;
+  if(it.status==='submission_unknown')return 10;
+  if(['completed','success'].includes(it.status))return 80;
+  if(it.status==='in_progress')return 55;
+  if(it.guid||it.batchId)return 30;
+  if(it.status==='submitting')return 10;
+  return 0;
+}
+function render(){
+  renderFolderControls();
+  const flags=items.map(flagFor),red=flags.filter(f=>f?.level==='red').length,amber=flags.filter(f=>f?.level==='amber').length;
+  $('results').hidden=!items.length;
+  $('summary').textContent=`${items.length} links · ${items.filter(x=>x.created==='Yes').length} captured · ${red} red flags · ${amber} to review`;
+  $('warningBanner').hidden=!(red||amber);
+  $('warningBanner').textContent=`${red?'⚑ '+red+' red flag'+(red===1?'':'s')+'. ':''}${amber?amber+' archive'+(amber===1?'':'s')+' need manual review. ':''}Open each flagged Perma link to inspect the saved page. A created link can still contain a bot check or error page.`;
+  $('rows').innerHTML=items.map((it,i)=>{
+    const flag=flags[i],percent=milestone(it),reviewed=it.review==='accepted',failed=it.created==='No'||failures.has(it.status),color=flag?.level==='red'?'red':flag?'amber':it.content==='Text detected'?'green':'';
+    if($('flaggedOnly').checked&&!flag)return '';
+    const stage=it.stage||(failed?'Capture failed':it.checkComplete?'Checks complete':it.stepDescription||it.status||'Ready to create');
+    return `<tr class="${flag?.level==='red'?'row-flag':flag?'row-review':''}"><td>${escapeHtml(it.refs.join(', '))}</td><td class="url">${it.guid||it.batchId||it.status?escapeHtml(it.url):`<input aria-label="Target URL ${escapeHtml(it.refs.join(', '))}" data-index="${i}" value="${escapeHtml(it.url)}" ${running?'disabled':''}>`}</td><td class="progressCell"><div class="progressLabel"><span>${escapeHtml(it.created)}</span><span>${percent}%</span></div><div class="track" role="progressbar" aria-label="Capture workflow for footnote ${escapeHtml(it.refs.join(', '))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><div class="fill ${color}" style="width:${percent}%"></div></div><small>${escapeHtml(stage)}</small></td><td class="permaCell">${it.guid?`<a href="https://perma.cc/${encodeURIComponent(it.guid)}" target="_blank" rel="noopener noreferrer">${escapeHtml(it.guid)} ↗</a>`:'—'}${!it.status?`<button class="secondary rowAction" data-create="${i}" ${running?'disabled':''}>Create this link</button>`:''}${it.guid&&!failed?`<button class="secondary rowAction" data-check="${i}" ${running?'disabled':''}>Recheck</button>`:''}</td><td class="contentCell">${flag?`<span class="badge badge-${flag.level}"><span aria-hidden="true">${flag.level==='red'?'⚑':'⚠'}</span>${escapeHtml(flag.label)}</span>`:`<span class="badge ${it.content==='Text detected'?'badge-green':'badge-gray'}">${escapeHtml(it.content)}</span>`}<small>${escapeHtml(flag?.reason||it.note)}</small>${it.review==='rejected'?'<small class="bad">Marked unusable — export locked.</small>':reviewed?'<small class="ok">Manually reviewed as usable. Warning retained in Excel.</small>':''}${flag&&it.guid&&it.created==='Yes'&&it.checkComplete?`<div class="reviewActions"><button class="secondary" data-review="${i}" data-value="accepted" ${running?'disabled':''}>Reviewed: usable</button><button class="secondary" data-review="${i}" data-value="rejected" ${running?'disabled':''}>Unusable</button></div>`:''}</td></tr>`;
+  }).join('');
+  const newRows=items.some(it=>!it.status);
+  $('action').textContent=running?'Working…':newRows?'Create all remaining links':items.some(isPending)?'Check pending captures':'All links submitted';
+  $('action').disabled=running||!items.length||(!newRows&&!items.some(isPending));
+  $('download').disabled=!canDownload();
+  $('recheck').disabled=running||!items.some(it=>it.guid||it.batchId);
+  $('overall').hidden=!submitted;
+  $('progress').value=items.length?items.reduce((n,it)=>n+milestone(it),0)/items.length:0;
+  $('overallLabel').textContent=`${items.filter(it=>it.checkComplete||it.created==='No').length} of ${items.length} checks finished`;
+  $('downloadHint').textContent=canDownload()?'All links are displayed and ready. Excel includes all warnings and manual review decisions.':red?'Excel locked: resolve failed captures and review red flags.':items.some(it=>it.content==='Needs review'||(it.created==='Yes'&&it.content==='Not checked'))?'Excel locked: review archives whose content could not be verified.':'Excel unlocks when every link is displayed, its capture succeeds, and any content warnings are reviewed.';
+}
+function busy(on){running=on;document.querySelectorAll('input,textarea,button,select').forEach(el=>el.disabled=on);render();}
 async function api(path,method='GET',data){
   const response=await fetch(API+path,{method,headers:{Authorization:`ApiKey ${$('apiKey').value.trim()}`,Accept:'application/json',...(data?{'Content-Type':'application/json'}:{})},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(30000)});
   const body=await response.json().catch(()=>({}));
@@ -261,14 +312,15 @@ function updateJobs(rows,data){
   for(const j of data.capture_jobs||data.objects||[]){const key=canonical(j.submitted_url);if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(j);}
   for(const row of rows){
     const j=buckets.get(row.url)?.shift();if(!j)continue;
-    row.status=j.user_deleted?'deleted':(j.status||'pending');row.guid=j.guid||row.guid;row.title=j.title||row.title;
+    row.stepDescription=j.step_description||'';row.status=j.user_deleted?'deleted':(j.status||'pending');row.guid=j.guid||row.guid;row.title=j.title||row.title;
     row.message=typeof j.message==='string'?j.message:JSON.stringify(j.message||'');
     row.created=['failed','invalid','deleted'].includes(row.status)?'No':(['completed','success'].includes(row.status)&&row.guid?'Yes':'Pending');
+    if(row.created==='No'){row.content='No archive';row.note=row.message||'Perma reports that the capture failed.';row.checkComplete=true;}
   }
 }
-async function submit(){
-  for(let offset=0;offset<items.length;offset+=50){
-    const group=items.slice(offset,offset+50);status(`Creating links ${offset+1}–${offset+group.length} of ${items.length}…`);
+async function submit(selected=items.filter(it=>!it.status)){
+  for(let offset=0;offset<selected.length;offset+=50){
+    const group=selected.slice(offset,offset+50);status(`Creating links ${offset+1}–${offset+group.length} of ${selected.length}…`);
     group.forEach(it=>{it.status='submitting';it.created='Pending';});render();
     try{
       const data=await api('/archives/batches','POST',{urls:group.map(x=>x.url),target_folder:Number($('folderId').value)});
@@ -276,68 +328,147 @@ async function submit(){
       group.forEach(it=>{it.batchId=data.id;it.status='pending';});updateJobs(group,data);render();
     }catch(e){
       group.forEach(it=>{it.status='submission_unknown';it.created='Unknown';it.note='Submission could not be confirmed. Check your Perma account before retrying.';it.message=e.message;});
-      items.slice(offset+50).forEach(it=>{it.created='Not submitted';it.note='Submission stopped after an error.';});throw e;
+      selected.slice(offset+50).forEach(it=>{it.created='Not submitted';it.note='Submission stopped after an error.';});throw e;
     }
   }
 }
-async function poll(){
+async function poll(selected=items){
   // Bounded polling. Subsequent clicks only recheck existing batches.
   const deadline=Date.now()+120000;
-  while(items.some(isPending)&&Date.now()<deadline){
-    for(const id of [...new Set(items.filter(isPending).map(x=>x.batchId))]){
+  while(selected.some(isPending)&&Date.now()<deadline){
+    for(const id of [...new Set(selected.filter(x=>isPending(x)&&x.batchId).map(x=>x.batchId))]){
       status('Waiting for Perma captures…');
-      updateJobs(items.filter(x=>x.batchId===id),await api('/archives/batches/'+encodeURIComponent(id)));render();
+      updateJobs(selected.filter(x=>x.batchId===id),await api('/archives/batches/'+encodeURIComponent(id)));render();
     }
-    if(items.some(isPending))await new Promise(r=>setTimeout(r,4000));
+    for(const it of selected.filter(x=>isPending(x)&&!x.batchId&&x.guid)){
+      const j=await api('/capture_jobs/'+encodeURIComponent(it.guid)+'/');updateJobs([it],{capture_jobs:[{...j,submitted_url:it.url,guid:it.guid}]});render();
+    }
+    if(selected.some(isPending))await new Promise(r=>setTimeout(r,4000));
   }
 }
-const errorPattern=/\b(access denied|page not found|403 forbidden|404 not found|verify (?:that )?you are human|checking your browser|just a moment|captcha|site can.t be reached|service unavailable)\b/i;
+const botPattern=/\b(?:verify (?:that )?you(?:'re| are) (?:a )?human|checking your browser|checking (?:if )?(?:the )?site connection|performing (?:a )?security (?:check|verification)|please (?:complete|solve) (?:the )?(?:captcha|security check)|unusual traffic from your|enable javascript and cookies to continue|press and hold to (?:confirm|verify)|pardon (?:the|our) interruption|automated (?:access|requests) (?:is|are) (?:blocked|prohibited)|security verification)\b/i;
+const errorPattern=/\b(?:access denied|403 forbidden|404 not found|page not found|service unavailable|request (?:blocked|rejected)|temporarily blocked|you (?:have been|are) blocked|robot check)\b/i;
+function titleFlag(title){
+  const value=String(title||'').trim();
+  if(botPattern.test(value)||/^(?:just a moment|attention required|are you a (?:robot|human)|captcha|human verification|security check|robot or human)[.!?…\s-]*(?:\|.*)?$/i.test(value))return {content:'Suspected bot check',note:'The archive title suggests a human-verification or bot-check page: '+value};
+  if(errorPattern.test(value))return {content:'Possible error page',note:'The archive title suggests an error or blocked page: '+value};
+  return null;
+}
 function analyzeHtml(html){
   const doc=new DOMParser().parseFromString(html,'text/html');
-  doc.querySelectorAll('script,style,noscript,nav,footer,header,template,[hidden],[aria-hidden="true"]').forEach(n=>n.remove());
-  const text=(doc.body?.textContent||'').replace(/\s+/g,' ').trim();
+  const challenge=!!doc.querySelector('#challenge-form,#cf-challenge-running,#px-captcha,form[action*="challenge"],script[src*="/cdn-cgi/challenge-platform/"],script[src*="captcha-delivery.com/"]');
   const heading=[doc.title,...[...doc.querySelectorAll('h1,h2')].map(n=>n.textContent)].join(' ');
-  if(errorPattern.test(heading)||errorPattern.test(text.slice(0,600)))return {content:'Possible error page',note:'The archived page contains an error or bot-check message.'};
-  if(text.length<250||text.split(/\s+/).length<40)return {content:'Needs review',note:'Too little readable text to assess the archive.'};
-  return {content:'Text detected',note:'Readable archived text found; citation accuracy and completeness still need review.'};
+  const titleResult=titleFlag(doc.title);
+  doc.querySelectorAll('script,style,noscript,nav,footer,template,[hidden],[aria-hidden="true"]').forEach(n=>n.remove());
+  doc.querySelectorAll('p,div,h1,h2,h3,li,section,article,br').forEach(n=>n.append(' '));
+  const text=(doc.body?.textContent||'').replace(/\s+/g,' ').trim();
+  if(titleResult)return titleResult;
+  if(botPattern.test(heading)||(text.length<2500&&(botPattern.test(text)||challenge)))return {content:'Suspected bot check',note:'Saved HTML appears to contain a human-verification, CAPTCHA, or browser-security challenge instead of the source. Open the archive to confirm.'};
+  if(errorPattern.test(heading)||(text.length<1500&&errorPattern.test(text.slice(0,600))))return {content:'Possible error page',note:'Saved HTML appears to show access denied, a blocked request, or an error page.'};
+  if(text.length<120)return {content:'Missing content',note:'Almost no readable text was saved. The page may be blank, require JavaScript, or contain only a viewer or image; inspect the archive.'};
+  if(text.length<250||text.split(/\s+/).length<40)return {content:'Needs review',note:'Too little readable text to assess the saved page. Inspect it before marking it usable.'};
+  return {content:'Text detected',note:'Readable saved HTML detected. This does not verify citation accuracy or completeness.'};
 }
 async function inspectReplay(guid){
   const url='https://perma.cc/'+encodeURIComponent(guid);
   const res=await fetch(url,{credentials:'omit',signal:AbortSignal.timeout(12000)});
-  if(!res.ok)return {content:'Needs review',note:`Perma page returned HTTP ${res.status}.`};
+  if(!res.ok)throw Error('Archive viewer could not be read.');
   const shell=new DOMParser().parseFromString(await res.text(),'text/html');
-  // Never assess the Perma navigation shell as if it were the captured source.
+  // The outer Perma navigation shell is never evidence of saved source content.
   const frame=shell.querySelector('iframe#replay_iframe,iframe#replay,iframe[src*="/warc/"],iframe[src*="/replay/"]');
-  if(!frame?.getAttribute('src'))return {content:'Needs review',note:'Archive viewer requires an interactive browser review.'};
+  if(!frame?.getAttribute('src'))throw Error('Archive viewer needs interactive review.');
   const replay=new URL(frame.getAttribute('src'),res.url||url);
-  if(replay.protocol!=='https:'||!(replay.hostname==='perma.cc'||replay.hostname.endsWith('.perma.cc')))return {content:'Needs review',note:'Archive playback is on a separate origin; open the Perma link to review.'};
+  if(replay.protocol!=='https:'||!(replay.hostname==='perma.cc'||replay.hostname.endsWith('.perma.cc')))throw Error('Archive viewer is on an unsupported origin.');
   const page=await fetch(replay.href,{credentials:'omit',signal:AbortSignal.timeout(12000)});
-  if(!page.ok)return {content:'Needs review',note:`Playback returned HTTP ${page.status}.`};
-  if(!page.headers.get('content-type')?.includes('text/html'))return {content:'Needs review',note:'PDF, image, or other non-HTML archive; open the link to inspect.'};
-  const html=await page.text();
-  const d=new DOMParser().parseFromString(html,'text/html');
-  if(d.querySelector('iframe,replay-web-page'))return {content:'Needs review',note:'Nested archive viewer; open the link to inspect the captured page.'};
+  if(!page.ok)throw Error('Archive playback could not be read.');
+  if(!page.headers.get('content-type')?.includes('text/html'))return {content:'Needs review',note:'PDF, image, or other non-HTML capture. Open the archive to inspect it.'};
+  const html=await page.text(),d=new DOMParser().parseFromString(html,'text/html');
+  if(d.querySelector('replay-web-page,iframe#replay_iframe,iframe[src*="/replay/"]'))throw Error('Nested viewer requires manual review.');
   return analyzeHtml(html);
 }
-async function verifyArchives(){
-  for(let i=0;i<items.length;i++){
-    const it=items[i];
-    if(!it.guid||!['completed','success'].includes(it.status)){it.content=it.created==='No'?'No archive':'Not checked';continue;}
-    status(`Checking archive ${i+1} of ${items.length}…`);
+// Reading the saved WARC through the authenticated API also works when the
+// playback viewer is inaccessible. Never request or assess the live target URL.
+async function limitedBytes(stream,limit){
+  if(!stream)throw Error('No readable archive stream.');
+  const reader=stream.getReader(),chunks=[];let size=0;
+  try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>limit)throw Error('Archive exceeds the automatic inspection limit.');chunks.push(value);}}
+  finally{await reader.cancel().catch(()=>{});reader.releaseLock();}
+  const all=new Uint8Array(size);let offset=0;for(const c of chunks){all.set(c,offset);offset+=c.length;}return all;
+}
+function headerEnd(bytes,start){for(let i=start;i+3<bytes.length;i++)if(bytes[i]===13&&bytes[i+1]===10&&bytes[i+2]===13&&bytes[i+3]===10)return i;return -1;}
+function headers(text){const out={};for(const line of text.split('\r\n').slice(1)){const at=line.indexOf(':');if(at>0)out[line.slice(0,at).toLowerCase()]=line.slice(at+1).trim();}return out;}
+function archiveUrl(raw){try{const u=new URL(String(raw).replace(/^<|>$/g,''));u.hash='';return u.href;}catch{return '';}}
+function savedResponse(bytes,target){
+  const decoder=new TextDecoder(),records=[];let offset=0;
+  while(offset<bytes.length){
+    while(bytes[offset]===13||bytes[offset]===10)offset++;
+    const end=headerEnd(bytes,offset);if(end<0)break;
+    const raw=decoder.decode(bytes.subarray(offset,end));if(!raw.startsWith('WARC/'))throw Error('Unsupported archive format.');
+    const h=headers(raw),length=Number(h['content-length']),start=end+4;
+    if(!h['content-length']||!Number.isSafeInteger(length)||length<0||start+length>bytes.length)throw Error('Incomplete archive record.');
+    if(h['warc-type']==='response'){
+      const stop=headerEnd(bytes,start);
+      if(stop>=start&&stop<start+length){const http=decoder.decode(bytes.subarray(start,stop)),hh=headers(http),code=Number(http.match(/^HTTP\/\S+\s+(\d+)/)?.[1]);records.push({url:archiveUrl(h['warc-target-uri']),h:hh,code,body:bytes.subarray(stop+4,start+length)});}
+    }
+    offset=start+length;
+  }
+  let url=archiveUrl(target);const seen=new Set();
+  for(let i=0;i<10;i++){
+    if(seen.has(url))throw Error('Saved redirect loop.');seen.add(url);
+    const candidates=records.filter(r=>r.url===url),r=candidates.find(r=>r.code>=200&&r.code<300)||candidates.find(r=>r.code>=400)||candidates[0];
+    if(!r)throw Error('Primary saved response not found.');
+    if(r.code>=300&&r.code<400&&r.h.location){url=archiveUrl(new URL(r.h.location,url).href);continue;}
+    return r;
+  }
+  throw Error('Too many saved redirects.');
+}
+function unchunk(bytes){
+  let pos=0,size=0;const parts=[],decoder=new TextDecoder();
+  while(pos<bytes.length){let end=pos;while(end+1<bytes.length&&!(bytes[end]===13&&bytes[end+1]===10))end++;const hex=decoder.decode(bytes.subarray(pos,end)).split(';')[0].trim();if(!/^[0-9a-f]+$/i.test(hex))throw Error('Unsupported saved transfer encoding.');const len=parseInt(hex,16);if(!len){const out=new Uint8Array(size);let off=0;for(const p of parts){out.set(p,off);off+=p.length;}return out;}pos=end+2;if(pos+len+2>bytes.length||bytes[pos+len]!==13||bytes[pos+len+1]!==10)throw Error('Incomplete saved transfer encoding.');parts.push(bytes.subarray(pos,pos+len));size+=len;pos+=len+2;}
+  throw Error('Incomplete chunked content.');
+}
+async function inspectStored(it,detail,primary){
+  if(Number(detail.warc_size)>32*1024*1024)throw Error('Archive too large for automatic inspection.');
+  const response=await fetch(API+'/archives/'+encodeURIComponent(it.guid)+'/download',{headers:{Authorization:`ApiKey ${$('apiKey').value.trim()}`},credentials:'omit',signal:AbortSignal.timeout(20000)});
+  if(!response.ok)throw Error('Saved archive could not be downloaded for inspection.');
+  let bytes=await limitedBytes(response.body,32*1024*1024);
+  if(bytes[0]===31&&bytes[1]===139)bytes=await limitedBytes(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')),64*1024*1024);
+  const r=savedResponse(bytes,primary.url||detail.url||it.url);
+  if(r.code>=400)return {content:'Possible error page',note:`The saved source returned HTTP ${r.code}. It may contain a blocked request or error page.`};
+  if(!r.code||r.code<200||r.code>=300)throw Error('Saved response is not a final content response.');
+  if(!/\b(?:text\/html|application\/xhtml\+xml)\b/i.test(r.h['content-type']||primary.content_type||''))return {content:'Needs review',note:'Saved PDF, image, or non-HTML source. Inspect the archive manually.'};
+  let body=r.body;
+  if(/chunked/i.test(r.h['transfer-encoding']||''))body=unchunk(body);
+  const encoding=(r.h['content-encoding']||'identity').toLowerCase();
+  if(encoding!=='identity'){if(!['gzip','deflate'].includes(encoding))throw Error('Saved content encoding needs manual review.');body=await limitedBytes(new Blob([body]).stream().pipeThrough(new DecompressionStream(encoding)),16*1024*1024);}
+  const charset=r.h['content-type']?.match(/charset=["']?([^;\s"']+)/i)?.[1]||'utf-8';
+  return analyzeHtml(new TextDecoder(charset).decode(body));
+}
+async function verifyArchives(selected=items){
+  for(let i=0;i<selected.length;i++){
+    const it=selected[i];
+    if(it.created==='No'||failures.has(it.status)){it.content='No archive';it.note=it.note||it.message||'Perma reports that the primary capture failed.';it.checkComplete=true;render();continue;}
+    if(!it.guid)continue;
+    status(`Checking archive ${i+1} of ${selected.length}…`);it.stage='Verifying primary capture';it.checkComplete=false;it.review='';render();
     try{
       const detail=await api('/archives/'+encodeURIComponent(it.guid)+'/');
       const primary=(detail.captures||[]).find(c=>c.role==='primary');
       it.title=detail.title||it.title;it.captureStatus=primary?.status||'unknown';it.checkedAt=new Date().toISOString();
-      if(detail.user_deleted||primary?.status==='failed'){it.created='No';it.content='No archive';it.note='Perma reports a failed or deleted primary capture.';}
+      if(detail.user_deleted||primary?.status==='failed'){it.created='No';it.status=detail.user_deleted?'deleted':'failed';it.content='No archive';it.note='Perma reports a failed or deleted primary capture.';it.checkComplete=true;}
       else if(primary?.status!=='success'){it.created='Pending';it.status='pending';it.content='Not checked';it.note='Primary capture is not yet confirmed.';}
       else {
-        it.created='Yes';
-        if(errorPattern.test(it.title||'')){it.content='Possible error page';it.note='Archive title suggests an error or bot-check page.';}
-        else if(!$('verify').checked){it.content='Not checked';it.note='Content checking is off.';}
-        else {try{Object.assign(it,await inspectReplay(it.guid));}catch{it.content='Needs review';it.note='Browser access was blocked or timed out. Open the Perma link to inspect the captured page.';}}
+        it.created='Yes';it.status='completed';it.stage='Checking saved content';render();
+        const titleResult=titleFlag(it.title);
+        if(titleResult)Object.assign(it,titleResult);
+        else if(!$('verify').checked){it.content='Not checked';it.note='Automatic content checking is off. Manually inspect the saved page before export.';}
+        else {
+          try{Object.assign(it,await inspectStored(it,detail,primary));}
+          catch{try{Object.assign(it,await inspectReplay(it.guid));}catch{it.content='Needs review';it.note='The saved page could not be inspected automatically (browser restrictions, unsupported format, size limit, or timeout). This does not establish that the captured source is blocked. Open the Perma link and review it.';}}
+        }
+        it.checkComplete=true;
       }
-    }catch(e){it.content='Needs review';it.note='Capture details could not be verified: '+e.message;}
-    render();
+    }catch(e){it.created='Pending';it.content='Needs review';it.note='Capture details could not be verified: '+e.message;}
+    it.stage='';render();
   }
 }
 // A dependency-free XLSX writer: inline string cells avoid formula execution.
@@ -353,10 +484,10 @@ function zipStored(files){
   return new Blob([...parts,...central,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
 }
 function workbook(){
-  const headers=['Footnote','Target URL','Perma link','Created successfully','Capture job status','Primary capture status','Content check','Review notes','Archive title','API message','Batch ID','Checked at (UTC)'];
-  const data=[headers,...items.map(it=>[it.refs.join(', '),it.url,it.guid?'https://perma.cc/'+it.guid:'',it.created,it.status,it.captureStatus,it.content,it.note,it.title,it.message,it.batchId,it.checkedAt])];
+  const headers=['Footnote','Target URL','Perma link','Created successfully','Capture job status','Primary capture status','Content check','Review notes','Archive title','API message','Batch ID','Checked at (UTC)','Flag','Flag severity','Manual review'];
+  const data=[headers,...items.map(it=>[it.refs.join(', '),it.url,it.guid?'https://perma.cc/'+it.guid:'',it.created,it.status,it.captureStatus,it.content,it.note,it.title,it.message,it.batchId,it.checkedAt,flagFor(it)?.label||'',flagFor(it)?.level||'',it.review||''])];
   const xml=s=>escapeHtml(String(s??'').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,'').slice(0,32767));
-  const sheet=`<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${headers.map((_,i)=>`<col min="${i+1}" max="${i+1}" width="${[1,2,7].includes(i)?55:24}" customWidth="1"/>`).join('')}</cols><sheetData>${data.map((row,i)=>`<row r="${i+1}">${row.map((v,j)=>`<c r="${String.fromCharCode(65+j)}${i+1}" t="inlineStr"><is><t xml:space="preserve">${xml(v)}</t></is></c>`).join('')}</row>`).join('')}</sheetData><autoFilter ref="A1:L${data.length}"/></worksheet>`;
+  const sheet=`<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${headers.map((_,i)=>`<col min="${i+1}" max="${i+1}" width="${[1,2,7].includes(i)?55:24}" customWidth="1"/>`).join('')}</cols><sheetData>${data.map((row,i)=>`<row r="${i+1}">${row.map((v,j)=>`<c r="${String.fromCharCode(65+j)}${i+1}" t="inlineStr"><is><t xml:space="preserve">${xml(v)}</t></is></c>`).join('')}</row>`).join('')}</sheetData><autoFilter ref="A1:O${data.length}"/></worksheet>`;
   return zipStored({
     '[Content_Types].xml':'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>',
     '_rels/.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
@@ -365,38 +496,122 @@ function workbook(){
     'xl/worksheets/sheet1.xml':sheet
   });
 }
-function download(){if(downloadUrl)URL.revokeObjectURL(downloadUrl);downloadUrl=URL.createObjectURL(workbook());const a=document.createElement('a');a.href=downloadUrl;a.download='easyperma-results.xlsx';a.click();}
-$('action').addEventListener('click',async()=>{
+
+function download(){if(!canDownload()){status('Excel is locked until all captures and reviews are ready.');return;}if(downloadUrl)URL.revokeObjectURL(downloadUrl);downloadUrl=URL.createObjectURL(workbook());const a=document.createElement('a');a.href=downloadUrl;a.download='easyperma-results.xlsx';a.click();}
+async function run(selected,create=false){
   if(running)return;
-  if(submitted&&!items.some(isPending)&&!checksDirty){download();return;}
   if(!$('apiKey').value.trim()){status('Enter your Perma API key.');$('apiKey').focus();return;}
-  if(!submitted&&(!Number.isInteger(Number($('folderId').value))||Number($('folderId').value)<=0)){status('Enter a valid folder ID.');$('folderId').focus();return;}
-  clearTimeout(previewTimer);
-  if(!submitted&&!items.length)await preview();
-  if(!items.length)return;
-  if(items.some(it=>!canonical(it.url))){status('Please correct the invalid target URL before creating links.');return;}
-  items.forEach(it=>it.url=canonical(it.url));
-  busy(true);
+  if(create&&(!Number.isInteger(Number($('folderId').value))||Number($('folderId').value)<=0)){status('Enter a valid folder ID.');$('folderId').focus();return;}
+  if(!selected.length)return;
+  if(selected.some(it=>!canonical(it.url))){status('Please correct invalid target URLs before creating links.');return;}
+  selected.forEach(it=>it.url=canonical(it.url));
+  clearTimeout(previewTimer);++revision;busy(true);submitted=true;
   try{
-    if(!submitted){submitted=true;await submit();}
-    await poll();await verifyArchives();checksDirty=false;download();
-    status(items.some(isPending)?'Excel downloaded. Some captures are pending; check again shortly.':'Excel downloaded. Open any flagged Perma links to review.');
-  }catch(e){status(e.message+' Results so far are available with the main button.');if(submitted)download();}
+    if(create)await submit(selected.filter(it=>!it.status));
+    await poll(selected);await verifyArchives(selected);checksDirty=false;
+    status(selected.some(isPending)?'Some captures are still pending. Check again shortly.':items.some(flagFor)?'Checks finished. Review the flagged archives before downloading.':'Checks finished. Your confirmed links are ready.');
+  }catch(e){status(e.message+' No Excel was downloaded. Recheck existing captures; unconfirmed submissions must be checked in your Perma account.');}
   finally{busy(false);}
+}
+$('action').addEventListener('click',()=>run(items,true));
+$('recheck').addEventListener('click',()=>run(items.filter(it=>it.guid||it.batchId)));
+$('download').addEventListener('click',download);
+$('flaggedOnly').addEventListener('change',render);
+$('verify').addEventListener('change',()=>{checksDirty=items.some(it=>it.guid);items.filter(it=>it.created==='Yes').forEach(it=>{it.checkComplete=false;it.review='';});render();});
+$('rows').addEventListener('input',e=>{if(e.target.dataset.index!==undefined&&!running)items[Number(e.target.dataset.index)].url=e.target.value.trim();});
+$('rows').addEventListener('click',e=>{
+  const button=e.target.closest('button');if(!button||running)return;
+  if(button.dataset.create!==undefined)run([items[Number(button.dataset.create)]],true);
+  if(button.dataset.check!==undefined)run([items[Number(button.dataset.check)]]);
+  if(button.dataset.review!==undefined){const it=items[Number(button.dataset.review)];it.review=button.dataset.value;render();status(it.review==='accepted'?'Manual review recorded. The original warning remains visible.':'Archive marked unusable. Excel remains locked.');}
 });
-$('verify').addEventListener('change',()=>{checksDirty=submitted;render();});
-$('rows').addEventListener('input',e=>{if(e.target.dataset.index!==undefined&&!submitted)items[Number(e.target.dataset.index)].url=e.target.value.trim();});
-$('source').addEventListener('input',()=>{file=null;$('docxFile').value='';$('fileLabel').textContent='Or drop a Word document · browse';++revision;items=[];submitted=false;render();clearTimeout(previewTimer);previewTimer=setTimeout(preview,250);});
-function selectFile(f){if(!f)return;if(!f.name.toLowerCase().endsWith('.docx')){status('Choose a .docx document.');return;}file=f;$('source').value='';$('fileLabel').textContent=f.name;clearTimeout(previewTimer);preview();}
+function reset(){++revision;items=[];submitted=false;checksDirty=false;render();}
+function setTab(tab){
+  if(running)return;activeTab=tab;
+  for(const [name,id,panel] of [['paste','tabPaste','panelPaste'],['doc','tabDoc','panelDoc']]){const chosen=name===tab;$(id).setAttribute('aria-selected',String(chosen));$(id).tabIndex=chosen?0:-1;$(panel).hidden=!chosen;}
+  clearTimeout(previewTimer);reset();preview();
+}
+for(const [id,name] of [['tabPaste','paste'],['tabDoc','doc']]){
+  $(id).addEventListener('click',()=>setTab(name));
+  $(id).addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const next=e.key==='Home'?'paste':e.key==='End'?'doc':activeTab==='paste'?'doc':'paste';setTab(next);$(next==='paste'?'tabPaste':'tabDoc').focus();}});
+}
+$('source').addEventListener('input',()=>{reset();clearTimeout(previewTimer);previewTimer=setTimeout(preview,250);});
+function selectFile(f){if(!f||running)return;if(!f.name.toLowerCase().endsWith('.docx')){status('Choose a .docx document.');return;}file=f;$('fileLabel').textContent=f.name;setTab('doc');}
 $('docxFile').addEventListener('change',e=>selectFile(e.target.files[0]));
-$('dropzone').addEventListener('dragover',e=>e.preventDefault());
-$('dropzone').addEventListener('drop',e=>{e.preventDefault();if(!running)selectFile(e.dataTransfer.files[0]);});
+$('dropzone').addEventListener('dragover',e=>{e.preventDefault();$('dropzone').classList.add('dragging');});
+$('dropzone').addEventListener('dragleave',()=>$('dropzone').classList.remove('dragging'));
+$('dropzone').addEventListener('drop',e=>{e.preventDefault();$('dropzone').classList.remove('dragging');if(!running)selectFile(e.dataTransfer.files[0]);});
 for(const id of ['dedupe','startNumber'])$(id).addEventListener('change',()=>{if(!running)preview();});
-let folderRevision=0;
-$('apiKey').addEventListener('blur',async()=>{
-  if(running||!$('apiKey').value.trim())return;
-  const token=++folderRevision,key=$('apiKey').value;
-  try{const data=await api('/user/');if(token!==folderRevision||key!==$('apiKey').value||running)return;const folders=(data.top_level_folders||[]).filter(x=>!x.read_only);$('folders').innerHTML=folders.map(f=>`<option value="${escapeHtml(f.id)}">${escapeHtml(f.name)}</option>`).join('');if(!$('folderId').value&&folders.length===1)$('folderId').value=folders[0].id;}catch{ /* Manual folder ID remains available. */ }
+function renderFolderControls(){
+  $('loadFolders').disabled=running||folderLoading||!$('apiKey').value.trim();
+  $('loadFolders').textContent=folderLoading?'Loading…':folderList.length?'Refresh':'Load folders';
+  $('folderSelect').disabled=running;
+}
+function folderMessage(message,bad=false){$('folderHint').textContent=message;$('folderHint').classList.toggle('bad',bad);}
+function showFolders(){
+  const selected=$('folderSelect').value,previousId=$('folderId').value;
+  $('folderSelect').innerHTML='<option value="">'+(folderList.length?'Choose a Perma folder':folderLoading?'Loading folders…':'Choose a folder or enter an ID')+'</option>'+folderList.map(f=>`<option value="${f.id}" ${f.readOnly?'disabled':''}>${escapeHtml(f.label)}${f.readOnly?' (read-only)':''}</option>`).join('')+'<option value="__manual__">Enter a folder ID manually…</option>';
+  const match=folderList.find(f=>String(f.id)===previousId&&!f.readOnly);
+  $('folderSelect').value=selected==='__manual__'?'__manual__':match?String(match.id):'';
+  $('manualFolder').hidden=$('folderSelect').value!=='__manual__';
+  renderFolderControls();
+}
+async function folderPages(path,stillCurrent){
+  const result=[],seen=new Set();
+  while(path&&!seen.has(path)){
+    if(!stillCurrent())return [];
+    seen.add(path);const data=await api(path),objects=Array.isArray(data)?data:data.objects||[];result.push(...objects);
+    if(!objects.length||!data.meta?.next)break;
+    const next=new URL(data.meta.next,API+'/');
+    if(next.origin!=='https://api.perma.cc'||!next.pathname.startsWith('/v1/folders/'))throw Error('Unexpected folder pagination response.');
+    path=next.pathname.slice(3)+next.search;
+  }
+  return result;
+}
+async function loadFolders(force=false){
+  if(running)return;clearTimeout(folderTimer);
+  const key=$('apiKey').value.trim();
+  if(!key){folderMessage('Enter your Perma API key first.');return;}
+  if(folderKey===key&&(folderLoading||(!force&&folderList.length)))return;
+  const token=++folderRevision,current=()=>token===folderRevision&&key===$('apiKey').value.trim();
+  folderLoading=true;folderKey=key;folderMessage('Loading your Perma folders…');renderFolderControls();
+  try{
+    const data=await api('/user/');if(!current())return;
+    folderList=[];const visited=new Set(),queue=[];let partial=false;
+    function addFolder(folder,parent='',inheritedReadOnly=false){
+      const id=Number(folder.id);if(!Number.isInteger(id)||id<=0||visited.has(id))return;visited.add(id);
+      const label=(parent?parent+' / ':'')+(folder.name||'Folder '+id),readOnly=typeof folder.read_only==='boolean'?folder.read_only:inheritedReadOnly;
+      folderList.push({id,label,readOnly});if(folder.has_children!==false)queue.push({id,label,readOnly});
+    }
+    for(const root of data.top_level_folders||[])addFolder(root);
+    showFolders();
+    while(queue.length&&current()){
+      const parent=queue.shift();folderMessage(`Loading subfolders… ${folderList.length} folders found.`);
+      try{const children=await folderPages('/folders/'+parent.id+'/folders?limit=300',current);if(!current())return;for(const child of children)addFolder(child,parent.label,parent.readOnly);showFolders();}
+      catch{if(!current())return;partial=true;}
+    }
+    if(!current())return;
+    const writable=folderList.filter(f=>!f.readOnly);
+    if($('folderSelect').value!=='__manual__'&&!writable.some(f=>String(f.id)===$('folderId').value))$('folderId').value='';
+    if(!$('folderId').value&&$('folderSelect').value!=='__manual__'&&writable.length===1){$('folderId').value=String(writable[0].id);showFolders();}
+    folderMessage(partial?'Folders loaded, but some subfolders could not be retrieved. Refresh or enter their ID manually.':writable.length?`${writable.length} writable folders available. Choose a folder above.`:'No writable folders were returned. You can enter a folder ID manually.',partial||!writable.length);
+  }catch(e){if(current())folderMessage('Could not load folders: '+e.message+' Use Load folders to retry, or enter a folder ID manually.',true);}
+  finally{if(current()){folderLoading=false;renderFolderControls();}}
+}
+$('folderSelect').addEventListener('change',()=>{
+  const value=$('folderSelect').value;$('manualFolder').hidden=value!=='__manual__';
+  $('folderId').value=value==='__manual__'?'':value;
+  if(value==='__manual__'){$('folderId').focus();folderMessage('Enter the destination folder ID below.');}
+  else if(value){const folder=folderList.find(f=>String(f.id)===value);folderMessage('Selected: '+(folder?.label||value));}
 });
+$('loadFolders').addEventListener('click',()=>loadFolders(true));
+$('apiKey').addEventListener('input',()=>{
+  clearTimeout(folderTimer);++folderRevision;folderLoading=false;folderKey='';folderList=[];$('folderId').value='';$('folderSelect').value='';showFolders();
+  folderMessage($('apiKey').value.trim()?'Loading folders shortly…':'Paste your API key to load folders and subfolders.');
+  if($('apiKey').value.trim())folderTimer=setTimeout(()=>loadFolders(),600);
+});
+$('apiKey').addEventListener('change',()=>loadFolders());
+$('apiKey').addEventListener('blur',()=>loadFolders());
+render();
 })();
 </script></body></html>
